@@ -165,7 +165,7 @@ textarea { resize: vertical; min-height: 60px; }
 <body>
 <div class="c">
 <h1>📋 试卷生成器</h1>
-<p class="sub">公共基础知识 · 智能组卷</p>
+<p class="sub">自定义题库 · 智能组卷</p>
 
 <div class="tabs" id="mainTabs">
   <div class="tb active" data-tab="bank">题库管理</div>
@@ -186,8 +186,16 @@ textarea { resize: vertical; min-height: 60px; }
     </select>
     <input type="text" id="filterKeyword" placeholder="搜索题目关键词..." oninput="renderBank()">
     <button class="btn accent" onclick="openQuestionModal()">＋ 添加题目</button>
+    <button class="btn danger" id="btnBatchDelete" style="display:none" onclick="batchDelete()">🗑 批量删除</button>
+    <button class="btn small" id="btnSelectAll" style="display:none" onclick="toggleSelectAll()">全选</button>
   </div>
   <div class="card">
+    <div class="qlist-header" id="qlistHeader" style="display:none;padding:0 0 8px 0;border-bottom:1px solid var(--border);margin-bottom:4px">
+      <label style="font-size:13px;cursor:pointer;user-select:none">
+        <input type="checkbox" id="cbSelectAll" onchange="toggleSelectAll()" style="margin-right:6px">全选
+      </label>
+      <span id="selectedCount" style="font-size:12px;color:var(--muted);margin-left:12px"></span>
+    </div>
     <div class="qlist" id="qlist"><div class="empty">暂无题目，点击"添加题目"开始</div></div>
   </div>
 </div>
@@ -381,6 +389,7 @@ function renderBank() {
   const list = document.getElementById('qlist');
   if (filtered.length === 0) {
     list.innerHTML = '<div class="empty">没有匹配的题目</div>';
+    updateBatchUI();
     return;
   }
   list.innerHTML = filtered.map((q, fi) => {
@@ -388,6 +397,7 @@ function renderBank() {
     const label = q.s === 'judge' ? '正确/错误' : (q.o||[]).join(' / ');
     return `
       <div class="qitem">
+        <input type="checkbox" class="qcb" data-idx="${idx}" onchange="updateBatchUI()" style="flex-shrink:0;margin-top:3px">
         <div class="qi">
           <span class="qt ${q.s}">${TYPE_LABELS[q.s]}</span>
           <div class="qtxt">${escHtml(q.q)}</div>
@@ -402,6 +412,7 @@ function renderBank() {
         </div>
       </div>`;
   }).join('');
+  updateBatchUI();
 }
 
 function formatAnswer(q) {
@@ -419,6 +430,54 @@ function deleteQuestion(idx) {
   renderBank();
   toast('已删除');
 }
+
+function getCheckedIndices() {
+  const cbs = document.querySelectorAll('.qcb:checked');
+  return [...cbs].map(cb => parseInt(cb.dataset.idx));
+}
+
+function updateBatchUI() {
+  const checked = getCheckedIndices();
+  const header = document.getElementById('qlistHeader');
+  const btnDel = document.getElementById('btnBatchDelete');
+  const btnSel = document.getElementById('btnSelectAll');
+  const countEl = document.getElementById('selectedCount');
+  if (checked.length > 0) {
+    header.style.display = 'block';
+    btnDel.style.display = 'inline-flex';
+    btnSel.style.display = 'inline-flex';
+    countEl.textContent = `已选 ${checked.length} 题`;
+  } else {
+    header.style.display = 'none';
+    btnDel.style.display = 'none';
+    btnSel.style.display = 'none';
+  }
+}
+
+function toggleSelectAll() {
+  const cbs = document.querySelectorAll('.qcb');
+  const allChecked = [...cbs].every(cb => cb.checked);
+  cbs.forEach(cb => { cb.checked = !allChecked; });
+  document.getElementById('cbSelectAll').checked = !allChecked;
+  updateBatchUI();
+}
+
+function batchDelete() {
+  const indices = getCheckedIndices();
+  if (indices.length === 0) { toast('请先选择要删除的题目'); return; }
+  if (!confirm(`确定要删除选中的 ${indices.length} 道题目吗？此操作不可恢复。`)) return;
+  const bank = loadBank();
+  // Sort descending to avoid index shift issues
+  indices.sort((a, b) => b - a);
+  for (const idx of indices) {
+    bank.splice(idx, 1);
+  }
+  saveBank(bank);
+  document.getElementById('cbSelectAll').checked = false;
+  renderBank();
+  toast(`已删除 ${indices.length} 道题目`);
+}
+
 
 function openQuestionModal(idx) {
   const bank = loadBank();
@@ -948,7 +1007,7 @@ h1{font-size:21px;text-align:center;margin:20px 0 6px}
 <body>
 <div class="c">
 <h1>${escHtml(papers[0]?.t || '公基试卷')}</h1>
-<p class="sub">${escHtml(papers[0]?.s || '')} · 共${papers.length}套 · 事业单位考试公共基础知识</p>
+<p class="sub">${escHtml(papers[0]?.s || '')} · 共${papers.length}套 · 公共基础知识</p>
 <div class="tabs" id="tabs">${papers.map((p,i) => `<div class="tb${i===0?' active':''}" data-p="${i}">${escHtml(p.t)}</div>`).join('')}</div>
 ${papers.map((p,i) => `<div class="pn${i===0?' active':''}" id="p-${i}" data-pidx="${i}"></div>`).join('')}
 </div>
