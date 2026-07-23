@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>公基试卷生成器 · 事业单位考试</title>
+<style>
+:root {
+  --bg: #f5f4f0; --card: #fff; --text: #2c2c2c; --muted: #6b6b6b;
+  --border: #e0ded8; --accent: #2c5f8a; --al: #e8f0f7;
+  --green: #2d7d46; --gb: #edf7f0; --red: #c0392b; --rb: #fef0ef;
+  --purple: #5b3ec4; --pb: #f3f0ff; --orange: #b85c1e; --ob: #fff4ed;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px;
+}
+.c { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+h1 { font-size: 21px; text-align: center; margin: 20px 0 6px; }
+.sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+/* Tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+  position: sticky; top: 0; z-index: 10; background: var(--bg); padding: 8px 0; }
+.tb { padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--card); font-size: 13px; cursor: pointer; transition: all .15s;
+  white-space: nowrap; user-select: none; }
+.tb:hover { border-color: var(--accent); }
+.tb.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pn { display: none; } .pn.active { display: block; }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 18px 20px; margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+
+/* Form elements */
+input, select, textarea, button {
+  font-family: inherit; font-size: 14px; outline: none;
+}
+input[type="text"], input[type="number"], select, textarea {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--card); width: 100%; transition: border-color .15s;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 60px; }
+.btn {
+  padding: 8px 18px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--card); cursor: pointer; transition: all .15s;
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+}
+.btn:hover { border-color: var(--accent); background: var(--al); }
+.btn.accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn.accent:hover { opacity: .9; }
+.btn.danger { color: var(--red); border-color: var(--red); }
+.btn.danger:hover { background: var(--rb); }
+.btn.small { padding: 4px 12px; font-size: 12px; }
+
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.row > * { flex: 1; min-width: 120px; }
+.gap { gap: 12px; }
+
+/* Type badges */
+.qt { display: inline-block; font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px; }
+.qt.single { color: var(--purple); background: var(--pb); }
+.qt.multi { color: var(--orange); background: var(--ob); }
+.qt.judge { color: var(--green); background: var(--gb); }
+
+/* Question list */
+.qlist { max-height: 600px; overflow-y: auto; }
+.qitem { display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.qitem:last-child { border-bottom: none; }
+.qitem .qi { flex: 1; min-width: 0; }
+.qitem .qi .qtxt { font-weight: 500; word-break: break-all; }
+.qitem .qi .qmeta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.qitem .qact { display: flex; gap: 4px; flex-shrink: 0; }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.3);
+  z-index: 100; justify-content: center; align-items: flex-start; padding-top: 40px; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card); border-radius: 10px; padding: 24px;
+  width: 700px; max-width: 95vw; max-height: 85vh; overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,.15); }
+.modal h3 { font-size: 17px; margin-bottom: 16px; }
+.modal .form-group { margin-bottom: 12px; }
+.modal .form-group label { display: block; font-size: 13px; color: var(--muted);
+  margin-bottom: 4px; }
+.modal .form-actions { display: flex; gap: 8px; justify-content: flex-end;
+  margin-top: 16px; }
+
+/* Paper config */
+.cfg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cfg-item { display: flex; flex-direction: column; gap: 4px; }
+.cfg-item label { font-size: 13px; color: var(--muted); }
+.paper-preview { margin-top: 16px; }
+.pp-card { padding: 12px 16px; border: 1px solid var(--border); border-radius: 6px;
+  margin-bottom: 8px; cursor: pointer; transition: all .15s; }
+.pp-card:hover { border-color: var(--accent); background: var(--al); }
+.pp-card.active { border-color: var(--accent); background: var(--al); }
+
+/* Stats */
+.stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+.stat-item { background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 16px; text-align: center; min-width: 80px; }
+.stat-item .num { font-size: 24px; font-weight: 700; color: var(--accent); }
+.stat-item .lbl { font-size: 12px; color: var(--muted); }
+
+/* Export preview (test mode) - matches reference style */
+.sb { position: sticky; top: 52px; z-index: 9; background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
+  margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+.sb .st { display: flex; gap: 16px; font-size: 14px; }
+.sb .st strong { color: var(--accent); }
+.ph { text-align: center; padding: 20px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+.ph h2 { font-size: 17px; margin-bottom: 6px; }
+.ph .mt { font-size: 13px; color: var(--muted); }
+.cd { background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+  padding: 18px 20px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  transition: border-color .2s; }
+.cd.submitted { pointer-events: none; }
+.cd.correct { border-color: var(--green); background: #fcfdf9; }
+.cd.wrong { border-color: var(--red); background: #fefcfc; }
+.qn { font-weight: 700; color: var(--accent); font-size: 13px; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px; }
+.qq { font-size: 15px; margin: 8px 0 12px; font-weight: 500; }
+.ops { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.op { display: flex; align-items: flex-start; gap: 10px; padding: 9px 14px;
+  border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+  transition: all .15s; font-size: 14px; }
+.op:hover { border-color: var(--accent); }
+.op.selected { border-color: var(--accent); background: var(--al); }
+.op.correct-answer { border-color: var(--green); background: var(--gb); }
+.op.wrong-answer { border-color: var(--red); background: var(--rb); }
+.opl { font-weight: 600; color: var(--muted); min-width: 22px; }
+.exp { margin-top: 12px; padding: 12px; border-radius: 6px; background: #fafaf7;
+  font-size: 13px; display: none; border-left: 3px solid var(--accent); }
+.exp.show { display: block; }
+.exp.correct-exp { border-left-color: var(--green); background: var(--gb); }
+.exp.wrong-exp { border-left-color: var(--red); background: var(--rb); }
+
+/* Topic tags */
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { padding: 2px 8px; border-radius: 4px; font-size: 11px;
+  background: #eee; color: var(--muted); cursor: pointer; }
+.tag.selected { background: var(--accent); color: #fff; }
+
+/* Toast */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #333; color: #fff; padding: 10px 24px; border-radius: 8px;
+  font-size: 14px; z-index: 200; opacity: 0; transition: opacity .3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+
+/* Empty state */
+.empty { text-align: center; padding: 40px 20px; color: var(--muted); }
+.empty .empty-icon { font-size: 48px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="c">
+<h1>📋 公基试卷生成器</h1>
+<p class="sub">事业单位考试 · 公共基础知识 · 智能组卷</p>
+
+<div class="tabs" id="mainTabs">
+  <div class="tb active" data-tab="bank">题库管理</div>
+  <div class="tb" data-tab="generate">试卷生成</div>
+  <div class="tb" data-tab="preview">预览测试</div>
+  <div class="tb" data-tab="io">导入导出</div>
+</div>
+
+<!-- ========== 题库管理 ========== -->
+<div class="pn active" id="tab-bank">
+  <div class="stats" id="bankStats"></div>
+  <div class="row" style="margin-bottom:12px">
+    <select id="filterType" onchange="renderBank()">
+      <option value="all">全部类型</option>
+      <option value="single">单选题</option>
+      <option value="multi">多选题</option>
+      <option value="judge">判断题</option>
+    </select>
+    <input type="text" id="filterKeyword" placeholder="搜索题目关键词..." oninput="renderBank()">
+    <button class="btn accent" onclick="openQuestionModal()">＋ 添加题目</button>
+  </div>
+  <div class="card">
+    <div class="qlist" id="qlist"><div class="empty">暂无题目，点击"添加题目"开始</div></div>
+  </div>
+</div>
+
+<!-- ========== 试卷生成 ========== -->
+<div class="pn" id="tab-generate">
+  <div class="card">
+    <h3 style="margin-bottom:12px">组卷配置</h3>
+    <div class="cfg-grid">
+      <div class="cfg-item">
+        <label>试卷名称前缀</label>
+        <input type="text" id="cfgName" value="公基冲刺卷">
+      </div>
+      <div class="cfg-item">
+        <label>生成套数</label>
+        <input type="number" id="cfgCount" value="5" min="1" max="20">
+      </div>
+      <div class="cfg-item">
+        <label>单选题数</label>
+        <input type="number" id="cfgSingle" value="35" min="0" max="100">
+      </div>
+      <div class="cfg-item">
+        <label>多选题数</label>
+        <input type="number" id="cfgMulti" value="10" min="0" max="50">
+      </div>
+      <div class="cfg-item">
+        <label>判断题数</label>
+        <input type="number" id="cfgJudge" value="5" min="0" max="30">
+      </div>
+      <div class="cfg-item">
+        <label>试卷副标题</label>
+        <input type="text" id="cfgSubtitle" value="冲刺卷">
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label>
+      <div class="tags" id="topicTags"></div>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn accent" onclick="generatePapers()">🎲 随机组卷</button>
+      <span style="font-size:12px;color:var(--muted);margin-left:8px" id="genInfo"></span>
+    </div>
+  </div>
+  <div class="paper-preview" id="paperPreview"></div>
+</div>
+
+<!-- ========== 预览测试 ========== -->
+<div class="pn" id="tab-preview">
+  <div id="previewContent"><div class="empty">请先在"试卷生成"中生成试卷</div></div>
+</div>
+
+<!-- ========== 导入导出 ========== -->
+<div class="pn" id="tab-io">
+  <div class="card">
+    <h3 style="margin-bottom:12px">导入题库</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">
+      支持导入标准格式的试卷HTML文件（自动提取题目）或JSON题库文件。
+    </p>
+    <div class="row">
+      <input type="file" id="importFile" accept=".html,.json" onchange="handleImport(event)">
+      <button class="btn" onclick="document.getElementById('importFile').click()">选择文件导入</button>
+    </div>
+    <div id="importResult" style="margin-top:8px;font-size:13px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:12px">导出</h3>
+    <div class="row">
+      <button class="btn accent" onclick="exportJSON()">📦 导出题库 JSON</button>
+      <button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML">📄 导出试卷 HTML</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">
+      HTML导出为带交互功能的独立试卷文件，可直接在浏览器中使用。
+    </p>
+  </div>
+</div>
+
+<!-- Question Edit Modal -->
+<div class="modal-overlay" id="questionModal">
+  <div class="modal">
+    <h3 id="modalTitle">添加题目</h3>
+    <input type="hidden" id="editIndex" value="-1">
+    <div class="form-group">
+      <label>题型</label>
+      <select id="qType">
+        <option value="single">单选题</option>
+        <option value="multi">多选题</option>
+        <option value="judge">判断题</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>题目内容</label>
+      <textarea id="qText" rows="3" placeholder="输入题目..."></textarea>
+    </div>
+    <div class="form-group" id="optGroup">
+      <label>选项（每行一个）</label>
+      <textarea id="qOptions" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea>
+    </div>
+    <div class="form-group" id="judgeOptGroup" style="display:none">
+      <label>判断题选项固定为：正确 / 错误</label>
+    </div>
+    <div class="form-group">
+      <label>正确答案（单选题/判断题填序号如 0；多选题填序号用逗号分隔如 0,1,2）</label>
+      <input type="text" id="qAnswer" placeholder="0 或 0,1,2">
+      <span style="font-size:11px;color:var(--muted)">A=0, B=1, C=2, D=3；判断题：正确=0, 错误=1</span>
+    </div>
+    <div class="form-group">
+      <label>解析（可选）</label>
+      <textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>知识点标签（可选，逗号分隔）</label>
+      <input type="text" id="qTag" placeholder="例如：政治,经济,法律">
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeQuestionModal()">取消</button>
+      <button class="btn accent" onclick="saveQuestion()">保存</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== DATA LAYER ==========
+const STORAGE_KEY = 'gk_question_bank';
+const PAPERS_KEY = 'gk_generated_papers';
+
+function loadBank() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch(e) { return []; }
+}
+function saveBank(bank) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(bank));
+}
+function loadPapers() {
+  try { return JSON.parse(localStorage.getItem(PAPERS_KEY)) || []; }
+  catch(e) { return []; }
+}
+function savePapers(papers) {
+  localStorage.setItem(PAPERS_KEY, JSON.stringify(papers));
+}
+
+// Labels
+const TYPE_LABELS = { single: '单选题', multi: '多选题', judge: '判断题' };
+const OPT_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+// ========== TOAST ==========
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ========== TABS ==========
+document.getElementById('mainTabs').addEventListener('click', function(e) {
+  const tb = e.target.closest('.tb');
+  if (!tb) return;
+  document.querySelectorAll('#mainTabs .tb').forEach(t => t.classList.remove('active'));
+  tb.classList.add('active');
+  document.querySelectorAll('.pn').forEach(p => p.classList.remove('active'));
+  const tabId = 'tab-' + tb.dataset.tab;
+  document.getElementById(tabId).classList.add('active');
+  if (tb.dataset.tab === 'bank') renderBank();
+  if (tb.dataset.tab === 'generate') renderGenerate();
+  if (tb.dataset.tab === 'preview') renderPreview();
+});
+
+// ========== BANK TAB ==========
+function renderBank() {
+  const bank = loadBank();
+  const type = document.getElementById('filterType').value;
+  const kw = document.getElementById('filterKeyword').value.toLowerCase();
+  let filtered = bank;
+  if (type !== 'all') filtered = filtered.filter(q => q.s === type);
+  if (kw) filtered = filtered.filter(q => q.q.toLowerCase().includes(kw) || (q.e||'').toLowerCase().includes(kw) || (q.tag||'').toLowerCase().includes(kw));
+
+  const stats = document.getElementById('bankStats');
+  const singles = bank.filter(q => q.s === 'single').length;
+  const multis = bank.filter(q => q.s === 'multi').length;
+  const judges = bank.filter(q => q.s === 'judge').length;
+  stats.innerHTML = `
+    <div class="stat-item"><div class="num">${bank.length}</div><div class="lbl">总题数</div></div>
+    <div class="stat-item"><div class="num">${singles}</div><div class="lbl">单选题</div></div>
+    <div class="stat-item"><div class="num">${multis}</div><div class="lbl">多选题</div></div>
+    <div class="stat-item"><div class="num">${judges}</div><div class="lbl">判断题</div></div>
+  `;
+
+  const list = document.getElementById('qlist');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">没有匹配的题目</div>';
+    return;
+  }
+  list.innerHTML = filtered.map((q, fi) => {
+    const idx = bank.indexOf(q);
+    const label = q.s === 'judge' ? '正确/错误' : (q.o||[]).join(' / ');
+    return `
+      <div class="qitem">
+        <div class="qi">
+          <span class="qt ${q.s}">${TYPE_LABELS[q.s]}</span>
+          <div class="qtxt">${escHtml(q.q)}</div>
+          <div class="qmeta">
+            答案: ${formatAnswer(q)} &nbsp;|&nbsp; 选项: ${label}
+            ${q.tag ? `&nbsp;|&nbsp; 🏷 ${escHtml(q.tag)}` : ''}
+          </div>
+        </div>
+        <div class="qact">
+          <button class="btn small" onclick="openQuestionModal(${idx})">编辑</button>
+          <button class="btn small danger" onclick="deleteQuestion(${idx})">删除</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function formatAnswer(q) {
+  if (q.s === 'judge') return q.a[0] === 0 ? '正确 ✓' : '错误 ✗';
+  return (q.a||[]).map(i => OPT_LABELS[i]).join('');
+}
+
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function deleteQuestion(idx) {
+  if (!confirm('确定要删除这道题目吗？')) return;
+  const bank = loadBank();
+  bank.splice(idx, 1);
+  saveBank(bank);
+  renderBank();
+  toast('已删除');
+}
+
+function openQuestionModal(idx) {
+  const bank = loadBank();
+  const modal = document.getElementById('questionModal');
+  document.getElementById('editIndex').value = idx >= 0 ? idx : -1;
+
+  if (idx >= 0 && idx < bank.length) {
+    const q = bank[idx];
+    document.getElementById('modalTitle').textContent = '编辑题目';
+    document.getElementById('qType').value = q.s;
+    document.getElementById('qText').value = q.q;
+    document.getElementById('qOptions').value = (q.o||[]).join('\n');
+    document.getElementById('qAnswer').value = (q.a||[]).join(',');
+    document.getElementById('qExplain').value = q.e || '';
+    document.getElementById('qTag').value = q.tag || '';
+  } else {
+    document.getElementById('modalTitle').textContent = '添加题目';
+    document.getElementById('qType').value = 'single';
+    document.getElementById('qText').value = '';
+    document.getElementById('qOptions').value = '';
+    document.getElementById('qAnswer').value = '';
+    document.getElementById('qExplain').value = '';
+    document.getElementById('qTag').value = '';
+  }
+  updateOptionVisibility();
+  modal.classList.add('show');
+}
+
+function closeQuestionModal() {
+  document.getElementById('questionModal').classList.remove('show');
+}
+
+document.getElementById('qType').addEventListener('change', updateOptionVisibility);
+function updateOptionVisibility() {
+  const type = document.getElementById('qType').value;
+  document.getElementById('optGroup').style.display = type === 'judge' ? 'none' : 'block';
+  document.getElementById('judgeOptGroup').style.display = type === 'judge' ? 'block' : 'none';
+}
+
+function saveQuestion() {
+  const idx = parseInt(document.getElementById('editIndex').value);
+  const type = document.getElementById('qType').value;
+  const text = document.getElementById('qText').value.trim();
+  const explain = document.getElementById('qExplain').value.trim();
+  const tag = document.getElementById('qTag').value.trim();
+  const ansStr = document.getElementById('qAnswer').value.trim();
+
+  if (!text) { toast('请输入题目内容'); return; }
+  if (!ansStr) { toast('请输入正确答案'); return; }
+
+  let options = [];
+  if (type === 'judge') {
+    options = ['正确', '错误'];
+  } else {
+    options = document.getElementById('qOptions').value.split('\n').map(s => s.trim()).filter(s => s);
+    if (options.length < 2) { toast('请至少输入2个选项'); return; }
+  }
+
+  const answers = ansStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+  if (answers.length === 0) { toast('答案格式错误'); return; }
+  for (const a of answers) {
+    if (a < 0 || a >= options.length) { toast(`答案序号 ${a} 超出选项范围 (0-${options.length-1})`); return; }
+  }
+
+  const question = { s: type, q: text, o: options, a: answers, e: explain, tag: tag };
+
+  const bank = loadBank();
+  if (idx >= 0 && idx < bank.length) {
+    bank[idx] = question;
+  } else {
+    bank.push(question);
+  }
+  saveBank(bank);
+  closeQuestionModal();
+  renderBank();
+  toast(idx >= 0 ? '已更新' : '已添加');
+}
+
+// Click outside modal to close
+document.getElementById('questionModal').addEventListener('click', function(e) {
+  if (e.target === this) closeQuestionModal();
+});
+
+// ========== GENERATE TAB ==========
+function getAllTopics() {
+  const bank = loadBank();
+  const topics = new Set();
+  bank.forEach(q => {
+    if (q.tag) q.tag.split(/[,，]/).forEach(t => { t = t.trim(); if (t) topics.add(t); });
+  });
+  return [...topics];
+}
+
+function renderGenerate() {
+  const bank = loadBank();
+  const topics = getAllTopics();
+  document.getElementById('genInfo').textContent =
+    `题库共 ${bank.length} 题（单选${bank.filter(q=>q.s==='single').length} 多选${bank.filter(q=>q.s==='multi').length} 判断${bank.filter(q=>q.s==='judge').length}）`;
+
+  const tagsDiv = document.getElementById('topicTags');
+  if (topics.length === 0) {
+    tagsDiv.innerHTML = '<span style="font-size:12px;color:var(--muted)">暂无知识点标签</span>';
+  } else {
+    tagsDiv.innerHTML = topics.map(t =>
+      `<span class="tag" data-tag="${escHtml(t)}" onclick="this.classList.toggle('selected')">${escHtml(t)}</span>`
+    ).join('') + '<span style="font-size:11px;color:var(--muted);margin-left:4px">（点击筛选）</span>';
+  }
+
+  // Render existing papers preview
+  renderPaperPreview();
+}
+
+function getSelectedTopics() {
+  const selected = [];
+  document.querySelectorAll('#topicTags .tag.selected').forEach(el => selected.push(el.dataset.tag));
+  return selected;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function generatePapers() {
+  const bank = loadBank();
+  const nSingle = parseInt(document.getElementById('cfgSingle').value) || 35;
+  const nMulti = parseInt(document.getElementById('cfgMulti').value) || 10;
+  const nJudge = parseInt(document.getElementById('cfgJudge').value) || 5;
+  const nPapers = parseInt(document.getElementById('cfgCount').value) || 5;
+  const name = document.getElementById('cfgName').value.trim() || '公基冲刺卷';
+  const subtitle = document.getElementById('cfgSubtitle').value.trim() || '冲刺卷';
+  const selectedTopics = getSelectedTopics();
+
+  let pool = bank;
+  if (selectedTopics.length > 0) {
+    pool = bank.filter(q => {
+      if (!q.tag) return false;
+      const tags = q.tag.split(/[,，]/).map(t => t.trim());
+      return selectedTopics.some(st => tags.includes(st));
+    });
+  }
+
+  const singles = pool.filter(q => q.s === 'single');
+  const multis = pool.filter(q => q.s === 'multi');
+  const judges = pool.filter(q => q.s === 'judge');
+
+  if (singles.length < nSingle) { toast(`单选题不足！需要${nSingle}题，题库中只有${singles.length}题`); return; }
+  if (multis.length < nMulti) { toast(`多选题不足！需要${nMulti}题，题库中只有${multis.length}题`); return; }
+  if (judges.length < nJudge) { toast(`判断题不足！需要${nJudge}题，题库中只有${judges.length}题`); return; }
+
+  const papers = [];
+  const usedSingle = new Set(), usedMulti = new Set(), usedJudge = new Set();
+
+  for (let i = 0; i < nPapers; i++) {
+    // Try to pick unused questions first, then allow reuse
+    const availSingle = singles.filter((_, idx) => !usedSingle.has(idx));
+    const availMulti = multis.filter((_, idx) => !usedMulti.has(idx));
+    const availJudge = judges.filter((_, idx) => !usedJudge.has(idx));
+
+    let sPool = availSingle.length >= nSingle ? availSingle : singles;
+    let mPool = availMulti.length >= nMulti ? availMulti : multis;
+    let jPool = availJudge.length >= nJudge ? availJudge : judges;
+
+    const selSingle = shuffle(sPool).slice(0, nSingle);
+    const selMulti = shuffle(mPool).slice(0, nMulti);
+    const selJudge = shuffle(jPool).slice(0, nJudge);
+
+    // Track used
+    selSingle.forEach(q => { const idx = singles.indexOf(q); if (idx >= 0) usedSingle.add(idx); });
+    selMulti.forEach(q => { const idx = multis.indexOf(q); if (idx >= 0) usedMulti.add(idx); });
+    selJudge.forEach(q => { const idx = judges.indexOf(q); if (idx >= 0) usedJudge.add(idx); });
+
+    // Interleave: single, multi, judge distributed
+    const questions = [];
+    const total = nSingle + nMulti + nJudge;
+    const sArr = shuffle(selSingle), mArr = shuffle(selMulti), jArr = shuffle(selJudge);
+    let si = 0, mi = 0, ji = 0;
+    // Distribute: every few singles, insert a multi or judge
+    const segSize = Math.ceil(nSingle / (nMulti + nJudge + 1));
+    let sCount = 0;
+    while (questions.length < total) {
+      if (si < sArr.length && (sCount < segSize || (mi >= mArr.length && ji >= jArr.length))) {
+        questions.push(sArr[si++]);
+        sCount++;
+      } else if (mi < mArr.length && (ji >= jArr.length || Math.random() > 0.5)) {
+        questions.push(mArr[mi++]);
+        sCount = 0;
+      } else if (ji < jArr.length) {
+        questions.push(jArr[ji++]);
+        sCount = 0;
+      } else {
+        sCount = 0;
+      }
+    }
+
+    papers.push({
+      id: 'paper' + (i + 1),
+      t: name + ' (' + (i + 1) + ')',
+      s: subtitle,
+      d: questions
+    });
+  }
+
+  savePapers(papers);
+  renderPaperPreview();
+  toast(`已生成 ${nPapers} 套试卷！`);
+}
+
+function renderPaperPreview() {
+  const papers = loadPapers();
+  const div = document.getElementById('paperPreview');
+  if (papers.length === 0) {
+    div.innerHTML = '<p style="font-size:13px;color:var(--muted);margin-top:12px">点击"随机组卷"生成试卷</p>';
+    document.getElementById('btnExportHTML').disabled = true;
+    return;
+  }
+  document.getElementById('btnExportHTML').disabled = false;
+  div.innerHTML = '<h4 style="margin-bottom:8px">已生成的试卷</h4>' +
+    papers.map((p, i) => {
+      const s = p.d.filter(q => q.s === 'single').length;
+      const m = p.d.filter(q => q.s === 'multi').length;
+      const j = p.d.filter(q => q.s === 'judge').length;
+      return `<div class="pp-card" onclick="previewPaper(${i})">
+        <strong>${escHtml(p.t)}</strong>
+        <span style="font-size:13px;color:var(--muted);margin-left:8px">
+          ${p.d.length}题 (单选${s} + 多选${m} + 判断${j})
+        </span>
+      </div>`;
+    }).join('');
+}
+
+// ========== PREVIEW TAB ==========
+let previewState = null;
+
+function previewPaper(idx) {
+  const papers = loadPapers();
+  if (idx < 0 || idx >= papers.length) return;
+  previewState = { paperIdx: idx, answers: {}, submitted: {} };
+  // Switch to preview tab
+  document.querySelectorAll('#mainTabs .tb').forEach(t => t.classList.remove('active'));
+  document.querySelector('#mainTabs .tb[data-tab="preview"]').classList.add('active');
+  document.querySelectorAll('.pn').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-preview').classList.add('active');
+  renderPreview();
+}
+
+function renderPreview() {
+  if (!previewState) return;
+  const papers = loadPapers();
+  const paper = papers[previewState.paperIdx];
+  const st = previewState;
+  const total = paper.d.length;
+  const submitted = Object.keys(st.submitted).length;
+  let correct = 0;
+  for (const [k, v] of Object.entries(st.submitted)) {
+    const q = paper.d[parseInt(k)];
+    if (v.correct) correct++;
+  }
+
+  let html = '';
+  // If multiple papers, tabs
+  if (papers.length > 1) {
+    html += '<div class="tabs" style="position:static;background:transparent;padding:0">';
+    papers.forEach((p, i) => {
+      html += `<div class="tb${i === previewState.paperIdx ? ' active' : ''}" onclick="previewPaper(${i})">${escHtml(p.t)}</div>`;
+    });
+    html += '</div>';
+  }
+
+  html += `
+  <div class="ph"><h2>${escHtml(paper.t)}</h2><div class="mt">${escHtml(paper.s)} · 共${total}题</div></div>
+  <div class="sb">
+    <div class="st">已答: <strong>${submitted}/${total}</strong> &nbsp; 正确: <strong>${correct}</strong> &nbsp; 得分: <strong>${submitted > 0 ? Math.round(correct / submitted * 100) : 0}%</strong></div>
+    <div class="ac">
+      <button onclick="resetPreview()" class="rb">🔄 重做</button>
+    </div>
+  </div>`;
+
+  paper.d.forEach((q, qi) => {
+    const sub = st.submitted[qi];
+    const userAns = st.answers[qi] || [];
+    let cardClass = '';
+    if (sub) cardClass = sub.correct ? 'correct' : 'wrong';
+
+    let optLabels;
+    if (q.s === 'judge') optLabels = ['正确', '错误'];
+    else optLabels = (q.o || []).map((opt, oi) => OPT_LABELS[oi] + '. ' + opt);
+
+    html += `<div class="cd submitted ${cardClass}" id="qcard-${qi}">
+      <div class="qn">
+        <span>${qi + 1}.</span>
+        <span class="qt ${q.s}">${TYPE_LABELS[q.s]}</span>
+        ${sub ? (sub.correct ? '<span style="color:var(--green);font-size:12px">✓ 正确</span>' : '<span style="color:var(--red);font-size:12px">✗ 错误</span>') : ''}
+      </div>
+      <div class="qq">${escHtml(q.q)}</div>
+      <div class="ops">`;
+
+    optLabels.forEach((label, oi) => {
+      let opClass = '';
+      if (sub) {
+        if (q.a.includes(oi) && userAns.includes(oi)) opClass = 'correct-answer';
+        else if (q.a.includes(oi)) opClass = 'correct-answer';
+        else if (userAns.includes(oi)) opClass = 'wrong-answer';
+      } else if (userAns.includes(oi)) {
+        opClass = 'selected';
+      }
+      html += `<div class="op ${opClass}" onclick="${sub ? '' : `toggleAnswer(${qi},${oi})`}">
+        <span class="opl">${OPT_LABELS[oi]}</span>
+        <span>${escHtml(label.replace(/^[A-H]\.\s*/, ''))}</span>
+      </div>`;
+    });
+
+    html += `</div>`;
+
+    if (!sub) {
+      html += `<div style="margin-top:8px"><button class="btn accent small" onclick="submitQuestion(${qi})">提交</button></div>`;
+    }
+
+    if (sub) {
+      const expClass = sub.correct ? 'correct-exp' : 'wrong-exp';
+      html += `<div class="exp show ${expClass}">
+        <strong>正确答案：</strong>${formatAnswer(q)}
+        ${q.e ? `<br><strong>解析：</strong>${escHtml(q.e)}` : ''}
+      </div>`;
+    }
+
+    html += '</div>';
+  });
+
+  document.getElementById('previewContent').innerHTML = html;
+}
+
+function toggleAnswer(qi, oi) {
+  if (!previewState) return;
+  const paper = loadPapers()[previewState.paperIdx];
+  const q = paper.d[qi];
+  let ans = previewState.answers[qi] || [];
+  if (q.s === 'single' || q.s === 'judge') {
+    ans = [oi];
+  } else {
+    if (ans.includes(oi)) ans = ans.filter(a => a !== oi);
+    else ans = [...ans, oi];
+  }
+  previewState.answers[qi] = ans;
+  renderPreview();
+}
+
+function submitQuestion(qi) {
+  if (!previewState) return;
+  const paper = loadPapers()[previewState.paperIdx];
+  const q = paper.d[qi];
+  const userAns = previewState.answers[qi] || [];
+  // Check correctness
+  const correct = q.a.length === userAns.length && q.a.every(a => userAns.includes(a));
+  previewState.submitted[qi] = { correct };
+  renderPreview();
+}
+
+function resetPreview() {
+  if (!previewState) return;
+  previewState.answers = {};
+  previewState.submitted = {};
+  renderPreview();
+}
+
+// ========== IMPORT/EXPORT ==========
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const content = e.target.result;
+    const resultDiv = document.getElementById('importResult');
+    let imported = [];
+
+    if (file.name.endsWith('.json')) {
+      try {
+        const data = JSON.parse(content);
+        if (Array.isArray(data)) {
+          imported = data.filter(q => q.s && q.q && q.a);
+        } else {
+          resultDiv.innerHTML = '<span style="color:var(--red)">JSON格式错误：需要题目数组</span>';
+          return;
+        }
+      } catch(err) {
+        resultDiv.innerHTML = `<span style="color:var(--red)">JSON解析失败: ${err.message}</span>`;
+        return;
+      }
+    } else if (file.name.endsWith('.html')) {
+      // Extract from PAPERS object
+      const match = content.match(/const\s+PAPERS\s*=\s*(\{[\s\S]*?\n\});/);
+      if (!match) {
+        resultDiv.innerHTML = '<span style="color:var(--red)">未找到PAPERS数据，请确认是标准格式的试卷HTML</span>';
+        return;
+      }
+      try {
+        const papersObj = eval('(' + match[1] + ')');
+        for (const [key, paper] of Object.entries(papersObj)) {
+          if (paper.d && Array.isArray(paper.d)) {
+            imported.push(...paper.d);
+          }
+        }
+      } catch(err) {
+        resultDiv.innerHTML = `<span style="color:var(--red)">数据解析失败: ${err.message}</span>`;
+        return;
+      }
+    }
+
+    if (imported.length === 0) {
+      resultDiv.innerHTML = '<span style="color:var(--muted)">未提取到题目</span>';
+      return;
+    }
+
+    // Normalize: ensure all fields present
+    imported = imported.map(q => ({
+      s: q.s || 'single',
+      q: q.q || '',
+      o: q.o || (q.s === 'judge' ? ['正确', '错误'] : []),
+      a: q.a || [],
+      e: q.e || '',
+      tag: q.tag || ''
+    }));
+
+    // Deduplicate by question text
+    const bank = loadBank();
+    const existingTexts = new Set(bank.map(q => q.q));
+    const newQs = imported.filter(q => !existingTexts.has(q.q));
+    if (newQs.length === 0) {
+      resultDiv.innerHTML = '<span style="color:var(--muted)">所有题目已存在，无新增</span>';
+      return;
+    }
+
+    bank.push(...newQs);
+    saveBank(bank);
+    resultDiv.innerHTML = `<span style="color:var(--green)">✓ 成功导入 ${newQs.length} 道新题目（共${imported.length}道，${imported.length - newQs.length}道重复跳过）</span>`;
+    renderBank();
+    toast(`导入 ${newQs.length} 道题目`);
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportJSON() {
+  const bank = loadBank();
+  if (bank.length === 0) { toast('题库为空'); return; }
+  const blob = new Blob([JSON.stringify(bank, null, 2)], { type: 'application/json' });
+  downloadBlob(blob, '公基题库_' + new Date().toISOString().slice(0,10) + '.json');
+  toast('题库已导出');
+}
+
+function exportPapersHTML() {
+  const papers = loadPapers();
+  if (papers.length === 0) { toast('请先生成试卷'); return; }
+  const html = buildExportHTML(papers);
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  downloadBlob(blob, '公基试卷_' + new Date().toISOString().slice(0,10) + '.html');
+  toast('试卷HTML已导出');
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildExportHTML(papers) {
+  // Generate unique paper keys
+  const paperKeys = papers.map((p, i) => 'gk' + (i + 1));
+  const papersObj = {};
+  papers.forEach((p, i) => {
+    papersObj[paperKeys[i]] = { t: p.t, s: p.s, d: p.d };
+  });
+
+  // Convert to readable literal
+  const papersLiteral = JSON.stringify(papersObj, null, 2)
+    .replace(/"([a-zA-Z_]\w*)":/g, '$1:')
+    .replace(/"/g, '\'');
+
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${escHtml(papers[0]?.t || '公基试卷')} · 共${papers.length}套</title>
+<style>
+:root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e0ded8;--accent:#2c5f8a;--al:#e8f0f7;--green:#2d7d46;--gb:#edf7f0;--red:#c0392b;--rb:#fef0ef}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+.c{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:21px;text-align:center;margin:20px 0 6px}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}
+.tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tb:hover{border-color:var(--accent)}.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pn{display:none}.pn.active{display:block}
+.sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.sb .st{display:flex;gap:16px;font-size:14px}.sb .st strong{color:var(--accent)}
+.sb .ac{display:flex;gap:8px}.sb .ac button{padding:5px 14px;border:1px solid var(--border);border-radius:5px;background:var(--card);font-size:12px;cursor:pointer;transition:all .15s}
+.sb .ac button:hover{border-color:var(--accent);background:var(--al)}
+.sb .ac .rb{color:var(--red);border-color:var(--red)}.sb .ac .rb:hover{background:var(--rb)}
+.ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ph h2{font-size:17px;margin-bottom:6px}.ph .mt{font-size:13px;color:var(--muted)}
+.cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:border-color .2s}
+.cd.submitted{pointer-events:none}.cd.correct{border-color:var(--green);background:#fcfdf9}
+.cd.wrong{border-color:var(--red);background:#fefcfc}
+.qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.qt.single{color:#5b3ec4;background:#f3f0ff}.qt.multi{color:#b85c1e;background:#fff4ed}.qt.judge{color:#2d7d46;background:#edf7f0}
+.qq{font-size:15px;margin:8px 0 12px;font-weight:500}
+.ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+.op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;font-size:14px}
+.op:hover{border-color:var(--accent)}.op.selected{border-color:var(--accent);background:var(--al)}
+.op.correct-answer{border-color:var(--green);background:var(--gb)}
+.op.wrong-answer{border-color:var(--red);background:var(--rb)}
+.opl{font-weight:600;color:var(--muted);min-width:22px}
+.exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}
+.exp.show{display:block}.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}
+.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}
+</style>
+</head>
+<body>
+<div class="c">
+<h1>${escHtml(papers[0]?.t || '公基试卷')}</h1>
+<p class="sub">${escHtml(papers[0]?.s || '')} · 共${papers.length}套 · 事业单位考试公共基础知识</p>
+<div class="tabs" id="tabs">${papers.map((p,i) => `<div class="tb${i===0?' active':''}" data-p="${i}">${escHtml(p.t)}</div>`).join('')}</div>
+${papers.map((p,i) => `<div class="pn${i===0?' active':''}" id="p-${i}" data-pidx="${i}"></div>`).join('')}
+</div>
+<script>
+const PAPERS = ${papersLiteral};
+const LABELS = {single:'单选题',multi:'多选题',judge:'判断题'};
+const OPT_LB = ['A','B','C','D','E','F','G','H'];
+let state = {};
+
+function init() {
+  const keys = Object.keys(PAPERS);
+  keys.forEach((k,i) => {
+    state[k] = { answers: {}, submitted: {} };
+    renderPaper(k, i);
+  });
+  document.getElementById('tabs').addEventListener('click', function(e) {
+    const tb = e.target.closest('.tb');
+    if (!tb) return;
+    document.querySelectorAll('#tabs .tb').forEach(t => t.classList.remove('active'));
+    tb.classList.add('active');
+    document.querySelectorAll('.pn').forEach(p => p.classList.remove('active'));
+    document.getElementById('p-' + tb.dataset.p).classList.add('active');
+  });
+}
+
+function renderPaper(key, idx) {
+  const paper = PAPERS[key];
+  const st = state[key];
+  const total = paper.d.length;
+  const submitted = Object.keys(st.submitted).length;
+  let correct = 0;
+  for (const [k, v] of Object.entries(st.submitted)) { if (v.correct) correct++; }
+
+  let html = '';
+  html += '<div class="ph"><h2>' + escHtml(paper.t) + '</h2><div class="mt">' + escHtml(paper.s) + ' · 共' + total + '题</div></div>';
+  html += '<div class="sb"><div class="st">已答: <strong>' + submitted + '/' + total + '</strong> &nbsp; 正确: <strong>' + correct + '</strong> &nbsp; 得分: <strong>' + (submitted > 0 ? Math.round(correct / submitted * 100) : 0) + '%</strong></div><div class="ac"><button onclick="resetPaper(\'' + key + '\')" class="rb">重做</button></div></div>';
+
+  paper.d.forEach((q, qi) => {
+    const sub = st.submitted[qi];
+    const userAns = st.answers[qi] || [];
+    let cardClass = sub ? (sub.correct ? 'correct' : 'wrong') : '';
+
+    const optLabels = q.s === 'judge' ? ['正确','错误'] : q.o.map((o,oi) => OPT_LB[oi] + '. ' + o);
+
+    html += '<div class="cd submitted ' + cardClass + '">';
+    html += '<div class="qn"><span>' + (qi+1) + '.</span><span class="qt ' + q.s + '">' + LABELS[q.s] + '</span>' + (sub ? (sub.correct ? '<span style="color:var(--green);font-size:12px">✓ 正确</span>' : '<span style="color:var(--red);font-size:12px">✗ 错误</span>') : '') + '</div>';
+    html += '<div class="qq">' + escHtml(q.q) + '</div><div class="ops">';
+
+    optLabels.forEach((label, oi) => {
+      let cls = '';
+      if (sub) { if (q.a.includes(oi)) cls = 'correct-answer'; else if (userAns.includes(oi)) cls = 'wrong-answer'; }
+      else if (userAns.includes(oi)) cls = 'selected';
+      html += '<div class="op ' + cls + '" onclick="' + (sub ? '' : 'clickOpt(\\'' + key + '\\',' + qi + ',' + oi + ')') + '"><span class="opl">' + OPT_LB[oi] + '</span><span>' + escHtml(label.replace(/^[A-H]\\.\\s*/, '')) + '</span></div>';
+    });
+
+    html += '</div>';
+    if (!sub) html += '<div style="margin-top:8px"><button class="btn accent small" onclick="submitOne(\\'' + key + '\\',' + qi + ')" style="padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer">提交</button></div>';
+    if (sub) {
+      const expCls = sub.correct ? 'correct-exp' : 'wrong-exp';
+      html += '<div class="exp show ' + expCls + '"><strong>正确答案：</strong>' + formatAns(q) + (q.e ? '<br><strong>解析：</strong>' + escHtml(q.e) : '') + '</div>';
+    }
+    html += '</div>';
+  });
+
+  document.getElementById('p-' + idx).innerHTML = html;
+}
+
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatAns(q) { if (q.s === 'judge') return q.a[0] === 0 ? '正确 ✓' : '错误 ✗'; return q.a.map(i => OPT_LB[i]).join(''); }
+
+function clickOpt(key, qi, oi) {
+  const q = PAPERS[key].d[qi];
+  let ans = state[key].answers[qi] || [];
+  if (q.s === 'single' || q.s === 'judge') ans = [oi];
+  else { if (ans.includes(oi)) ans = ans.filter(a => a !== oi); else ans = [...ans, oi]; }
+  state[key].answers[qi] = ans;
+  const paperIdx = Object.keys(PAPERS).indexOf(key);
+  renderPaper(key, paperIdx);
+}
+
+function submitOne(key, qi) {
+  const q = PAPERS[key].d[qi];
+  const userAns = state[key].answers[qi] || [];
+  const correct = q.a.length === userAns.length && q.a.every(a => userAns.includes(a));
+  state[key].submitted[qi] = { correct };
+  const paperIdx = Object.keys(PAPERS).indexOf(key);
+  renderPaper(key, paperIdx);
+}
+
+function resetPaper(key) {
+  state[key] = { answers: {}, submitted: {} };
+  const paperIdx = Object.keys(PAPERS).indexOf(key);
+  renderPaper(key, paperIdx);
+}
+
+init();
+<\/script>
+</body>
+</html>`;
+}
+
+// ========== INIT ==========
+function init() {
+  renderBank();
+  renderGenerate();
+
+  // Load default sample questions if bank is empty
+  const bank = loadBank();
+  if (bank.length === 0) {
+    const samples = [
+      {s:"single",q:"中国式现代化的五个特征中，物质文明和精神文明相协调的现代化强调的是什么关系？",o:["人口规模巨大的现代化","全体人民共同富裕的现代化","物质文明和精神文明相协调的现代化","人与自然和谐共生的现代化"],a:[2],e:"物质文明和精神文明相协调是中国式现代化的重要特征。",tag:"政治"},
+      {s:"single",q:"马克思主义哲学认为，世界的统一性在于什么？",o:["矛盾性","物质性","运动性","可知性"],a:[1],e:"辩证唯物主义认为世界统一于物质。",tag:"政治,哲学"},
+      {s:"single",q:"我国社会主要矛盾已转化为什么？",o:["人民日益增长的文化需要同落后的社会生产之间的矛盾","人民日益增长的美好生活需要同不平衡不充分的发展之间的矛盾","经济发展与生态环境之间的矛盾","世界发展不平衡"],a:[1],e:"十九大报告指出。",tag:"政治"},
+      {s:"single",q:"意识的本质是什么？",o:["客观世界的主观反映","大脑分泌的特殊物质","主观世界的客观反映","物质的特殊形态"],a:[0],e:"辩证唯物主义观点。",tag:"政治,哲学"},
+      {s:"single",q:"到2035年的目标是什么？",o:["全面建成小康社会","基本实现社会主义现代化","建成社会主义现代化强国","实现中华民族伟大复兴"],a:[1],e:"国家发展战略。",tag:"政治"},
+      {s:"multi",q:"中国式现代化的本质要求包括哪些？",o:["坚持党的领导","坚持中国特色社会主义","实现高质量发展","发展全过程人民民主"],a:[0,1,2,3],e:"全部正确。",tag:"政治"},
+      {s:"multi",q:"两个结合的正确表述有哪些？",o:["马克思主义同中国实际结合","马克思主义同中华优秀传统文化结合","社会主义同市场经济结合","计划经济同市场调节结合"],a:[0,1],e:"两个结合的核心内涵。",tag:"政治"},
+      {s:"multi",q:"推进中国式现代化需要正确处理的重大关系包括哪些？",o:["顶层设计与实践探索","战略与策略","守正与创新","效率与公平"],a:[0,1,2,3],e:"四大关系。",tag:"政治"},
+      {s:"judge",q:"中国共产党的根本宗旨是全心全意为人民服务。",o:["正确","错误"],a:[0],e:"党章明确规定。",tag:"政治"},
+      {s:"judge",q:"全面深化改革的总目标是完善和发展中国特色社会主义制度，推进国家治理体系和治理能力现代化。",o:["正确","错误"],a:[0],e:"十八届三中全会提出。",tag:"政治"},
+      {s:"single",q:"全面依法治国的总抓手是什么？",o:["宪法实施","建设中国特色社会主义法治体系","司法体制改革","法治政府建设"],a:[1],e:"建设中国特色社会主义法治体系是总抓手。",tag:"政治,法律"},
+      {s:"single",q:"我国的基本经济制度包含的内容是？",o:["公有制为主体、多种所有制经济共同发展","按劳分配为主体、多种分配方式并存","社会主义市场经济体制","以上都是"],a:[3],e:"三者共同构成基本经济制度。",tag:"政治,经济"},
+      {s:"single",q:"2025年中央经济工作会议的首要任务是什么？",o:["稳增长","大力提振消费、提高投资效益","加强监管","松绑房地产"],a:[1],e:"全方位扩大国内需求。",tag:"经济,时政"},
+      {s:"single",q:"总体国家安全观以什么为宗旨？",o:["政治安全","经济安全","人民安全","军事安全"],a:[2],e:"以人民安全为宗旨。",tag:"政治"},
+      {s:"multi",q:"总体国家安全观涵盖哪些领域？",o:["政治安全","经济安全","网络安全","生态安全"],a:[0,1,2,3],e:"涵盖十多个领域。",tag:"政治"},
+      {s:"single",q:"一带一路的核心理念是什么？",o:["共商共建共享","和平发展","互利共赢","互联互通"],a:[0],e:"核心理念。",tag:"政治,经济"},
+      {s:"judge",q:"中国共产党区别于其他政党的显著标志是密切联系群众。",o:["正确","错误"],a:[1],e:"毛泽东论述：理论和实践相结合的作风，和人民群众紧密地联系在一起的作风，以及自我批评的作风。",tag:"政治"},
+      {s:"single",q:"我国分配制度的基本原则是什么？",o:["按需分配","按劳分配","按劳分配为主体、多种分配方式并存","平均分配"],a:[2],e:"基本分配制度。",tag:"政治,经济"},
+      {s:"single",q:"两个毫不动摇指的是？",o:["巩固公有制经济、鼓励非公有制经济","改革开放与四项原则","经济建设与党的领导","国内市场与对外开放"],a:[0],e:"基本经济制度核心。",tag:"政治,经济"},
+      {s:"single",q:"2026年GDP预期目标通常为多少？",o:["5%左右","翻一番","超越中等收入国家","全面建成现代化"],a:[0],e:"近年GDP目标。",tag:"经济,时政"},
+      {s:"single",q:"教育科技人才是现代化国家的什么支撑？",o:["基础性战略性支撑","重要支撑","辅助支撑","可选支撑"],a:[0],e:"二十大报告。",tag:"政治"},
+      {s:"single",q:"全面推进依法治国的总目标是什么？",o:["建设法治政府","建设中国特色社会主义法治体系，建设社会主义法治国家","完善法律体系","推进司法公正"],a:[1],e:"十八届四中全会。",tag:"政治,法律"},
+      {s:"multi",q:"全面从严治党的要求包括哪些？",o:["思想建党","制度治党","执纪从严","经济发展优先"],a:[0,1,2],e:"不含经济发展。",tag:"政治"},
+      {s:"judge",q:"四个全面中居于战略引领地位的是全面建成社会主义现代化强国。",o:["正确","错误"],a:[0],e:"十九届五中全会后新表述。",tag:"政治"},
+      {s:"single",q:"文化自信是什么的自信？",o:["最基础最广泛最深厚","最核心","唯一","次要"],a:[0],e:"习近平文化思想。",tag:"政治,文化"},
+      {s:"multi",q:"社会主义核心价值体系的内容包括哪些？",o:["马克思主义指导思想","中国特色社会主义共同理想","以爱国主义为核心的民族精神和以改革创新为核心的时代精神","社会主义荣辱观"],a:[0,1,2,3],e:"四方面全部正确。",tag:"政治,文化"},
+      {s:"single",q:"矛盾的两个基本属性是什么？",o:["同一性和斗争性","普遍性和特殊性","主要和次要","内部和外部"],a:[0],e:"同一性与斗争性。",tag:"政治,哲学"},
+      {s:"judge",q:"主要矛盾决定事物的性质。",o:["正确","错误"],a:[0],e:"矛盾发展不平衡性原理。",tag:"政治,哲学"},
+      {s:"multi",q:"四个伟大的内容包括哪些？",o:["伟大斗争","伟大工程","伟大事业","伟大梦想"],a:[0,1,2,3],e:"四个伟大。",tag:"政治"},
+      {s:"single",q:"我国根本政治制度是什么？",o:["人民代表大会制度","政治协商制度","民族区域自治","基层群众自治"],a:[0],e:"人大制度是根本政治制度。",tag:"政治"},
+      {s:"single",q:"新时代的标志是什么？",o:["十六大","十七大","十八大","十九大"],a:[3],e:"十九大标志新时代。",tag:"政治"},
+      {s:"single",q:"构建人类命运共同体首次写入联合国决议是在哪一年？",o:["2015","2017","2019","2021"],a:[1],e:"2017年。",tag:"政治,时政"},
+      {s:"single",q:"供给侧结构性改革的根本目的是什么？",o:["提高供给质量","扩大消费","减少产能","增加出口"],a:[0],e:"提高供给体系质量。",tag:"经济"},
+      {s:"single",q:"新质生产力的核心标志是什么？",o:["全要素生产率大幅提升","GDP快速增长","劳动力增加","资本积累"],a:[0],e:"新质生产力。",tag:"经济,时政"},
+      {s:"multi",q:"新发展理念包括哪些？",o:["创新","协调","绿色","开放","共享"],a:[0,1,2,3,4],e:"五大发展理念。",tag:"政治,经济"},
+      {s:"single",q:"我国宪法的修改必须由全国人大常委会或多少以上的全国人大代表提议？",o:["三分之一","二分之一","五分之一","三分之二"],a:[2],e:"宪法修改程序：五分之一以上代表提议。",tag:"法律"},
+      {s:"single",q:"行政处罚的种类不包括哪项？",o:["警告","罚款","拘役","吊销许可证"],a:[2],e:"拘役属于刑事处罚。",tag:"法律"},
+      {s:"single",q:"民事权利能力始于何时？",o:["出生","18岁","16岁","结婚"],a:[0],e:"出生即具有民事权利能力。",tag:"法律"},
+      {s:"multi",q:"以下属于行政处罚的有哪些？",o:["警告","罚款","行政拘留","没收违法所得"],a:[0,1,2,3],e:"行政处罚种类。",tag:"法律"},
+      {s:"judge",q:"行政复议机关受理申请后，行政复议期间具体行政行为一律停止执行。",o:["正确","错误"],a:[1],e:"原则上不停止执行。",tag:"法律"},
+      {s:"single",q:"公文中最基本、使用频率最高的文种是什么？",o:["公告","通知","报告","请示"],a:[1],e:"通知是使用频率最高的公文。",tag:"公文"},
+      {s:"single",q:"我国第一部纪传体通史是什么？",o:["《汉书》","《资治通鉴》","《史记》","《春秋》"],a:[2],e:"《史记》是第一部纪传体通史。",tag:"文化,历史"},
+      {s:"single",q:"光年是什么的单位？",o:["时间","速度","距离","亮度"],a:[2],e:"光年是距离单位。",tag:"科技"},
+      {s:"judge",q:"DNA的全称是脱氧核糖核酸。",o:["正确","错误"],a:[0],e:"DNA=脱氧核糖核酸。",tag:"科技"},
+      {s:"single",q:"CPI代表什么？",o:["国内生产总值","居民消费价格指数","工业生产者出厂价格指数","采购经理人指数"],a:[1],e:"居民消费价格指数。",tag:"经济"},
+      {s:"multi",q:"下列属于可再生能源的有哪些？",o:["太阳能","风能","煤炭","水能"],a:[0,1,3],e:"煤炭是不可再生能源。",tag:"科技,经济"},
+      {s:"single",q:"Word文档的默认扩展名是什么？",o:[".txt",".docx",".xlsx",".pptx"],a:[1],e:".docx是Word默认格式。",tag:"科技"},
+      {s:"judge",q:"我国陆地领土面积约为960万平方公里。",o:["正确","错误"],a:[0],e:"基本国情。",tag:"地理"},
+      {s:"single",q:"中华人民共和国的根本大法是什么？",o:["刑法","民法典","宪法","行政法"],a:[2],e:"宪法是根本大法。",tag:"法律"},
+    ];
+    saveBank(samples);
+    renderBank();
+  }
+}
+
+init();
+</script>
+</body>
+</html>
