@@ -2,8 +2,6 @@
 
 试卷生成 · 智能题库
 
-🌐 在线使用：[simon404error.github.io/paper-generator](https://simon404error.github.io/paper-generator/)
-
 ## 功能
 
 - **题库管理** — 添加、编辑、删除题目，支持单选、多选、判断三种题型，批量选择和删除
@@ -13,7 +11,7 @@
 
 ## 使用
 
-在线打开 [试卷生成器](https://simon404error.github.io/paper-generator/) 即可使用，或下载 `index.html` 本地打开。
+下载 `index.html` 用浏览器打开即可使用。
 
 1. 在「题库管理」中添加或导入题目，勾选复选框可批量删除
 2. 在「试卷生成」中配置组卷参数，点击「随机组卷」
@@ -44,7 +42,7 @@
 
 ## 技术
 
-纯前端单页应用，无依赖，所有数据存储在浏览器 localStorage 中。通过 GitHub Pages 部署。
+纯前端单页应用，无依赖，所有数据存储在浏览器 localStorage 中。
 
 ## License
 
