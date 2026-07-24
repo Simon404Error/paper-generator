@@ -1,0 +1,996 @@
+// ==UserScript==
+// @name         试卷生成器 · 智能题库
+// @namespace    https://github.com/Simon404Error/paper-generator
+// @version      1.0
+// @description  公共基础知识智能组卷工具，支持题库管理、随机组卷、交互答题、导入导出
+// @author       Simon404Error
+// @match        *://*/*
+// @grant        GM_addStyle
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @grant        GM_deleteValue
+// @grant        GM_registerMenuCommand
+// @icon         data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDE2IDE2Ij48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHJ4PSIyIiBmaWxsPSIjMmM1ZjhhIi8+PHRleHQgeD0iOCIgeT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IndoaXRlIiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+5Y+3PC90ZXh0Pjwvc3ZnPg==
+// @run-at       document-idle
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Register menu command to open generator
+    GM_registerMenuCommand('📋 打开试卷生成器', openGenerator);
+
+    // Add floating button
+    function addFloatingButton() {
+        var btn = document.createElement('div');
+        btn.id = 'gm-paper-gen-btn';
+        btn.innerHTML = '📋';
+        btn.title = '试卷生成器';
+        btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:99999;width:48px;height:48px;background:#2c5f8a;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:transform .2s;user-select:none';
+        btn.addEventListener('click', openGenerator);
+        btn.addEventListener('mouseenter', function(){ this.style.transform='scale(1.1)'; });
+        btn.addEventListener('mouseleave', function(){ this.style.transform='scale(1)'; });
+        document.body.appendChild(btn);
+    }
+
+    function openGenerator() {
+        // Remove existing overlay if any
+        var existing = document.getElementById('gm-paper-gen-overlay');
+        if (existing) {
+            existing.style.display = existing.style.display === 'none' ? 'flex' : 'none';
+            return;
+        }
+
+        // Create overlay
+        var overlay = document.createElement('div');
+        overlay.id = 'gm-paper-gen-overlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center';
+
+        // Create modal container
+        var modal = document.createElement('div');
+        modal.style.cssText = 'width:960px;max-width:98vw;height:92vh;background:#f5f4f0;border-radius:10px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3);display:flex;flex-direction:column;position:relative';
+
+        // Close button
+        var closeBtn = document.createElement('div');
+        closeBtn.innerHTML = '✕';
+        closeBtn.style.cssText = 'position:absolute;top:8px;right:16px;z-index:1;font-size:20px;color:#6b6b6b;cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%';
+        closeBtn.addEventListener('click', function(){ overlay.style.display='none'; });
+        closeBtn.addEventListener('mouseenter', function(){ this.style.background='#e0ded8'; });
+        closeBtn.addEventListener('mouseleave', function(){ this.style.background='transparent'; });
+        modal.appendChild(closeBtn);
+
+        // Iframe for the generator
+        var iframe = document.createElement('iframe');
+        iframe.style.cssText = 'flex:1;border:none;width:100%';
+        iframe.srcdoc = getGeneratorHTML();
+        modal.appendChild(iframe);
+
+        overlay.appendChild(modal);
+        overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.style.display='none'; });
+        document.body.appendChild(overlay);
+    }
+
+    function getGeneratorHTML() {
+        return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>试卷生成器</title>
+<style>
+
+:root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e0ded8;--accent:#2c5f8a;--al:#e8f0f7;--green:#2d7d46;--gb:#edf7f0;--red:#c0392b;--rb:#fef0ef;--purple:#5b3ec4;--pb:#f3f0ff;--orange:#b85c1e;--ob:#fff4ed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+.c{max-width:960px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:21px;text-align:center;margin:20px 0 6px}
+.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+
+/* Tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}
+.tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
+.tb:hover{border-color:var(--accent)}
+.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Panels */
+.pn{display:none}
+.pn.active{display:block}
+
+/* Cards & common */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1;min-width:120px}
+.btn{padding:8px 18px;border:1px solid var(--border);border-radius:6px;background:var(--card);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:inherit}
+.btn:hover{border-color:var(--accent);background:var(--al)}
+.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.accent:hover{opacity:.9}
+.btn.danger{color:var(--red);border-color:var(--red)}
+.btn.danger:hover{background:var(--rb)}
+.btn.small{padding:4px 12px;font-size:12px}
+input,select,textarea{font-family:inherit;font-size:14px;outline:none;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--card);width:100%;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+
+/* Type badges */
+.qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
+.qt.single{color:var(--purple);background:var(--pb)}
+.qt.multi{color:var(--orange);background:var(--ob)}
+.qt.judge{color:var(--green);background:var(--gb)}
+
+/* Stats */
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.stat-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px}
+.stat-item .num{font-size:24px;font-weight:700;color:var(--accent)}
+.stat-item .lbl{font-size:12px;color:var(--muted)}
+
+/* Question list */
+.qlist{max-height:600px;overflow-y:auto}
+.qitem{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.qitem:last-child{border-bottom:none}
+.qitem .qi{flex:1;min-width:0}
+.qitem .qi .qtxt{font-weight:500;word-break:break-all}
+.qitem .qi .qmeta{font-size:12px;color:var(--muted);margin-top:4px}
+.qitem .qact{display:flex;gap:4px;flex-shrink:0}
+.qlist-header{display:none;padding:0 0 8px 0;border-bottom:1px solid var(--border);margin-bottom:4px}
+.qcb{flex-shrink:0;margin-top:3px;width:16px;height:16px;cursor:pointer}
+
+/* Paper config */
+.cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cfg-item{display:flex;flex-direction:column;gap:4px}
+.cfg-item label{font-size:13px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{padding:2px 8px;border-radius:4px;font-size:11px;background:#eee;color:var(--muted);cursor:pointer;user-select:none}
+.tag.selected{background:var(--accent);color:#fff}
+
+/* Paper preview list */
+.pp-card{padding:12px 16px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.pp-card:hover{border-color:var(--accent);background:var(--al)}
+
+/* Test mode - matches reference */
+.sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.sb .st{display:flex;gap:16px;font-size:14px}
+.sb .st strong{color:var(--accent)}
+.ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ph h2{font-size:17px;margin-bottom:6px}
+.ph .mt{font-size:13px;color:var(--muted)}
+.cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:border-color .2s}
+.cd.submitted{}
+.cd.correct{border-color:var(--green);background:#fcfdf9}
+.cd.wrong{border-color:var(--red);background:#fefcfc}
+.qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.qq{font-size:15px;margin:8px 0 12px;font-weight:500}
+.ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
+.op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;font-size:14px}
+.op:hover{border-color:var(--accent)}
+.op.selected{border-color:var(--accent);background:var(--al)}
+.op.correct-answer{border-color:var(--green);background:var(--gb)}
+.op.wrong-answer{border-color:var(--red);background:var(--rb)}
+.opl{font-weight:600;color:var(--muted);min-width:22px}
+.exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}
+.exp.show{display:block}
+.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}
+.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100;justify-content:center;align-items:flex-start;padding-top:40px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:10px;padding:24px;width:700px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.modal h3{font-size:17px;margin-bottom:16px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 24px;border-radius:8px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+
+</style>
+</head>
+<body>
+<div class="c">
+<h1>📋 试卷生成器</h1>
+<p class="sub">试卷生成 · 智能题库</p>
+
+<!-- Tab Navigation -->
+<div class="tabs" id="mainTabs">
+  <div class="tb active" data-tab="bank">题库管理</div>
+  <div class="tb" data-tab="generate">试卷生成</div>
+  <div class="tb" data-tab="preview">预览测试</div>
+  <div class="tb" data-tab="io">导入导出</div>
+</div>
+
+<!-- ====== 题库管理 ====== -->
+<div class="pn active" id="tab-bank">
+  <div class="stats" id="bankStats"></div>
+  <div class="row" style="margin-bottom:12px">
+    <select id="filterType" onchange="renderBank()">
+      <option value="all">全部类型</option>
+      <option value="single">单选题</option>
+      <option value="multi">多选题</option>
+      <option value="judge">判断题</option>
+    </select>
+    <input type="text" id="filterKeyword" placeholder="搜索题目关键词..." oninput="renderBank()">
+    <button class="btn accent" onclick="openQuestionModal()">＋ 添加题目</button>
+    <button class="btn danger" id="btnBatchDelete" style="display:none" onclick="batchDelete()">🗑 批量删除</button>
+  </div>
+  <div class="card">
+    <div class="qlist-header" id="qlistHeader">
+      <label style="font-size:13px;cursor:pointer;user-select:none">
+        <input type="checkbox" id="cbSelectAll" onchange="toggleSelectAll()"> 全选
+      </label>
+      <span id="selectedCount" style="font-size:12px;color:var(--muted);margin-left:12px"></span>
+    </div>
+    <div class="qlist" id="qlist"><div class="empty">暂无题目，点击"添加题目"开始</div></div>
+  </div>
+</div>
+
+<!-- ====== 试卷生成 ====== -->
+<div class="pn" id="tab-generate">
+  <div class="card">
+    <h3 style="margin-bottom:12px">组卷配置</h3>
+    <div class="cfg-grid">
+      <div class="cfg-item"><label>试卷名称前缀</label><input type="text" id="cfgName" value="试卷"></div>
+      <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" value="5" min="1" max="20"></div>
+      <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="35" min="0" max="100"></div>
+      <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="10" min="0" max="50"></div>
+      <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="5" min="0" max="30"></div>
+      <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="冲刺卷"></div>
+    </div>
+    <div style="margin-top:12px">
+      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label>
+      <div class="tags" id="topicTags"></div>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn accent" onclick="generatePapers()">🎲 随机组卷</button>
+      <span style="font-size:12px;color:var(--muted);margin-left:8px" id="genInfo"></span>
+    </div>
+  </div>
+  <div id="paperPreview"></div>
+</div>
+
+<!-- ====== 预览测试 ====== -->
+<div class="pn" id="tab-preview">
+  <div id="previewContent"><div class="empty">请先在"试卷生成"中生成试卷</div></div>
+</div>
+
+<!-- ====== 导入导出 ====== -->
+<div class="pn" id="tab-io">
+  <div class="card">
+    <h3 style="margin-bottom:12px">导入题库</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">支持导入标准格式的试卷 HTML 文件（自动提取题目）或 JSON 题库文件。</p>
+    <div class="row">
+      <input type="file" id="importFile" accept=".html,.json" onchange="handleImport(event)" style="display:none">
+      <button class="btn" onclick="document.getElementById('importFile').click()">选择文件导入</button>
+    </div>
+    <div id="importResult" style="margin-top:8px;font-size:13px"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:12px">导出</h3>
+    <div class="row">
+      <button class="btn accent" onclick="exportJSON()">📦 导出题库 JSON</button>
+      <button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML" disabled>📄 导出试卷 HTML</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:8px">HTML 导出为带交互功能的独立试卷文件，可直接在浏览器中使用。</p>
+  </div>
+</div>
+
+<!-- Question Edit Modal -->
+<div class="modal-overlay" id="questionModal">
+  <div class="modal">
+    <h3 id="modalTitle">添加题目</h3>
+    <input type="hidden" id="editIndex" value="-1">
+    <div class="form-group">
+      <label>题型</label>
+      <select id="qType"><option value="single">单选题</option><option value="multi">多选题</option><option value="judge">判断题</option></select>
+    </div>
+    <div class="form-group"><label>题目内容</label><textarea id="qText" rows="3" placeholder="输入题目..."></textarea></div>
+    <div class="form-group" id="optGroup"><label>选项（每行一个）</label><textarea id="qOptions" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea></div>
+    <div class="form-group" id="judgeOptGroup" style="display:none"><label>判断题选项固定为：正确 / 错误</label></div>
+    <div class="form-group">
+      <label>正确答案（A=0, B=1, C=2... 多选题用逗号分隔如 0,1,2）</label>
+      <input type="text" id="qAnswer" placeholder="0 或 0,1,2">
+    </div>
+    <div class="form-group"><label>解析（可选）</label><textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea></div>
+    <div class="form-group"><label>知识点标签（可选，逗号分隔）</label><input type="text" id="qTag" placeholder="例如：政治,经济,法律"></div>
+    <div class="form-actions">
+      <button class="btn" onclick="closeQuestionModal()">取消</button>
+      <button class="btn accent" onclick="saveQuestion()">保存</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+// Override localStorage with GM storage
+var _ls = {
+    getItem: function(k) { return GM_getValue(k, null); },
+    setItem: function(k, v) { GM_setValue(k, v); },
+    removeItem: function(k) { GM_deleteValue(k); }
+};
+Object.defineProperty(window, 'localStorage', { value: _ls, writable: false });
+
+
+// ==================== DATA ====================
+const STORAGE_KEY = 'gk_question_bank';
+const PAPERS_KEY = 'gk_generated_papers';
+const TYPE_LABELS = { single: '单选题', multi: '多选题', judge: '判断题' };
+const OPT_LABELS = ['A','B','C','D','E','F','G','H'];
+
+function loadBank() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; } }
+function saveBank(b) { localStorage.setItem(STORAGE_KEY, JSON.stringify(b)); }
+function loadPapers() { try { return JSON.parse(localStorage.getItem(PAPERS_KEY)) || []; } catch(e) { return []; } }
+function savePapers(p) { localStorage.setItem(PAPERS_KEY, JSON.stringify(p)); }
+
+// ==================== TOAST ====================
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(el._t); el._t = setTimeout(function(){ el.classList.remove('show'); }, 2000);
+}
+
+// ==================== TABS ====================
+document.getElementById('mainTabs').addEventListener('click', function(e) {
+  var tb = e.target.closest('.tb');
+  if (!tb) return;
+  document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
+  tb.classList.add('active');
+  document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('tab-' + tb.dataset.tab).classList.add('active');
+  if (tb.dataset.tab === 'bank') renderBank();
+  if (tb.dataset.tab === 'generate') renderGenerate();
+  if (tb.dataset.tab === 'preview') renderPreview();
+});
+
+// ==================== BANK TAB ====================
+function renderBank() {
+  var bank = loadBank();
+  var type = document.getElementById('filterType').value;
+  var kw = document.getElementById('filterKeyword').value.toLowerCase();
+  var filtered = bank;
+  if (type !== 'all') filtered = filtered.filter(function(q){ return q.s === type; });
+  if (kw) filtered = filtered.filter(function(q){
+    return q.q.toLowerCase().indexOf(kw) >= 0 ||
+      (q.e||'').toLowerCase().indexOf(kw) >= 0 ||
+      (q.tag||'').toLowerCase().indexOf(kw) >= 0;
+  });
+
+  // Stats
+  var stats = document.getElementById('bankStats');
+  var s = bank.filter(function(q){ return q.s === 'single'; }).length;
+  var m = bank.filter(function(q){ return q.s === 'multi'; }).length;
+  var j = bank.filter(function(q){ return q.s === 'judge'; }).length;
+  stats.innerHTML =
+    '<div class="stat-item"><div class="num">' + bank.length + '</div><div class="lbl">总题数</div></div>' +
+    '<div class="stat-item"><div class="num">' + s + '</div><div class="lbl">单选题</div></div>' +
+    '<div class="stat-item"><div class="num">' + m + '</div><div class="lbl">多选题</div></div>' +
+    '<div class="stat-item"><div class="num">' + j + '</div><div class="lbl">判断题</div></div>';
+
+  var list = document.getElementById('qlist');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">没有匹配的题目</div>';
+    resetBatchUI();
+    return;
+  }
+
+  var html = '';
+  for (var fi = 0; fi < filtered.length; fi++) {
+    var q = filtered[fi];
+    var idx = bank.indexOf(q);
+    var label = q.s === 'judge' ? '正确 / 错误' : (q.o||[]).join(' / ');
+    var ans = formatAnswer(q);
+    html += '<div class="qitem">' +
+      '<input type="checkbox" class="qcb" data-idx="' + idx + '" onchange="updateBatchUI()">' +
+      '<div class="qi">' +
+        '<span class="qt ' + q.s + '">' + TYPE_LABELS[q.s] + '</span>' +
+        '<div class="qtxt">' + escHtml(q.q) + '</div>' +
+        '<div class="qmeta">答案: ' + ans + ' &nbsp;|&nbsp; 选项: ' + escHtml(label) +
+          (q.tag ? ' &nbsp;|&nbsp; 🏷 ' + escHtml(q.tag) : '') + '</div>' +
+      '</div>' +
+      '<div class="qact">' +
+        '<button class="btn small" onclick="openQuestionModal(' + idx + ')">编辑</button>' +
+        '<button class="btn small danger" onclick="deleteQuestion(' + idx + ')">删除</button>' +
+      '</div>' +
+    '</div>';
+  }
+  list.innerHTML = html;
+  resetBatchUI();
+}
+
+function formatAnswer(q) {
+  if (q.s === 'judge') return q.a[0] === 0 ? '正确' : '错误';
+  return (q.a||[]).map(function(i){ return OPT_LABELS[i]; }).join('');
+}
+
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ==================== BATCH DELETE ====================
+function getCheckedIndices() {
+  var cbs = document.querySelectorAll('.qcb:checked');
+  var arr = [];
+  for (var i = 0; i < cbs.length; i++) arr.push(parseInt(cbs[i].dataset.idx));
+  return arr;
+}
+
+function updateBatchUI() {
+  var checked = getCheckedIndices();
+  document.getElementById('qlistHeader').style.display = checked.length > 0 ? 'block' : 'none';
+  document.getElementById('btnBatchDelete').style.display = checked.length > 0 ? 'inline-flex' : 'none';
+  document.getElementById('selectedCount').textContent = checked.length > 0 ? '已选 ' + checked.length + ' 题' : '';
+}
+
+function resetBatchUI() {
+  document.getElementById('qlistHeader').style.display = 'none';
+  document.getElementById('btnBatchDelete').style.display = 'none';
+  document.getElementById('cbSelectAll').checked = false;
+}
+
+function toggleSelectAll() {
+  var cbs = document.querySelectorAll('.qcb');
+  var allChecked = true;
+  for (var i = 0; i < cbs.length; i++) { if (!cbs[i].checked) { allChecked = false; break; } }
+  var newVal = !allChecked;
+  for (var i = 0; i < cbs.length; i++) cbs[i].checked = newVal;
+  document.getElementById('cbSelectAll').checked = newVal;
+  updateBatchUI();
+}
+
+function batchDelete() {
+  var indices = getCheckedIndices();
+  if (indices.length === 0) { toast('请先选择要删除的题目'); return; }
+  if (!confirm('确定要删除选中的 ' + indices.length + ' 道题目吗？此操作不可恢复。')) return;
+  var bank = loadBank();
+  indices.sort(function(a,b){ return b - a; });
+  for (var i = 0; i < indices.length; i++) bank.splice(indices[i], 1);
+  saveBank(bank);
+  toast('已删除 ' + indices.length + ' 道题目');
+  renderBank();
+}
+
+// ==================== SINGLE DELETE ====================
+function deleteQuestion(idx) {
+  if (!confirm('确定要删除这道题目吗？')) return;
+  var bank = loadBank();
+  bank.splice(idx, 1);
+  saveBank(bank);
+  renderBank();
+  toast('已删除');
+}
+
+// ==================== QUESTION MODAL ====================
+function openQuestionModal(idx) {
+  var bank = loadBank();
+  document.getElementById('editIndex').value = idx >= 0 ? idx : -1;
+  if (idx >= 0 && idx < bank.length) {
+    var q = bank[idx];
+    document.getElementById('modalTitle').textContent = '编辑题目';
+    document.getElementById('qType').value = q.s;
+    document.getElementById('qText').value = q.q;
+    document.getElementById('qOptions').value = (q.o||[]).join('\n');
+    document.getElementById('qAnswer').value = (q.a||[]).join(',');
+    document.getElementById('qExplain').value = q.e || '';
+    document.getElementById('qTag').value = q.tag || '';
+  } else {
+    document.getElementById('modalTitle').textContent = '添加题目';
+    document.getElementById('qType').value = 'single';
+    document.getElementById('qText').value = '';
+    document.getElementById('qOptions').value = '';
+    document.getElementById('qAnswer').value = '';
+    document.getElementById('qExplain').value = '';
+    document.getElementById('qTag').value = '';
+  }
+  updateOptVisibility();
+  document.getElementById('questionModal').classList.add('show');
+}
+
+function closeQuestionModal() { document.getElementById('questionModal').classList.remove('show'); }
+document.getElementById('qType').addEventListener('change', updateOptVisibility);
+function updateOptVisibility() {
+  var isJudge = document.getElementById('qType').value === 'judge';
+  document.getElementById('optGroup').style.display = isJudge ? 'none' : 'block';
+  document.getElementById('judgeOptGroup').style.display = isJudge ? 'block' : 'none';
+}
+
+function saveQuestion() {
+  var idx = parseInt(document.getElementById('editIndex').value);
+  var type = document.getElementById('qType').value;
+  var text = document.getElementById('qText').value.trim();
+  var explain = document.getElementById('qExplain').value.trim();
+  var tag = document.getElementById('qTag').value.trim();
+  var ansStr = document.getElementById('qAnswer').value.trim();
+  if (!text) { toast('请输入题目内容'); return; }
+  if (!ansStr) { toast('请输入正确答案'); return; }
+
+  var options = type === 'judge' ? ['正确', '错误'] :
+    document.getElementById('qOptions').value.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; });
+  if (options.length < 2 && type !== 'judge') { toast('请至少输入2个选项'); return; }
+
+  var answers = ansStr.split(',').map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n); });
+  if (answers.length === 0) { toast('答案格式错误'); return; }
+  for (var i = 0; i < answers.length; i++) {
+    if (answers[i] < 0 || answers[i] >= options.length) { toast('答案序号 ' + answers[i] + ' 超出选项范围'); return; }
+  }
+
+  var question = { s: type, q: text, o: options, a: answers, e: explain, tag: tag };
+  var bank = loadBank();
+  if (idx >= 0 && idx < bank.length) bank[idx] = question;
+  else bank.push(question);
+  saveBank(bank);
+  closeQuestionModal();
+  renderBank();
+  toast(idx >= 0 ? '已更新' : '已添加');
+}
+
+document.getElementById('questionModal').addEventListener('click', function(e) { if (e.target === this) closeQuestionModal(); });
+
+// ==================== GENERATE TAB ====================
+function getAllTopics() {
+  var bank = loadBank(), topics = {};
+  bank.forEach(function(q){
+    if (q.tag) q.tag.split(/[,，]/).forEach(function(t){ t = t.trim(); if (t) topics[t] = true; });
+  });
+  return Object.keys(topics);
+}
+
+function renderGenerate() {
+  var bank = loadBank();
+  document.getElementById('genInfo').textContent =
+    '题库共 ' + bank.length + ' 题（单选' + bank.filter(function(q){ return q.s === 'single'; }).length +
+    ' 多选' + bank.filter(function(q){ return q.s === 'multi'; }).length +
+    ' 判断' + bank.filter(function(q){ return q.s === 'judge'; }).length + '）';
+
+  var topics = getAllTopics();
+  var tagsDiv = document.getElementById('topicTags');
+  if (topics.length === 0) {
+    tagsDiv.innerHTML = '<span style="font-size:12px;color:var(--muted)">暂无知识点标签</span>';
+  } else {
+    var h = '';
+    for (var i = 0; i < topics.length; i++) {
+      h += '<span class="tag" data-tag="' + escHtml(topics[i]) + '" onclick="this.classList.toggle(\'selected\')">' + escHtml(topics[i]) + '</span>';
+    }
+    h += '<span style="font-size:11px;color:var(--muted);margin-left:4px">（点击筛选）</span>';
+    tagsDiv.innerHTML = h;
+  }
+  renderPaperList();
+}
+
+function getSelectedTopics() {
+  var sel = document.querySelectorAll('#topicTags .tag.selected'), arr = [];
+  for (var i = 0; i < sel.length; i++) arr.push(sel[i].dataset.tag);
+  return arr;
+}
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+
+function generatePapers() {
+  var bank = loadBank();
+  var nSingle = parseInt(document.getElementById('cfgSingle').value) || 35;
+  var nMulti = parseInt(document.getElementById('cfgMulti').value) || 10;
+  var nJudge = parseInt(document.getElementById('cfgJudge').value) || 5;
+  var nPapers = parseInt(document.getElementById('cfgCount').value) || 5;
+  var name = document.getElementById('cfgName').value.trim() || '试卷';
+  var subtitle = document.getElementById('cfgSubtitle').value.trim() || '冲刺卷';
+  var selectedTopics = getSelectedTopics();
+
+  var pool = bank;
+  if (selectedTopics.length > 0) {
+    pool = bank.filter(function(q){
+      if (!q.tag) return false;
+      var tags = q.tag.split(/[,，]/).map(function(t){ return t.trim(); });
+      return selectedTopics.some(function(st){ return tags.indexOf(st) >= 0; });
+    });
+  }
+
+  var singles = pool.filter(function(q){ return q.s === 'single'; });
+  var multis = pool.filter(function(q){ return q.s === 'multi'; });
+  var judges = pool.filter(function(q){ return q.s === 'judge'; });
+
+  if (singles.length < nSingle) { toast('单选题不足！需要' + nSingle + '题，题库中只有' + singles.length + '题'); return; }
+  if (multis.length < nMulti) { toast('多选题不足！需要' + nMulti + '题，题库中只有' + multis.length + '题'); return; }
+  if (judges.length < nJudge) { toast('判断题不足！需要' + nJudge + '题，题库中只有' + judges.length + '题'); return; }
+
+  var papers = [];
+  var usedS = {}, usedM = {}, usedJ = {};
+  for (var pi = 0; pi < nPapers; pi++) {
+    var availS = [], availM = [], availJ = [];
+    for (var i = 0; i < singles.length; i++) { if (!usedS[i]) availS.push(singles[i]); }
+    for (var i = 0; i < multis.length; i++) { if (!usedM[i]) availM.push(multis[i]); }
+    for (var i = 0; i < judges.length; i++) { if (!usedJ[i]) availJ.push(judges[i]); }
+    var sPool = availS.length >= nSingle ? availS : singles;
+    var mPool = availM.length >= nMulti ? availM : multis;
+    var jPool = availJ.length >= nJudge ? availJ : judges;
+    var selS = shuffle(sPool).slice(0, nSingle);
+    var selM = shuffle(mPool).slice(0, nMulti);
+    var selJ = shuffle(jPool).slice(0, nJudge);
+    for (var i = 0; i < selS.length; i++) usedS[singles.indexOf(selS[i])] = true;
+    for (var i = 0; i < selM.length; i++) usedM[multis.indexOf(selM[i])] = true;
+    for (var i = 0; i < selJ.length; i++) usedJ[judges.indexOf(selJ[i])] = true;
+    var questions = shuffle(selS).concat(shuffle(selM)).concat(shuffle(selJ));
+    papers.push({ id: 'paper' + (pi+1), t: name + ' (' + (pi+1) + ')', s: subtitle, d: questions });
+  }
+  savePapers(papers);
+  renderPaperList();
+  toast('已生成 ' + nPapers + ' 套试卷！');
+}
+
+function renderPaperList() {
+  var papers = loadPapers();
+  var div = document.getElementById('paperPreview');
+  var btn = document.getElementById('btnExportHTML');
+  if (papers.length === 0) {
+    div.innerHTML = '<p style="font-size:13px;color:var(--muted);margin-top:12px">点击"随机组卷"生成试卷</p>';
+    btn.disabled = true;
+    return;
+  }
+  btn.disabled = false;
+  var html = '<h4 style="margin-bottom:8px">已生成的试卷</h4>';
+  for (var i = 0; i < papers.length; i++) {
+    var p = papers[i];
+    var sc = p.d.filter(function(q){ return q.s === 'single'; }).length;
+    var mc = p.d.filter(function(q){ return q.s === 'multi'; }).length;
+    var jc = p.d.filter(function(q){ return q.s === 'judge'; }).length;
+    html += '<div class="pp-card" onclick="previewPaper(' + i + ')"><strong>' + escHtml(p.t) +
+      '</strong> <span style="font-size:13px;color:var(--muted);margin-left:8px">' +
+      p.d.length + '题 (单选' + sc + ' + 多选' + mc + ' + 判断' + jc + ')</span></div>';
+  }
+  div.innerHTML = html;
+}
+
+// ==================== PREVIEW TAB ====================
+var previewState = null;
+
+function previewPaper(idx) {
+  var papers = loadPapers();
+  if (idx < 0 || idx >= papers.length) return;
+  previewState = { paperIdx: idx, answers: {}, submitted: {} };
+  switchTab('preview');
+  renderPreview();
+}
+
+function switchTab(name) {
+  document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
+  var tabEl = document.querySelector('#mainTabs .tb[data-tab="' + name + '"]');
+  if (tabEl) tabEl.classList.add('active');
+  document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function renderPreview() {
+  if (!previewState) return;
+  var papers = loadPapers();
+  var paper = papers[previewState.paperIdx];
+  var st = previewState;
+  var total = paper.d.length;
+  var submitted = Object.keys(st.submitted).length;
+  var correct = 0;
+  for (var k in st.submitted) { if (st.submitted[k].correct) correct++; }
+
+  var html = '';
+  if (papers.length > 1) {
+    html += '<div class="tabs" style="position:static;background:transparent;padding:0">';
+    for (var i = 0; i < papers.length; i++) {
+      html += '<div class="tb' + (i === previewState.paperIdx ? ' active' : '') + '" onclick="previewPaper(' + i + ')">' + escHtml(papers[i].t) + '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div class="ph"><h2>' + escHtml(paper.t) + '</h2><div class="mt">' + escHtml(paper.s) + ' · 共' + total + '题</div></div>';
+  html += '<div class="sb"><div class="st">已答: <strong>' + submitted + '/' + total + '</strong> &nbsp; 正确: <strong>' + correct + '</strong> &nbsp; 得分: <strong>' + (submitted > 0 ? Math.round(correct/submitted*100) : 0) + '%</strong></div><div class="ac"><button class="btn small danger" onclick="resetPreview()">🔄 重做</button></div></div>';
+
+  for (var qi = 0; qi < paper.d.length; qi++) {
+    var q = paper.d[qi];
+    var sub = st.submitted[qi];
+    var userAns = st.answers[qi] || [];
+    var cardClass = sub ? (sub.correct ? 'correct' : 'wrong') : '';
+    var optLabels = q.s === 'judge' ? ['正确', '错误'] : q.o.map(function(o,oi){ return OPT_LABELS[oi] + '. ' + o; });
+
+    html += '<div class="cd ' + (sub ? 'submitted ' : '') + cardClass + '"><div class="qn"><span>' + (qi+1) + '.</span><span class="qt ' + q.s + '">' + TYPE_LABELS[q.s] + '</span>' + (sub ? (sub.correct ? '<span style="color:var(--green);font-size:12px"> ✓ 正确</span>' : '<span style="color:var(--red);font-size:12px"> ✗ 错误</span>') : '') + '</div>';
+    html += '<div class="qq">' + escHtml(q.q) + '</div><div class="ops">';
+
+    for (var oi = 0; oi < optLabels.length; oi++) {
+      var opClass = '';
+      if (sub) {
+        if (q.a.indexOf(oi) >= 0) opClass = 'correct-answer';
+        else if (userAns.indexOf(oi) >= 0) opClass = 'wrong-answer';
+      } else if (userAns.indexOf(oi) >= 0) opClass = 'selected';
+      html += '<div class="op ' + opClass + '"' + (sub ? '' : ' onclick="toggleAnswer(' + qi + ',' + oi + ')') + '><span class="opl">' + OPT_LABELS[oi] + '</span><span>' + escHtml(optLabels[oi].replace(/^[A-H]\.\s*/, '')) + '</span></div>';
+    }
+    html += '</div>';
+    if (!sub) html += '<div style="margin-top:8px"><button class="btn accent small" onclick="submitQuestion(' + qi + ')">查看答案</button></div>';
+    if (sub) {
+      var expClass = sub.correct ? 'correct-exp' : 'wrong-exp';
+      html += '<div class="exp show ' + expClass + '"><strong>正确答案：</strong>' + formatAnswer(q) + (q.e ? '<br><strong>解析：</strong>' + escHtml(q.e) : '') + '</div>';
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('previewContent').innerHTML = html;
+}
+
+function toggleAnswer(qi, oi) {
+  if (!previewState) return;
+  var paper = loadPapers()[previewState.paperIdx];
+  var q = paper.d[qi];
+  var ans = previewState.answers[qi] || [];
+  if (q.s === 'single' || q.s === 'judge') ans = [oi];
+  else { var p = ans.indexOf(oi); if (p >= 0) ans.splice(p,1); else ans.push(oi); }
+  previewState.answers[qi] = ans;
+  renderPreview();
+}
+
+function submitQuestion(qi) {
+  if (!previewState) return;
+  var q = loadPapers()[previewState.paperIdx].d[qi];
+  var userAns = previewState.answers[qi] || [];
+  var correct = q.a.length === userAns.length && q.a.every(function(a){ return userAns.indexOf(a) >= 0; });
+  previewState.submitted[qi] = { correct: correct };
+  renderPreview();
+}
+
+function resetPreview() {
+  if (!previewState) return;
+  previewState.answers = {};
+  previewState.submitted = {};
+  renderPreview();
+}
+
+// ==================== IMPORT / EXPORT ====================
+function handleImport(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var content = e.target.result;
+    var resultDiv = document.getElementById('importResult');
+    var imported = [];
+    if (file.name.endsWith('.json')) {
+      try {
+        var data = JSON.parse(content);
+        if (Array.isArray(data)) imported = data.filter(function(q){ return q.s && q.q && q.a; });
+        else { resultDiv.innerHTML = '<span style="color:var(--red)">JSON格式错误：需要题目数组</span>'; return; }
+      } catch(err) { resultDiv.innerHTML = '<span style="color:var(--red)">JSON解析失败: ' + err.message + '</span>'; return; }
+    } else if (file.name.endsWith('.html')) {
+      var match = content.match(/const\s+PAPERS\s*=\s*(\{[\s\S]*?\n\});/);
+      if (!match) { resultDiv.innerHTML = '<span style="color:var(--red)">未找到PAPERS数据</span>'; return; }
+      try {
+        var papersObj = eval('(' + match[1] + ')');
+        for (var key in papersObj) { if (papersObj[key].d) imported = imported.concat(papersObj[key].d); }
+      } catch(err) { resultDiv.innerHTML = '<span style="color:var(--red)">数据解析失败: ' + err.message + '</span>'; return; }
+    }
+    if (imported.length === 0) { resultDiv.innerHTML = '<span style="color:var(--muted)">未提取到题目</span>'; return; }
+    imported = imported.map(function(q){ return { s: q.s||'single', q: q.q||'', o: q.o||(q.s==='judge'?['正确','错误']:[]), a: q.a||[], e: q.e||'', tag: q.tag||'' }; });
+    var bank = loadBank();
+    var existing = {};
+    bank.forEach(function(q){ existing[q.q] = true; });
+    var newQs = imported.filter(function(q){ return !existing[q.q]; });
+    if (newQs.length === 0) { resultDiv.innerHTML = '<span style="color:var(--muted)">所有题目已存在，无新增</span>'; return; }
+    bank.push.apply(bank, newQs);
+    saveBank(bank);
+    resultDiv.innerHTML = '<span style="color:var(--green)">成功导入 ' + newQs.length + ' 道新题目（共' + imported.length + '道，' + (imported.length-newQs.length) + '道重复跳过）</span>';
+    renderBank();
+    toast('导入 ' + newQs.length + ' 道题目');
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportJSON() {
+  var bank = loadBank();
+  if (bank.length === 0) { toast('题库为空'); return; }
+  downloadBlob(new Blob([JSON.stringify(bank, null, 2)], {type:'application/json'}), '题库_' + dstr() + '.json');
+  toast('题库已导出');
+}
+
+function exportPapersHTML() {
+  var papers = loadPapers();
+  if (papers.length === 0) { toast('请先生成试卷'); return; }
+  var html = buildExportHTML(papers);
+  downloadBlob(new Blob([html], {type:'text/html;charset=utf-8'}), '试卷_' + dstr() + '.html');
+  toast('试卷HTML已导出');
+}
+
+function dstr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+function pad(n) { return n < 10 ? '0'+n : ''+n; }
+
+function downloadBlob(blob, filename) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildExportHTML(papers) {
+  var keys = [];
+  var obj = {};
+  for (var i = 0; i < papers.length; i++) {
+    var key = 'gk' + (i+1); keys.push(key);
+    obj[key] = { t: papers[i].t, s: papers[i].s, d: papers[i].d };
+  }
+  var lit = JSON.stringify(obj, null, 2).replace(/"([a-zA-Z_]\w*)":/g, '\$1:').replace(/"/g, "'");
+
+  // Build the export JavaScript using single-quoted strings for HTML
+  var js = [];
+  js.push("var PAPERS = " + lit + ";");
+  js.push("var L = {s:'" + TYPE_LABELS.single + "',m:'" + TYPE_LABELS.multi + "',j:'" + TYPE_LABELS.judge + "'};");
+  js.push("var LB = ['A','B','C','D','E','F','G','H'];");
+  js.push("var ST = {};");
+  js.push("function E(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}");
+  js.push("function F(q){if(q.s==='judge')return q.a[0]===0?'" + '正确' + "':'" + '错误' + "';return q.a.map(function(i){return LB[i];}).join('');}");
+  js.push("function I(){var ks=Object.keys(PAPERS);ks.forEach(function(k,i){ST[k]={a:{},s:{}};R(k,i);});");
+  js.push("document.getElementById('tabs').addEventListener('click',function(e){");
+  js.push("var t=e.target.closest('.tb');if(!t)return;");
+  js.push("document.querySelectorAll('#tabs .tb').forEach(function(x){x.classList.remove('active');});");
+  js.push("t.classList.add('active');");
+  js.push("document.querySelectorAll('.pn').forEach(function(x){x.classList.remove('active');});");
+  js.push("document.getElementById('p-'+t.dataset.p).classList.add('active');");
+  js.push("});}");
+  
+  // R = renderPaper - uses single quotes to avoid HTML attribute conflicts
+  js.push("function R(k,idx){");
+  js.push("var p=PAPERS[k];var st=ST[k];var n=p.d.length;");
+  js.push("var sb=Object.keys(st.s).length;var c=0;");
+  js.push("for(var x in st.s){if(st.s[x].o)c++;}");
+  js.push("var h='';");
+  js.push("h+='<div class=ph><h2>'+E(p.t)+'</h2><div class=mt>'+E(p.s)+' \u00b7 \u5171'+n+'\u9898</div></div>';");
+  js.push("h+='<div class=sb><div class=st>\u5df2\u7b54: <strong>'+sb+'/'+n+'</strong> &nbsp; \u6b63\u786e: <strong>'+c+'</strong> &nbsp; \u5f97\u5206: <strong>'+(sb>0?Math.round(c/sb*100):0)+'%</strong></div><div class=ac><button onclick=RST(\"'+k+'\") style=padding:5px 14px;border:1px solid var(--red);border-radius:5px;background:var(--card);color:var(--red);font-size:12px;cursor:pointer>\u91cd\u505a</button></div></div>';");
+  js.push("p.d.forEach(function(q,qi){");
+  js.push("var s=st.s[qi];var u=st.a[qi]||[];");
+  js.push("var cc=s?(s.o?'correct':'wrong'):'';");
+  js.push("var lb=q.s==='judge'?['" + '正确' + "','" + '错误' + "']:q.o.map(function(o,oi){return LB[oi]+'. '+o;});");
+  js.push("h+='<div class=\"cd '+(s?'submitted ':'')+cc+'\"><div class=qn><span>'+(qi+1)+'.</span><span class=\"qt '+q.s+'\">'+L[q.s[0]]+'</span>'+(s?(s.o?'<span style=color:var(--green);font-size:12px> \u2713</span>':'<span style=color:var(--red);font-size:12px> \u2717</span>'):'')+'</div><div class=qq>'+E(q.q)+'</div><div class=ops>';");
+  js.push("lb.forEach(function(l,oi){");
+  js.push("var cl='';");
+  js.push("if(s){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(u.indexOf(oi)>=0)cl='wrong-answer';}");
+  js.push("else if(u.indexOf(oi)>=0)cl='selected';");
+  js.push("h+='<div class=\"op '+cl+'\" data-qi='+qi+' data-oi='+oi+'><span class=opl>'+LB[oi]+'</span><span>'+E(l.replace(/^[A-H]\.\\s*/,''))+'</span></div>';");
+  js.push("});");
+  js.push("h+='</div>';");
+  js.push("if(!s)h+='<div style=margin-top:8px><button data-submit='+qi+' style=padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer>查看答案</button></div>';");
+  js.push("if(s){var ec=s.o?'correct-exp':'wrong-exp';h+='<div class=\"exp show '+ec+'\"><strong>\u6b63\u786e\u7b54\u6848\uff1a</strong>'+F(q)+(q.e?'<br><strong>\u89e3\u6790\uff1a</strong>'+E(q.e):'')+'</div>';}");
+  js.push("h+='</div>';");
+  js.push("});");
+  js.push("document.getElementById('p-'+idx).innerHTML=h;");
+  js.push("}");
+  
+  js.push("function C(k,qi,oi){var q=PAPERS[k].d[qi];var a=ST[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}ST[k].a[qi]=a;R(k,Object.keys(PAPERS).indexOf(k));}");
+  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];var ok=q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;});ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));}");
+  js.push("function RST(k){ST[k]={a:{},s:{}};R(k,Object.keys(PAPERS).indexOf(k));}");
+  js.push("document.addEventListener('click',function(e){");
+  js.push("var op=e.target.closest('.op');");
+  js.push("if(op&&op.dataset.qi!=null){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));}");
+  js.push("var btn=e.target.closest('button[data-submit]');");
+  js.push("if(btn){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];S(k,parseInt(btn.dataset.submit));}");
+  js.push("});");
+  js.push("I();");
+
+  // Build the full HTML
+  var parts = [];
+  parts.push('<!DOCTYPE html>');
+  parts.push('<html lang="zh-CN">');
+  parts.push('<head>');
+  parts.push('<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">');
+  parts.push('<title>' + escHtml(papers[0].t) + '</title>');
+  parts.push('<style>');
+  parts.push(':root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e0ded8;--accent:#2c5f8a;--al:#e8f0f7;--green:#2d7d46;--gb:#edf7f0;--red:#c0392b;--rb:#fef0ef}');
+  parts.push('*{box-sizing:border-box;margin:0;padding:0}');
+  parts.push('body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}');
+  parts.push('.c{max-width:860px;margin:0 auto;padding:24px 16px 60px}');
+  parts.push('h1{font-size:21px;text-align:center;margin:20px 0 6px}');
+  parts.push('.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}');
+  parts.push('.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}');
+  parts.push('.tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer}');
+  parts.push('.tb:hover{border-color:var(--accent)}.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}');
+  parts.push('.pn{display:none}.pn.active{display:block}');
+  parts.push('.sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}');
+  parts.push('.sb .st{display:flex;gap:16px;font-size:14px}.sb .st strong{color:var(--accent)}');
+  parts.push('.ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}');
+  parts.push('.ph h2{font-size:17px;margin-bottom:6px}.ph .mt{font-size:13px;color:var(--muted)}');
+  parts.push('.cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}');
+  parts.push('.cd.submitted{}.cd.correct{border-color:var(--green);background:#fcfdf9}.cd.wrong{border-color:var(--red);background:#fefcfc}');
+  parts.push('.qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}');
+  parts.push('.qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}');
+  parts.push('.qt.single{color:#5b3ec4;background:#f3f0ff}.qt.multi{color:#b85c1e;background:#fff4ed}.qt.judge{color:#2d7d46;background:#edf7f0}');
+  parts.push('.qq{font-size:15px;margin:8px 0 12px;font-weight:500}');
+  parts.push('.ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}');
+  parts.push('.op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:14px}');
+  parts.push('.op:hover{border-color:var(--accent)}.op.selected{border-color:var(--accent);background:var(--al)}');
+  parts.push('.op.correct-answer{border-color:var(--green);background:var(--gb)}.op.wrong-answer{border-color:var(--red);background:var(--rb)}');
+  parts.push('.opl{font-weight:600;color:var(--muted);min-width:22px}');
+  parts.push('.exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}');
+  parts.push('.exp.show{display:block}.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}');
+  parts.push('</style></head><body><div class="c">');
+  parts.push('<h1>' + escHtml(papers[0].t) + '</h1>');
+  parts.push('<p class="sub">' + escHtml(papers[0].s) + ' \u00b7 \u5171' + papers.length + '\u5957</p>');
+  parts.push('<div class="tabs" id="tabs">');
+  for (var i = 0; i < papers.length; i++) {
+    parts.push('<div class="tb' + (i===0?' active':'') + '" data-p="' + i + '">' + escHtml(papers[i].t) + '</div>');
+  }
+  parts.push('</div>');
+  for (var i = 0; i < papers.length; i++) {
+    parts.push('<div class="pn' + (i===0?' active':'') + '" id="p-' + i + '"></div>');
+  }
+  parts.push('</div>');
+  parts.push('<script>' + js.join('') + '<\/script>');
+  parts.push('</body></html>');
+  
+  return parts.join('\n');
+}
+
+// ==================== INIT ====================
+function init() {
+  renderBank();
+  renderGenerate();
+  var bank = loadBank();
+  if (bank.length === 0) {
+    var samples = [
+      {s:"single",q:"马克思主义哲学认为，世界的统一性在于什么？",o:["矛盾性","物质性","运动性","可知性"],a:[1],e:"辩证唯物主义认为世界统一于物质。",tag:"政治,哲学"},
+      {s:"single",q:"我国社会主要矛盾已转化为什么？",o:["人民日益增长的文化需要同落后的社会生产之间的矛盾","人民日益增长的美好生活需要同不平衡不充分的发展之间的矛盾","经济发展与生态环境之间的矛盾","世界发展不平衡"],a:[1],e:"十九大报告指出。",tag:"政治"},
+      {s:"single",q:"意识的本质是什么？",o:["客观世界的主观反映","大脑分泌的特殊物质","主观世界的客观反映","物质的特殊形态"],a:[0],e:"辩证唯物主义观点。",tag:"政治,哲学"},
+      {s:"single",q:"到2035年的目标是什么？",o:["全面建成小康社会","基本实现社会主义现代化","建成社会主义现代化强国","实现中华民族伟大复兴"],a:[1],e:"国家发展战略。",tag:"政治"},
+      {s:"single",q:"我国分配制度的基本原则是什么？",o:["按需分配","按劳分配","按劳分配为主体、多种分配方式并存","平均分配"],a:[2],e:"基本分配制度。",tag:"政治,经济"},
+      {s:"single",q:"2026年GDP预期目标通常为多少？",o:["5%左右","翻一番","超越中等收入国家","全面建成现代化"],a:[0],e:"近年GDP目标。",tag:"经济,时政"},
+      {s:"single",q:"我国根本政治制度是什么？",o:["人民代表大会制度","政治协商制度","民族区域自治","基层群众自治"],a:[0],e:"人大制度是根本政治制度。",tag:"政治"},
+      {s:"single",q:"矛盾的两个基本属性是什么？",o:["同一性和斗争性","普遍性和特殊性","主要和次要","内部和外部"],a:[0],e:"同一性与斗争性。",tag:"政治,哲学"},
+      {s:"single",q:"供给侧结构性改革的根本目的是什么？",o:["提高供给质量","扩大消费","减少产能","增加出口"],a:[0],e:"提高供给体系质量。",tag:"经济"},
+      {s:"single",q:"新质生产力的核心标志是什么？",o:["全要素生产率大幅提升","GDP快速增长","劳动力增加","资本积累"],a:[0],e:"新质生产力。",tag:"经济,时政"},
+      {s:"single",q:"我国第一部纪传体通史是什么？",o:["《汉书》","《资治通鉴》","《史记》","《春秋》"],a:[2],e:"《史记》是第一部纪传体通史。",tag:"文化,历史"},
+      {s:"single",q:"光年是什么的单位？",o:["时间","速度","距离","亮度"],a:[2],e:"光年是距离单位。",tag:"科技"},
+      {s:"single",q:"CPI代表什么？",o:["国内生产总值","居民消费价格指数","工业生产者出厂价格指数","采购经理人指数"],a:[1],e:"居民消费价格指数。",tag:"经济"},
+      {s:"single",q:"我国宪法的修改必须由全国人大常委会或多少以上的全国人大代表提议？",o:["三分之一","二分之一","五分之一","三分之二"],a:[2],e:"五分之一以上代表提议。",tag:"法律"},
+      {s:"single",q:"行政处罚的种类不包括哪项？",o:["警告","罚款","拘役","吊销许可证"],a:[2],e:"拘役属于刑事处罚。",tag:"法律"},
+      {s:"multi",q:"中国式现代化的本质要求包括哪些？",o:["坚持党的领导","坚持中国特色社会主义","实现高质量发展","发展全过程人民民主"],a:[0,1,2,3],e:"四项均为本质要求。",tag:"政治"},
+      {s:"multi",q:"两个结合的正确表述有哪些？",o:["马克思主义同中国实际结合","马克思主义同中华优秀传统文化结合","社会主义同市场经济结合","计划经济同市场调节结合"],a:[0,1],e:"两个结合的核心内涵。",tag:"政治"},
+      {s:"multi",q:"总体国家安全观涵盖哪些领域？",o:["政治安全","经济安全","网络安全","生态安全"],a:[0,1,2,3],e:"涵盖十多个领域。",tag:"政治"},
+      {s:"multi",q:"新发展理念包括哪些？",o:["创新","协调","绿色","开放","共享"],a:[0,1,2,3,4],e:"五大发展理念。",tag:"政治,经济"},
+      {s:"multi",q:"以下属于行政处罚的有哪些？",o:["警告","罚款","行政拘留","没收违法所得"],a:[0,1,2,3],e:"行政处罚种类。",tag:"法律"},
+      {s:"multi",q:"下列属于可再生能源的有哪些？",o:["太阳能","风能","煤炭","水能"],a:[0,1,3],e:"煤炭是不可再生能源。",tag:"科技,经济"},
+      {s:"judge",q:"中国共产党的根本宗旨是全心全意为人民服务。",o:["正确","错误"],a:[0],e:"党章明确规定。",tag:"政治"},
+      {s:"judge",q:"全面深化改革的总目标是完善和发展中国特色社会主义制度，推进国家治理体系和治理能力现代化。",o:["正确","错误"],a:[0],e:"十八届三中全会提出。",tag:"政治"},
+      {s:"judge",q:"行政复议机关受理申请后，行政复议期间具体行政行为一律停止执行。",o:["正确","错误"],a:[1],e:"原则上不停止执行。",tag:"法律"},
+      {s:"judge",q:"DNA的全称是脱氧核糖核酸。",o:["正确","错误"],a:[0],e:"DNA=脱氧核糖核酸。",tag:"科技"},
+      {s:"judge",q:"我国陆地领土面积约为960万平方公里。",o:["正确","错误"],a:[0],e:"基本国情。",tag:"地理"}
+    ];
+    saveBank(samples);
+    renderBank();
+  }
+}
+
+// Preview click delegation
+document.addEventListener('click', function(e) {
+  var previewEl = document.getElementById('previewContent');
+  if (!previewEl || !previewEl.contains(e.target)) return;
+  var op = e.target.closest('.op');
+  if (op) {
+    var card = op.closest('.cd');
+    if (!card || card.classList.contains('submitted')) return;
+    var oc = op.getAttribute('onclick') || '';
+    var m = oc.match(/toggleAnswer\((\d+),(\d+)\)/);
+    if (m) { toggleAnswer(parseInt(m[1]), parseInt(m[2])); }
+    return;
+  }
+  var btn = e.target.closest('button');
+  if (btn) {
+    var btnCard = btn.closest('.cd');
+    if (!btnCard || btnCard.classList.contains('submitted')) return;
+    var oc2 = btn.getAttribute('onclick') || '';
+    var m2 = oc2.match(/submitQuestion\((\d+)\)/);
+    if (m2) { submitQuestion(parseInt(m2[1])); }
+    return;
+  }
+});
+init();
+
+<\/script>
+</body>
+</html>`;
+    }
+
+    // Init
+    addFloatingButton();
+})();
