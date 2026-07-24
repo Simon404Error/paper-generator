@@ -11,20 +11,7 @@
 
 ## 使用
 
-### 方式一：浏览器直接打开
-
-下载 `index.html`，用 Edge / Chrome 浏览器打开即可使用。
-
-### 方式二：篡改猴脚本（推荐）
-
-1. 在 Edge 浏览器安装 [篡改猴 (Tampermonkey)](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
-2. 打开 `paper-generator.user.js` 文件，点击「安装」
-3. 安装后，任意网页右下角会出现 📋 浮动按钮，点击即可打开试卷生成器
-4. 也可在篡改猴菜单中点击「📋 打开试卷生成器」
-
-数据存储在篡改猴 storage 中，不会丢失。
-
-## 使用步骤
+下载 `index.html`，用浏览器打开即可使用。
 
 1. 在「题库管理」中添加或导入题目，勾选复选框可批量删除
 2. 在「试卷生成」中配置组卷参数，点击「随机组卷」
@@ -55,7 +42,7 @@
 
 ## 技术
 
-纯前端单页应用，无依赖。支持离线使用，数据存储在浏览器 localStorage（或篡改猴 GM storage）中。
+纯前端单页应用，无依赖，数据存储在浏览器 localStorage 中。
 
 ## License
 
