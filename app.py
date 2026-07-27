@@ -599,4 +599,19 @@ renderGenerate();
 if __name__ == '__main__':
     print('Paper Generator - Python Edition')
     print('Open http://localhost:5000')
-    import webbrowser, threading; threading.Timer(1.0, lambda: webbrowser.open('http://localhost:5000')).start(); app.run(host='0.0.0.0', port=5000, debug=False)
+    import webbrowser, threading, time, urllib.request
+
+def wait_and_open():
+    print('[WAIT] Server starting, please wait...')
+    for i in range(30):
+        try:
+            urllib.request.urlopen('http://localhost:5000', timeout=1)
+            print('[READY] Opening browser...')
+            webbrowser.open('http://localhost:5000')
+            return
+        except:
+            time.sleep(0.5)
+    print('[WARN] Server may still be loading, open http://localhost:5000 manually')
+
+threading.Thread(target=wait_and_open, daemon=True).start()
+app.run(host='0.0.0.0', port=5000, debug=False)
