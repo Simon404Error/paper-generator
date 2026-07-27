@@ -726,6 +726,9 @@ function handleImport(event) {
     bank.push.apply(bank, newQs);
     saveBank(bank);
     resultDiv.innerHTML = '<span style="color:var(--green)">成功导入 ' + newQs.length + ' 道新题目（共' + imported.length + '道，' + (imported.length-newQs.length) + '道重复跳过）</span>';
+    document.getElementById('filterType').value = 'all';
+    document.getElementById('filterKeyword').value = '';
+    var ft = document.getElementById('filterTag'); if (ft) ft.value = '';
     renderBank();
     toast('导入 ' + newQs.length + ' 道题目');
   };
@@ -890,6 +893,7 @@ function init() {
       document.getElementById('tab-' + savedTab).classList.add('active');
     }
   }
+  var ft2 = document.getElementById('filterTag'); if (ft2) ft2.value = '';
   renderBank();
   renderGenerate();
   var bank = loadBank();
