@@ -325,8 +325,8 @@ var noDup=document.getElementById('cfgNoDup').checked;
     if(nZ*nPapers>subjectives.length){toast('主观题不足！需要'+nZ*nPapers+'道不重复题，只有'+subjectives.length+'题');return;}
   }
   var papers=[],uS={},uM={},uJ={},uZ={};
-for(var pi=0;pi<nPapers;pi++){
 function ga(arr,used){var a=[];arr.forEach(function(q,i){if(!used[i])a.push(q);});return a.length>=1?a:arr;}
+for(var pi=0;pi<nPapers;pi++){
 var aS=ga(singles,uS),aM=ga(multis,uM),aJ=ga(judges,uJ),aZ=ga(subjectives,uZ);
 var sS=shuffle(aS).slice(0,nS),sM=shuffle(aM).slice(0,nM),sJ=shuffle(aJ).slice(0,nJ),sZ=shuffle(aZ).slice(0,nZ);
 sS.forEach(function(q){uS[singles.indexOf(q)]=true;});
