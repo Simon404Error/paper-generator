@@ -117,7 +117,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resi
 
 <div class="pn" id="tab-io">
   <div class="card"><h3 style="margin-bottom:12px">导入题库</h3><p style="font-size:13px;color:var(--muted);margin-bottom:8px">支持导入标准格式的试卷 HTML 文件或 JSON 题库文件。</p><div class="row"><input type="file" id="importFile" accept=".html,.json" onchange="handleImport(event)" style="display:none"><button class="btn" onclick="document.getElementById('importFile').click()">选择文件导入</button></div><div style="margin-top:8px"><a href="https://raw.githubusercontent.com/Simon404Error/paper-generator/main/%E9%A2%98%E5%BA%93%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.json" download style="font-size:13px;color:var(--accent);text-decoration:none">⬇ 查看题库导入模板.json</a> <span style="font-size:12px;color:#333;margin-left:8px">请确保可正常访问Github</span></div><div id="importResult" style="margin-top:8px;font-size:13px"></div></div>
-  <div class="card"><h3 style="margin-bottom:12px">导出</h3><div class="row"><button class="btn accent" onclick="exportJSON()">&#x1F4E6; 导出题库 JSON</button><button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML">&#x1F4C4; 导出试卷 HTML</button></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">导出</h3><div class="row"><button class="btn accent" onclick="exportJSON()">&#x1F4E6; 导出题库 JSON</button><button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML">&#x1F4C4; 导出试卷 HTML</button>
+    <span id="exportStatus" style="font-size:12px;margin-left:8px"></span></div></div>
 </div>
 
 <div class="modal-overlay" id="questionModal"><div class="modal">
@@ -497,7 +498,18 @@ return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8"><met
 // INIT
 function init(){
 var ft=document.getElementById('filterTag');if(ft)ft.value='';
-restoreTab();renderBank();renderGenerate();
+restoreTab();function checkExportServer(){
+var s=document.getElementById('exportStatus');
+if(!s)return;
+fetch('http://localhost:5001/export',{method:'OPTIONS'}).then(function(){
+s.innerHTML='<span style="color:var(--green)">● 导出服务已启动</span>';
+}).catch(function(){
+s.innerHTML='<span style="color:var(--red)">● 导出服务未启动</span>';
+});
+}
+setInterval(checkExportServer,3000);
+checkExportServer();
+renderBank();renderGenerate();
 if(LP().length>0){if(loadPV()){renderPreview();}}
 }
 init();
