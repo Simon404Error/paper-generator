@@ -4,9 +4,9 @@
 
 ## 使用
 
-双击 `index.html` 打开主界面
+开箱即用：双击 `index.html` 打开主界面
 
-导出前需先启动导出服务：
+导出试卷前，需先启动导出服务：
    ```bash
    python export_server.py
    ```
