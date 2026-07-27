@@ -804,7 +804,7 @@ function buildExportHTML(papers) {
   js.push("h+='<div class=\"op '+cl+'\" data-qi='+qi+' data-oi='+oi+'><span class=opl>'+LB[oi]+'</span><span>'+E(l.replace(/^[A-H]\.\\s*/,''))+'</span></div>';");
   js.push("});");
   js.push("h+='</div>';");
-  js.push("if(q.s==='subjective'){h+='<textarea id='+k+'_'+qi+' style=width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px placeholder='请输入你的答案'+(s?' disabled':'')+'>'+(u[0]||'')+'</textarea>';}");
+  js.push("if(q.s==='subjective'){h+='<textarea id='+k+'_'+qi+' style=width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px +(s?' disabled':'')+'>'+(u[0]||'')+'</textarea>';}");
   js.push("if(!s)h+='<div style=margin-top:8px><button data-submit='+qi+' style=padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer>查看答案</button></div>';");
   js.push("if(s){var ec=s.o?'correct-exp':'wrong-exp';h+='<div class=\"exp show '+ec+'\"><strong>\u6b63\u786e\u7b54\u6848\uff1a</strong>'+F(q)+(q.e?'<br><strong>\u89e3\u6790\uff1a</strong>'+E(q.e):'')+'</div>';}");
   js.push("h+='</div>';");
