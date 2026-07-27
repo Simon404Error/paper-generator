@@ -8,8 +8,13 @@ CSS = ':root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e
 LABELS = {'single': '单选题', 'multi': '多选题', 'judge': '判断题', 'subjective': '主观题'}
 LB = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-@app.route('/export', methods=['POST'])
+@app.route('/export', methods=['POST', 'OPTIONS'])
 def do_export():
+    if request.method == 'OPTIONS':
+        resp = app.make_default_options_response()
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return resp
     papers = request.json
     if not papers:
         return 'No papers', 400
@@ -55,7 +60,9 @@ I();'''
 </html>'''
     
     buf = io.BytesIO(html.encode('utf-8'))
-    return send_file(buf, mimetype='text/html;charset=utf-8', as_attachment=True, download_name='试卷.html')
+    resp = send_file(buf, mimetype='text/html;charset=utf-8', as_attachment=True, download_name='试卷.html')
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 if __name__ == '__main__':
     print('Export server: http://localhost:5001/export')
