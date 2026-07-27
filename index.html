@@ -417,7 +417,7 @@ try{var papersObj=eval('('+match[1]+')');for(var key in papersObj){if(papersObj[
 catch(err){div.innerHTML='<span style="color:var(--red)">解析失败: '+err.message+'</span>';return;}
 }else{div.innerHTML='<span style="color:var(--red)">不支持的文件类型</span>';return;}
 if(imported.length===0){div.innerHTML='<span style="color:var(--muted)">未提取到题目</span>';return;}
-imported=imported.map(function(q){return{s:q.s||'single',q:q.q||'',o:q.o||(q.s==='judge'?['正确','错误']:[]),a:q.a||[],e:q.e||'',tag:q.tag||''};});
+imported=imported.map(function(q){var s=q.s||'single';var a=q.a||[];if(!Array.isArray(a))a=[a];return{s:s,q:q.q||'',o:q.o||(s==='judge'?['正确','错误']:[]),a:a,e:q.e||'',tag:q.tag||''};});
 var bank=L(),existing={};
 bank.forEach(function(q){existing[q.q]=true;});
 var newQs=imported.filter(function(q){return!existing[q.q];});
