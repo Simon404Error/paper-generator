@@ -165,7 +165,7 @@ document.querySelectorAll('.pn').forEach(function(p){p.classList.remove('active'
 document.getElementById('tab-'+name).classList.add('active');
 if(name==='bank')renderBank();
 if(name==='generate')renderGenerate();
-if(name==='preview'){var pp=LP();if(pp.length>0&&!pvState)previewPaper(0);else renderPreview();}
+if(name==='preview'){if(!pvS){var pp=LP();if(pp.length>0)previewPaper(0);}else renderPreview();}
 }
 
 function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);var nd=document.getElementById('cfgNoDup');if(nd&&localStorage.getItem('gk_nodup'))nd.checked=true;}catch(e){}}
@@ -396,7 +396,7 @@ if(!sub){html+='<div style="margin-top:8px"><button class="btn accent small" dat
 if(sub){var ec=sub.ok?'correct-exp':'wrong-exp';html+='<div class="exp show '+ec+'"><strong>正确答案：</strong>'+fmtAns(q)+(q.e?'<br><strong>解析：</strong>'+esc(q.e):'')+'</div>';}
 html+='</div>';
 });
-var as=document.getElementById('answerSheet');var ag=document.getElementById('asGrid');if(total>0){as.style.display='block';var ah='';for(var i=0;i<total;i++){var cls='as-num';if(pvState&&pvState.sub&&pvState.sub[i])cls+=' done';ah+='<div class="'+cls+'" onclick="var el=document.querySelectorAll(\'.cd\')['+i+'];if(el)el.scrollIntoView({behavior:\'smooth\',block:\'center\'});">'+(i+1)+'</div>';}ag.innerHTML=ah;}else{as.style.display='none';}
+var as=document.getElementById('answerSheet');var ag=document.getElementById('asGrid');if(total>0){as.style.display='block';var ah='';for(var i=0;i<total;i++){var cls='as-num';if(pvS&&pvS.sub&&pvS.sub[i])cls+=' done';ah+='<div class="'+cls+'" onclick="var el=document.querySelectorAll(\'.cd\')['+i+'];if(el)el.scrollIntoView({behavior:\'smooth\',block:\'center\'});">'+(i+1)+'</div>';}ag.innerHTML=ah;}else{as.style.display='none';}
 document.getElementById('previewContent').innerHTML=html;
 if(!document.getElementById('previewContent')._pv){
 document.getElementById('previewContent')._pv=true;
