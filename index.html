@@ -11,113 +11,63 @@ body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;backgr
 .c{max-width:960px;margin:0 auto;padding:24px 16px 60px}
 h1{font-size:21px;text-align:center;margin:20px 0 6px}
 .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
-
-/* Tabs */
 .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}
 .tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none}
-.tb:hover{border-color:var(--accent)}
-.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-
-/* Panels */
-.pn{display:none}
-.pn.active{display:block}
-
-/* Cards & common */
+.tb:hover{border-color:var(--accent)}.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pn{display:none}.pn.active{display:block}
 .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.row>*{flex:1;min-width:120px}
-.btn{padding:8px 18px;border:1px solid var(--border);border-radius:6px;background:var(--card);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:inherit}
-.btn:hover{border-color:var(--accent);background:var(--al)}
-.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.accent:hover{opacity:.9}
-.btn.danger{color:var(--red);border-color:var(--red)}
-.btn.danger:hover{background:var(--rb)}
-.btn.small{padding:4px 12px;font-size:12px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:120px}
+.btn{padding:8px 18px;border:1px solid var(--border);border-radius:6px;background:var(--card);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-family:inherit;outline:none}
+.btn:hover{border-color:var(--accent);background:var(--al)}.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.accent:hover{opacity:.9}
+.btn.danger{color:var(--red);border-color:var(--red)}.btn.danger:hover{background:var(--rb)}.btn.small{padding:4px 12px;font-size:12px}
 input,select,textarea{font-family:inherit;font-size:14px;outline:none;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--card);width:100%;transition:border-color .15s}
-input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:vertical;min-height:60px}
-
-/* Type badges */
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resize:vertical;min-height:60px}
 .qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}
-.qt.single{color:var(--purple);background:var(--pb)}
-.qt.multi{color:var(--orange);background:var(--ob)}
-.qt.judge{color:var(--green);background:var(--gb)}
-
-/* Stats */
+.qt.single{color:var(--purple);background:var(--pb)}.qt.multi{color:var(--orange);background:var(--ob)}
+.qt.judge{color:var(--green);background:var(--gb)}.qt.subjective{color:#8b4513;background:#fff8f0}
 .stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px}
 .stat-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px}
-.stat-item .num{font-size:24px;font-weight:700;color:var(--accent)}
-.stat-item .lbl{font-size:12px;color:var(--muted)}
-
-/* Question list */
-.qlist{max-height:600px;overflow-y:auto}
-.qitem{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.qitem:last-child{border-bottom:none}
-.qitem .qi{flex:1;min-width:0}
-.qitem .qi .qtxt{font-weight:500;word-break:break-all}
-.qitem .qi .qmeta{font-size:12px;color:var(--muted);margin-top:4px}
-.qitem .qact{display:flex;gap:4px;flex-shrink:0}
-.qlist-header{display:none;padding:0 0 8px 0;border-bottom:1px solid var(--border);margin-bottom:4px}
+.stat-item .num{font-size:24px;font-weight:700;color:var(--accent)}.stat-item .lbl{font-size:12px;color:var(--muted)}
+.qlist{max-height:600px;overflow-y:auto}.qitem{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.qitem:last-child{border-bottom:none}.qitem .qi{flex:1;min-width:0}.qitem .qi .qtxt{font-weight:500;word-break:break-all}
+.qitem .qi .qmeta{font-size:12px;color:var(--muted);margin-top:4px}.qitem .qact{display:flex;gap:4px;flex-shrink:0}
+.qlist-header{padding:0 0 8px 0;border-bottom:1px solid var(--border);margin-bottom:4px}
 .qcb{flex-shrink:0;margin-top:3px;width:16px;height:16px;cursor:pointer}
-
-/* Paper config */
 .cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cfg-item{display:flex;flex-direction:column;gap:4px}
-.cfg-item label{font-size:13px;color:var(--muted)}
-.tags{display:flex;flex-wrap:wrap;gap:4px}
-.tag{padding:2px 8px;border-radius:4px;font-size:11px;background:#eee;color:var(--muted);cursor:pointer;user-select:none}
+.cfg-item{display:flex;flex-direction:column;gap:4px}.cfg-item label{font-size:13px;color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}.tag{padding:2px 8px;border-radius:4px;font-size:11px;background:#eee;color:var(--muted);cursor:pointer;user-select:none}
 .tag.selected{background:var(--accent);color:#fff}
-
-/* Paper preview list */
 .pp-card{padding:12px 16px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;cursor:pointer;transition:all .15s}
 .pp-card:hover{border-color:var(--accent);background:var(--al)}
-
-/* Test mode - matches reference */
 .sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.sb .st{display:flex;gap:16px;font-size:14px}
-.sb .st strong{color:var(--accent)}
+.sb .st{display:flex;gap:16px;font-size:14px}.sb .st strong{color:var(--accent)}
 .ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.ph h2{font-size:17px;margin-bottom:6px}
-.ph .mt{font-size:13px;color:var(--muted)}
+.ph h2{font-size:17px;margin-bottom:6px}.ph .mt{font-size:13px;color:var(--muted)}
 .cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:border-color .2s}
-.cd.submitted{}
-.cd.correct{border-color:var(--green);background:#fcfdf9}
-.cd.wrong{border-color:var(--red);background:#fefcfc}
+.cd.submitted{pointer-events:none}.cd.correct{border-color:var(--green);background:#fcfdf9}.cd.wrong{border-color:var(--red);background:#fefcfc}
 .qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
 .qq{font-size:15px;margin:8px 0 12px;font-weight:500}
 .ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}
 .op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;font-size:14px}
-.op:hover{border-color:var(--accent)}
-.op.selected{border-color:var(--accent);background:var(--al)}
-.op.correct-answer{border-color:var(--green);background:var(--gb)}
-.op.wrong-answer{border-color:var(--red);background:var(--rb)}
+.op:hover{border-color:var(--accent)}.op.selected{border-color:var(--accent);background:var(--al)}
+.op.correct-answer{border-color:var(--green);background:var(--gb)}.op.wrong-answer{border-color:var(--red);background:var(--rb)}
 .opl{font-weight:600;color:var(--muted);min-width:22px}
 .exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}
-.exp.show{display:block}
-.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}
-.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}
-
-/* Modal */
+.exp.show{display:block}.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:100;justify-content:center;align-items:flex-start;padding-top:40px}
 .modal-overlay.show{display:flex}
 .modal{background:var(--card);border-radius:10px;padding:24px;width:700px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
-.modal h3{font-size:17px;margin-bottom:16px}
-.form-group{margin-bottom:12px}
-.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
+.modal h3{font-size:17px;margin-bottom:16px}.form-group{margin-bottom:12px}.form-group label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-
-/* Toast */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 24px;border-radius:8px;font-size:14px;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.show{opacity:1}
-.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.toast.show{opacity:1}.empty{text-align:center;padding:40px 20px;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="c">
-<h1>📋 试卷生成器</h1>
+<h1>&#x1F4CB; 试卷生成器</h1>
 <p class="sub">试卷生成 · 智能题库</p>
 
-<!-- Tab Navigation -->
 <div class="tabs" id="mainTabs">
   <div class="tb active" data-tab="bank">题库管理</div>
   <div class="tb" data-tab="generate">试卷生成</div>
@@ -125,33 +75,21 @@ textarea{resize:vertical;min-height:60px}
   <div class="tb" data-tab="io">导入导出</div>
 </div>
 
-<!-- ====== 题库管理 ====== -->
 <div class="pn active" id="tab-bank">
   <div class="stats" id="bankStats"></div>
   <div class="row" style="margin-bottom:12px">
-    <select id="filterType" onchange="renderBank()">
-      <option value="all">全部类型</option>
-      <option value="single">单选题</option>
-      <option value="multi">多选题</option>
-      <option value="judge">判断题</option>
-    </select>
+    <select id="filterType" onchange="renderBank()"><option value="all">全部类型</option><option value="single">单选题</option><option value="multi">多选题</option><option value="judge">判断题</option><option value="subjective">主观题</option></select>
     <input type="text" id="filterKeyword" placeholder="搜索题目关键词..." oninput="renderBank()">
     <select id="filterTag" onchange="renderBank()" style="max-width:160px"><option value="">全部标签</option></select>
-    <button class="btn accent" onclick="openQuestionModal()">＋ 添加题目</button>
+    <button class="btn accent" onclick="openQuestionModal(-1)">＋ 添加题目</button>
     <button class="btn danger" id="btnBatchDelete" style="display:none" onclick="batchDelete()">🗑 批量删除</button>
   </div>
   <div class="card">
-    <div class="qlist-header" id="qlistHeader">
-      <label style="font-size:13px;cursor:pointer;user-select:none">
-        <input type="checkbox" id="cbSelectAll" onchange="toggleSelectAll()"> 全选
-      </label>
-      <span id="selectedCount" style="font-size:12px;color:var(--muted);margin-left:12px"></span>
-    </div>
+    <div class="qlist-header" id="qlistHeader" style="display:none"><label style="font-size:13px;cursor:pointer;user-select:none"><input type="checkbox" id="cbSelectAll" onchange="toggleSelectAll()"> 全选</label><span id="selectedCount" style="font-size:12px;color:var(--muted);margin-left:12px"></span></div>
     <div class="qlist" id="qlist"><div class="empty">暂无题目，点击"添加题目"开始</div></div>
   </div>
 </div>
 
-<!-- ====== 试卷生成 ====== -->
 <div class="pn" id="tab-generate">
   <div class="card">
     <h3 style="margin-bottom:12px">组卷配置</h3>
@@ -161,782 +99,365 @@ textarea{resize:vertical;min-height:60px}
       <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="1" min="0" max="100"></div>
       <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="1" min="0" max="50"></div>
       <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="1" min="0" max="30"></div>
+      <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" value="0" min="0" max="30"></div>
       <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="试卷"></div>
     </div>
-      <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" value="0" min="0" max="30"></div>
-    <div style="margin-top:12px">
-      <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label>
-      <div class="tags" id="topicTags"></div>
-    </div>
-    <div style="margin-top:12px">
-      <button class="btn accent" onclick="generatePapers()">🎲 随机组卷</button>
-      <div class="stats" id="genStats" style="margin-top:12px"></div>
-    </div>
+    <div style="margin-top:12px"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label><div class="tags" id="topicTags"></div></div>
+    <div class="stats" id="genStats" style="margin-top:12px"></div>
+    <div style="margin-top:12px"><button class="btn accent" onclick="generatePapers()">&#x1F3B2; 随机组卷</button></div>
   </div>
   <div id="paperPreview"></div>
 </div>
 
-<!-- ====== 预览测试 ====== -->
-<div class="pn" id="tab-preview">
-  <div id="previewContent"><div class="empty">请先在"试卷生成"中生成试卷</div></div>
-</div>
+<div class="pn" id="tab-preview"><div id="previewContent"><div class="empty">请先在"试卷生成"中生成试卷</div></div></div>
 
-<!-- ====== 导入导出 ====== -->
 <div class="pn" id="tab-io">
-  <div class="card">
-    <h3 style="margin-bottom:12px">导入题库</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:8px">支持导入标准格式的试卷 HTML 文件（自动提取题目）或 JSON 题库文件。</p>
-    <div class="row">
-      <input type="file" id="importFile" accept=".html,.json" onchange="handleImport(event)" style="display:none">
-      <button class="btn" onclick="document.getElementById('importFile').click()">选择文件导入</button>
-    </div>
-    <div id="importResult" style="margin-top:8px;font-size:13px"></div>
-  </div>
-  <div class="card">
-    <h3 style="margin-bottom:12px">导出</h3>
-    <div class="row">
-      <button class="btn accent" onclick="exportJSON()">📦 导出题库 JSON</button>
-      <button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML" disabled>📄 导出试卷 HTML</button>
-    </div>
-    <p style="font-size:12px;color:var(--muted);margin-top:8px">HTML 导出为带交互功能的独立试卷文件，可直接在浏览器中使用。</p>
-  </div>
+  <div class="card"><h3 style="margin-bottom:12px">导入题库</h3><p style="font-size:13px;color:var(--muted);margin-bottom:8px">支持导入标准格式的试卷 HTML 文件或 JSON 题库文件。</p><div class="row"><input type="file" id="importFile" accept=".html,.json" onchange="handleImport(event)" style="display:none"><button class="btn" onclick="document.getElementById('importFile').click()">选择文件导入</button></div><div id="importResult" style="margin-top:8px;font-size:13px"></div></div>
+  <div class="card"><h3 style="margin-bottom:12px">导出</h3><div class="row"><button class="btn accent" onclick="exportJSON()">&#x1F4E6; 导出题库 JSON</button><button class="btn accent" onclick="exportPapersHTML()" id="btnExportHTML" disabled>&#x1F4C4; 导出试卷 HTML</button></div></div>
 </div>
 
-<!-- Question Edit Modal -->
-<div class="modal-overlay" id="questionModal">
-  <div class="modal">
-    <h3 id="modalTitle">添加题目</h3>
-    <input type="hidden" id="editIndex" value="-1">
-    <div class="form-group">
-      <label>题型</label>
-      <select id="qType"><option value="single">单选题</option><option value="multi">多选题</option><option value="judge">判断题</option></select>
-    </div>
-    <div class="form-group"><label>题目内容</label><textarea id="qText" rows="3" placeholder="输入题目..."></textarea></div>
-    <div class="form-group" id="optGroup"><label>选项（每行一个）</label><textarea id="qOptions" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea></div>
-    <div class="form-group" id="judgeOptGroup" style="display:none"><label>判断题选项固定为：正确 / 错误</label></div>
-    <div class="form-group">
-      <label>正确答案（A=0, B=1, C=2... 多选题用逗号分隔如 0,1,2）</label>
-      <input type="text" id="qAnswer" placeholder="0 或 0,1,2">
-    </div>
-    <div class="form-group"><label>解析（可选）</label><textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea></div>
-    <div class="form-group"><label>知识点标签（可选，逗号分隔）</label><input type="text" id="qTag" placeholder="例如：政治,经济,法律"></div>
-    <div class="form-actions">
-      <button class="btn" onclick="closeQuestionModal()">取消</button>
-      <button class="btn accent" onclick="saveQuestion()">保存</button>
-    </div>
-  </div>
+<div class="modal-overlay" id="questionModal"><div class="modal">
+<h3 id="modalTitle">添加题目</h3><input type="hidden" id="editIndex" value="-1">
+<div class="form-group"><label>题型</label><select id="qType"><option value="single">单选题</option><option value="multi">多选题</option><option value="judge">判断题</option><option value="subjective">主观题</option></select></div>
+<div class="form-group"><label>题目内容</label><textarea id="qText" rows="3" placeholder="输入题目..."></textarea></div>
+<div class="form-group" id="optGroup"><label>选项（每行一个）</label><textarea id="qOptions" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea></div>
+<div class="form-group" id="judgeOptGroup" style="display:none"><label>判断题选项固定为：正确 / 错误</label></div>
+<div class="form-group" id="subjOptGroup" style="display:none"><label>主观题无选项，请填写参考答案</label></div>
+<div class="form-group"><label>正确答案（A=0, B=1... 多选题逗号分隔）</label><input type="text" id="qAnswer" placeholder="0 或 0,1,2"></div>
+<div class="form-group"><label>答案解析（可选）</label><textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea></div>
+<div class="form-group"><label>知识点标签（可选，逗号分隔）</label><input type="text" id="qTag" placeholder="例如：政治,经济,法律"></div>
+<div class="form-actions"><button class="btn" onclick="closeQuestionModal()">取消</button><button class="btn accent" onclick="saveQuestion()">保存</button></div>
+</div></div>
 </div>
-</div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-// ==================== DATA ====================
-const STORAGE_KEY = 'gk_question_bank';
-const PAPERS_KEY = 'gk_generated_papers';
-const TYPE_LABELS = { single: '单选题', multi: '多选题', judge: '判断题' };
-const OPT_LABELS = ['A','B','C','D','E','F','G','H'];
 
-function loadBank() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e) { return []; } }
-function saveBank(b) { localStorage.setItem(STORAGE_KEY, JSON.stringify(b)); }
-function loadPapers() { try { return JSON.parse(localStorage.getItem(PAPERS_KEY)) || []; } catch(e) { return []; } }
-function savePapers(p) { localStorage.setItem(PAPERS_KEY, JSON.stringify(p)); }
+var STORE='gk_bank_v2',PAPER_STORE='gk_papers_v2';
+var PT={single:'单选题',multi:'多选题',judge:'判断题',subjective:'主观题'};
+var LB=['A','B','C','D','E','F','G','H'];
 
-// ==================== TOAST ====================
-function toast(msg) {
-  var el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  clearTimeout(el._t); el._t = setTimeout(function(){ el.classList.remove('show'); }, 2000);
-}
+function L(){try{return JSON.parse(localStorage.getItem(STORE))||[];}catch(e){return[];}}
+function S(b){localStorage.setItem(STORE,JSON.stringify(b));}
+function LP(){try{return JSON.parse(localStorage.getItem(PAPER_STORE))||[];}catch(e){return[];}}
+function SP(p){localStorage.setItem(PAPER_STORE,JSON.stringify(p));}
 
-// ==================== TABS ====================
-document.getElementById('mainTabs').addEventListener('click', function(e) {
-  var tb = e.target.closest('.tb');
-  if (!tb) return;
-  document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
-  tb.classList.add('active');
-  document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById('tab-' + tb.dataset.tab).classList.add('active');
-  if (tb.dataset.tab === 'bank') renderBank();
-  if (tb.dataset.tab === 'generate') renderGenerate();
-  if (tb.dataset.tab === 'preview') renderPreview();
+function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('show');},2000);}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-  try { localStorage.setItem('gk_active_tab', tb.dataset.tab); } catch(e) {}});
-
-// ==================== BANK TAB ====================
-function renderBank() {
-  var bank = loadBank();
-  var tagSel = document.getElementById('filterTag');
-  if (tagSel && tagSel.options.length <= 1) {
-    var allTags = {};
-    bank.forEach(function(q){
-      if (q.tag) q.tag.split(/[,，]/).forEach(function(t){ t = t.trim(); if (t) allTags[t] = true; });
-    });
-    var tagKeys = Object.keys(allTags).sort();
-    for (var i = 0; i < tagKeys.length; i++) {
-      var opt = document.createElement('option');
-      opt.value = tagKeys[i];
-      opt.textContent = tagKeys[i];
-      tagSel.appendChild(opt);
-    }
-  }
-  var type = document.getElementById('filterType').value;
-  var kw = document.getElementById('filterKeyword').value.toLowerCase();
-  var filtered = bank;
-  if (type !== 'all') filtered = filtered.filter(function(q){ return q.s === type; });
-  if (kw) filtered = filtered.filter(function(q){
-    return q.q.toLowerCase().indexOf(kw) >= 0 ||
-      (q.e||'').toLowerCase().indexOf(kw) >= 0 ||
-      (q.tag||'').toLowerCase().indexOf(kw) >= 0;
-  });
-  var tag = document.getElementById('filterTag').value;
-  if (tag) filtered = filtered.filter(function(q){
-    if (!q.tag) return false;
-    var tags = q.tag.split(/[,，]/).map(function(t){ return t.trim(); });
-    return tags.indexOf(tag) >= 0;
-  });
-
-  // Stats
-  var stats = document.getElementById('bankStats');
-  var s = bank.filter(function(q){ return q.s === 'single'; }).length;
-  var m = bank.filter(function(q){ return q.s === 'multi'; }).length;
-  var j = bank.filter(function(q){ return q.s === 'judge'; }).length;
-    var zc = p.d.filter(function(q){ return q.s === 'subjective'; }).length;
-  stats.innerHTML =
-    '<div class="stat-item"><div class="num">' + bank.length + '</div><div class="lbl">总题数</div></div>' +
-    '<div class="stat-item"><div class="num">' + s + '</div><div class="lbl">单选题</div></div>' +
-    '<div class="stat-item"><div class="num">' + m + '</div><div class="lbl">多选题</div></div>' +
-    '<div class="stat-item"><div class="num">' + j + '</div><div class="lbl">判断题</div></div>';
-
-  var list = document.getElementById('qlist');
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty">没有匹配的题目</div>';
-    resetBatchUI();
-    return;
-  }
-
-  var html = '';
-  for (var fi = 0; fi < filtered.length; fi++) {
-    var q = filtered[fi];
-    var idx = bank.indexOf(q);
-    var label = q.s === 'judge' ? '正确 / 错误' : (q.o||[]).join(' / ');
-    var ans = formatAnswer(q);
-    html += '<div class="qitem">' +
-      '<input type="checkbox" class="qcb" data-idx="' + idx + '" onchange="updateBatchUI()">' +
-      '<div class="qi">' +
-        '<span class="qt ' + q.s + '">' + TYPE_LABELS[q.s] + '</span>' +
-        '<div class="qtxt">' + escHtml(q.q) + '</div>' +
-        '<div class="qmeta">答案: ' + ans + ' &nbsp;|&nbsp; 选项: ' + escHtml(label) +
-          (q.tag ? ' &nbsp;|&nbsp; 🏷 ' + escHtml(q.tag) : '') + '</div>' +
-      '</div>' +
-      '<div class="qact">' +
-        '<button class="btn small" onclick="openQuestionModal(' + idx + ')">编辑</button>' +
-        '<button class="btn small danger" onclick="deleteQuestion(' + idx + ')">删除</button>' +
-      '</div>' +
-    '</div>';
-  }
-  list.innerHTML = html;
-  resetBatchUI();
-}
-
-function formatAnswer(q) {
-  if (q.s === 'subjective') return q.a[0] || '略'; if (q.s === 'judge') return q.a[0] === 0 ? '正确' : '错误';
-  return (q.a||[]).map(function(i){ return OPT_LABELS[i]; }).join('');
-}
-
-function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// ==================== BATCH DELETE ====================
-function getCheckedIndices() {
-  var cbs = document.querySelectorAll('.qcb:checked');
-  var arr = [];
-  for (var i = 0; i < cbs.length; i++) arr.push(parseInt(cbs[i].dataset.idx));
-  return arr;
-}
-
-function updateBatchUI() {
-  var checked = getCheckedIndices();
-  document.getElementById('qlistHeader').style.display = checked.length > 0 ? 'block' : 'none';
-  document.getElementById('btnBatchDelete').style.display = checked.length > 0 ? 'inline-flex' : 'none';
-  document.getElementById('selectedCount').textContent = checked.length > 0 ? '已选 ' + checked.length + ' 题' : '';
-}
-
-function resetBatchUI() {
-  document.getElementById('qlistHeader').style.display = 'none';
-  document.getElementById('btnBatchDelete').style.display = 'none';
-  document.getElementById('cbSelectAll').checked = false;
-}
-
-function toggleSelectAll() {
-  var cbs = document.querySelectorAll('.qcb');
-  var allChecked = true;
-  for (var i = 0; i < cbs.length; i++) { if (!cbs[i].checked) { allChecked = false; break; } }
-  var newVal = !allChecked;
-  for (var i = 0; i < cbs.length; i++) cbs[i].checked = newVal;
-  document.getElementById('cbSelectAll').checked = newVal;
-  updateBatchUI();
-}
-
-function batchDelete() {
-  var indices = getCheckedIndices();
-  if (indices.length === 0) { toast('请先选择要删除的题目'); return; }
-  if (!confirm('确定要删除选中的 ' + indices.length + ' 道题目吗？此操作不可恢复。')) return;
-  var bank = loadBank();
-  indices.sort(function(a,b){ return b - a; });
-  for (var i = 0; i < indices.length; i++) bank.splice(indices[i], 1);
-  saveBank(bank);
-  toast('已删除 ' + indices.length + ' 道题目');
-  renderBank();
-}
-
-// ==================== SINGLE DELETE ====================
-function deleteQuestion(idx) {
-  if (!confirm('确定要删除这道题目吗？')) return;
-  var bank = loadBank();
-  bank.splice(idx, 1);
-  saveBank(bank);
-  renderBank();
-  toast('已删除');
-}
-
-// ==================== QUESTION MODAL ====================
-function openQuestionModal(idx) {
-  var bank = loadBank();
-  document.getElementById('editIndex').value = idx >= 0 ? idx : -1;
-  if (idx >= 0 && idx < bank.length) {
-    var q = bank[idx];
-    document.getElementById('modalTitle').textContent = '编辑题目';
-    document.getElementById('qType').value = q.s;
-    document.getElementById('qText').value = q.q;
-    document.getElementById('qOptions').value = (q.o||[]).join('\n');
-    document.getElementById('qAnswer').value = (q.a||[]).join(',');
-    document.getElementById('qExplain').value = q.e || '';
-    document.getElementById('qTag').value = q.tag || '';
-  } else {
-    document.getElementById('modalTitle').textContent = '添加题目';
-    document.getElementById('qType').value = 'single';
-    document.getElementById('qText').value = '';
-    document.getElementById('qOptions').value = '';
-    document.getElementById('qAnswer').value = '';
-    document.getElementById('qExplain').value = '';
-    document.getElementById('qTag').value = '';
-  }
-  updateOptVisibility();
-  document.getElementById('questionModal').classList.add('show');
-}
-
-function closeQuestionModal() { document.getElementById('questionModal').classList.remove('show'); }
-document.getElementById('qType').addEventListener('change', updateOptVisibility);
-function updateOptVisibility() {
-  var isJudge = document.getElementById('qType').value === 'judge';
-  document.getElementById('optGroup').style.display = isJudge ? 'none' : 'block';
-  document.getElementById('judgeOptGroup').style.display = isJudge ? 'block' : 'none';
-}
-
-function saveQuestion() {
-  var idx = parseInt(document.getElementById('editIndex').value);
-  var type = document.getElementById('qType').value;
-  var text = document.getElementById('qText').value.trim();
-  var explain = document.getElementById('qExplain').value.trim();
-  var tag = document.getElementById('qTag').value.trim();
-  var ansStr = document.getElementById('qAnswer').value.trim();
-  if (!text) { toast('请输入题目内容'); return; }
-  if (!ansStr) { toast('请输入正确答案'); return; }
-
-  var options = type === 'judge' ? ['正确', '错误'] :
-    document.getElementById('qOptions').value.split('\n').map(function(s){ return s.trim(); }).filter(function(s){ return s; });
-  if (options.length < 2 && type !== 'judge') { toast('请至少输入2个选项'); return; }
-
-  var answers = ansStr.split(',').map(function(s){ return parseInt(s.trim()); }).filter(function(n){ return !isNaN(n); });
-  if (answers.length === 0) { toast('答案格式错误'); return; }
-  for (var i = 0; i < answers.length; i++) {
-    if (answers[i] < 0 || answers[i] >= options.length) { toast('答案序号 ' + answers[i] + ' 超出选项范围'); return; }
-  }
-
-  var question = { s: type, q: text, o: options, a: answers, e: explain, tag: tag };
-  var bank = loadBank();
-  if (idx >= 0 && idx < bank.length) bank[idx] = question;
-  else bank.push(question);
-  saveBank(bank);
-  closeQuestionModal();
-  renderBank();
-  toast(idx >= 0 ? '已更新' : '已添加');
-}
-
-document.getElementById('questionModal').addEventListener('click', function(e) { if (e.target === this) closeQuestionModal(); });
-
-// ==================== GENERATE TAB ====================
-function getAllTopics() {
-  var bank = loadBank(), topics = {};
-  bank.forEach(function(q){
-    if (q.tag) q.tag.split(/[,，]/).forEach(function(t){ t = t.trim(); if (t) topics[t] = true; });
-  });
-  return Object.keys(topics);
-}
-
-function renderGenerate() {
-  var bank = loadBank();
-  document.getElementById('genStats').innerHTML =
-    '<div class="stat-item"><div class="num">' + bank.length + '</div><div class="lbl">' + '题库总数' + '</div></div>' +
-    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'single'; }).length + '</div><div class="lbl">' + '单选题' + '</div></div>' +
-    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'multi'; }).length + '</div><div class="lbl">' + '多选题' + '</div></div>' +
-    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'judge'; }).length + '</div><div class="lbl">' + '判断题' + '</div></div>';
-
-  var topics = getAllTopics();
-  var tagsDiv = document.getElementById('topicTags');
-  if (topics.length === 0) {
-    tagsDiv.innerHTML = '<span style="font-size:12px;color:var(--muted)">暂无知识点标签</span>';
-  } else {
-    var h = '';
-    for (var i = 0; i < topics.length; i++) {
-      h += '<span class="tag" data-tag="' + escHtml(topics[i]) + '" onclick="this.classList.toggle(\'selected\')">' + escHtml(topics[i]) + '</span>';
-    }
-    h += '<span style="font-size:11px;color:var(--muted);margin-left:4px">（点击筛选）</span>';
-    tagsDiv.innerHTML = h;
-  }
-  renderPaperList();
-}
-
-function getSelectedTopics() {
-  var sel = document.querySelectorAll('#topicTags .tag.selected'), arr = [];
-  for (var i = 0; i < sel.length; i++) arr.push(sel[i].dataset.tag);
-  return arr;
-}
-
-function shuffle(arr) {
-  var a = arr.slice();
-  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
-  return a;
-}
-
-function generatePapers() {
-  var bank = loadBank();
-  var nSingle = parseInt(document.getElementById('cfgSingle').value); if (isNaN(nSingle)) nSingle = 1;
-  var nMulti = parseInt(document.getElementById('cfgMulti').value); if (isNaN(nMulti)) nMulti = 1;
-  var nJudge = parseInt(document.getElementById('cfgJudge').value); if (isNaN(nJudge)) nJudge = 1;
-  var nSubjective = parseInt(document.getElementById('cfgSubjective').value); if (isNaN(nSubjective)) nSubjective = 0;
-  var nPapers = parseInt(document.getElementById('cfgCount').value); if (isNaN(nPapers)) nPapers = 1;
-  var name = document.getElementById('cfgName').value.trim() || '试卷';
-  var subtitle = document.getElementById('cfgSubtitle').value.trim() || '试卷';
-  var selectedTopics = getSelectedTopics();
-
-  var pool = bank;
-  if (selectedTopics.length > 0) {
-    pool = bank.filter(function(q){
-      if (!q.tag) return false;
-      var tags = q.tag.split(/[,，]/).map(function(t){ return t.trim(); });
-      return selectedTopics.some(function(st){ return tags.indexOf(st) >= 0; });
-    });
-  }
-
-  var singles = pool.filter(function(q){ return q.s === 'single'; });
-  var multis = pool.filter(function(q){ return q.s === 'multi'; });
-  var judges = pool.filter(function(q){ return q.s === 'judge'; });
-  var subjectives = pool.filter(function(q){ return q.s === 'subjective'; });
-
-  if (nSingle > 0 && singles.length < nSingle) { toast('单选题不足！需要' + nSingle + '题，题库中只有' + singles.length + '题'); return; }
-  if (nMulti > 0 && multis.length < nMulti) { toast('多选题不足！需要' + nMulti + '题，题库中只有' + multis.length + '题'); return; }
-  if (nSubjective > 0 && subjectives.length < nSubjective) { toast('主观题不足！' + nSubjective + '题，题库中只有' + subjectives.length + '题'); return; }
-  if (nJudge > 0 && judges.length < nJudge) { toast('判断题不足！需要' + nJudge + '题，题库中只有' + judges.length + '题'); return; }
-
-  var papers = [];
-  var usedS = {}, usedM = {}, usedJ = {}, usedZ = {};
-  for (var pi = 0; pi < nPapers; pi++) {
-    var availS = [], availM = [], availJ = [];
-    for (var i = 0; i < singles.length; i++) { if (!usedS[i]) availS.push(singles[i]); }
-    for (var i = 0; i < multis.length; i++) { if (!usedM[i]) availM.push(multis[i]); }
-    for (var i = 0; i < judges.length; i++) { if (!usedJ[i]) availJ.push(judges[i]); }
-    var availZ = []; for (var i = 0; i < subjectives.length; i++) { if (!usedZ[i]) availZ.push(subjectives[i]); }
-    var sPool = availS.length >= nSingle ? availS : singles;
-    var mPool = availM.length >= nMulti ? availM : multis;
-    var jPool = availJ.length >= nJudge ? availJ : judges;
-    var zPool = availZ.length >= nSubjective ? availZ : subjectives;
-    var selS = shuffle(sPool).slice(0, nSingle);
-    var selM = shuffle(mPool).slice(0, nMulti);
-    var selJ = shuffle(jPool).slice(0, nJudge);
-    var selZ = shuffle(zPool).slice(0, nSubjective);
-    for (var i = 0; i < selS.length; i++) usedS[singles.indexOf(selS[i])] = true;
-    for (var i = 0; i < selM.length; i++) usedM[multis.indexOf(selM[i])] = true;
-    for (var i = 0; i < selJ.length; i++) usedJ[judges.indexOf(selJ[i])] = true;
-    for (var i = 0; i < selZ.length; i++) usedZ[subjectives.indexOf(selZ[i])] = true;
-    var questions = shuffle(selS).concat(shuffle(selM)).concat(shuffle(selJ));
-    papers.push({ id: 'paper' + (pi+1), t: name + ' (' + (pi+1) + ')', s: subtitle, d: questions });
-  }
-  savePapers(papers);
-  renderPaperList();
-  toast('已生成 ' + nPapers + ' 套试卷！');
-}
-
-function renderPaperList() {
-  var papers = loadPapers();
-  var div = document.getElementById('paperPreview');
-  var btn = document.getElementById('btnExportHTML');
-  if (papers.length === 0) {
-    div.innerHTML = '<p style="font-size:13px;color:var(--muted);margin-top:12px">点击"随机组卷"生成试卷</p>';
-    btn.disabled = true;
-    return;
-  }
-  btn.disabled = false;
-  var html = '<h4 style="margin-bottom:8px">已生成的试卷</h4>';
-  for (var i = 0; i < papers.length; i++) {
-    var p = papers[i];
-    var sc = p.d.filter(function(q){ return q.s === 'single'; }).length;
-    var mc = p.d.filter(function(q){ return q.s === 'multi'; }).length;
-    var jc = p.d.filter(function(q){ return q.s === 'judge'; }).length;
-    var zc = p.d.filter(function(q){ return q.s === 'subjective'; }).length;
-    html += '<div class="pp-card" onclick="previewPaper(' + i + ')"><strong>' + escHtml(p.t) +
-      '</strong> <span style="font-size:13px;color:var(--muted);margin-left:8px">' +
-      p.d.length + '题 (单选' + sc + ' + 多选' + mc + ' + 判断' + jc + ' + 主观' + zc + ')</span></div>';
-  }
-  div.innerHTML = html;
-}
-
-// ==================== PREVIEW TAB ====================
-var previewState = null;
-
-function previewPaper(idx) {
-  var papers = loadPapers();
-  if (idx < 0 || idx >= papers.length) return;
-  previewState = { paperIdx: idx, answers: {}, submitted: {} };
-  switchTab('preview');
-  renderPreview();
-}
-
-function switchTab(name) {
-  document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
-  var tabEl = document.querySelector('#mainTabs .tb[data-tab="' + name + '"]');
-  if (tabEl) tabEl.classList.add('active');
-  document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
-  document.getElementById('tab-' + name).classList.add('active');
-}
-
-function renderPreview() {
-  if (!previewState) return;
-  var papers = loadPapers();
-  var paper = papers[previewState.paperIdx];
-  var st = previewState;
-  var total = paper.d.length;
-  var submitted = Object.keys(st.submitted).length;
-  var correct = 0;
-  for (var k in st.submitted) { if (st.submitted[k].correct) correct++; }
-
-  var html = '';
-  if (papers.length > 1) {
-    html += '<div class="tabs" style="position:static;background:transparent;padding:0">';
-    for (var i = 0; i < papers.length; i++) {
-      html += '<div class="tb' + (i === previewState.paperIdx ? ' active' : '') + '" onclick="previewPaper(' + i + ')">' + escHtml(papers[i].t) + '</div>';
-    }
-    html += '</div>';
-  }
-
-  html += '<div class="ph"><h2>' + escHtml(paper.t) + '</h2><div class="mt">' + escHtml(paper.s) + ' · 共' + total + '题</div></div>';
-  html += '<div class="sb"><div class="st">已答: <strong>' + submitted + '/' + total + '</strong> &nbsp; 正确: <strong>' + correct + '</strong> &nbsp; 得分: <strong>' + (submitted > 0 ? Math.round(correct/submitted*100) : 0) + '%</strong></div><div class="ac"><button class="btn small danger" onclick="resetPreview()">🔄 重做</button></div></div>';
-
-  for (var qi = 0; qi < paper.d.length; qi++) {
-    var q = paper.d[qi];
-    var sub = st.submitted[qi];
-    var userAns = st.answers[qi] || [];
-    var cardClass = sub ? (sub.correct ? 'correct' : 'wrong') : '';
-    var optLabels = q.s === 'judge' ? ['正确', '错误'] : q.s === 'subjective' ? [] : q.o.map(function(o,oi){ return OPT_LABELS[oi] + '. ' + o; });
-
-    html += '<div class="cd ' + (sub ? 'submitted ' : '') + cardClass + '"><div class="qn"><span>' + (qi+1) + '.</span><span class="qt ' + q.s + '">' + TYPE_LABELS[q.s] + '</span>' + (sub ? (sub.correct ? '<span style="color:var(--green);font-size:12px"> ✓ 正确</span>' : '<span style="color:var(--red);font-size:12px"> ✗ 错误</span>') : '') + '</div>';
-    html += '<div class="qq">' + escHtml(q.q) + '</div><div class="ops">';
-
-    for (var oi = 0; oi < optLabels.length; oi++) {
-      var opClass = '';
-      if (sub) {
-        if (q.a.indexOf(oi) >= 0) opClass = 'correct-answer';
-        else if (userAns.indexOf(oi) >= 0) opClass = 'wrong-answer';
-      } else if (userAns.indexOf(oi) >= 0) opClass = 'selected';
-      html += '<div class="op ' + opClass + '"' + (sub ? '' : ' onclick="toggleAnswer(' + qi + ',' + oi + ')') + '><span class="opl">' + OPT_LABELS[oi] + '</span><span>' + escHtml(optLabels[oi].replace(/^[A-H]\.\s*/, '')) + '</span></div>';
-    }
-    html += '</div>';
-    if (!sub) html += '<div style="margin-top:8px"><button class="btn accent small" onclick="submitQuestion(' + qi + ')">查看答案</button></div>';
-    if (sub) {
-      var expClass = sub.correct ? 'correct-exp' : 'wrong-exp';
-      html += '<div class="exp show ' + expClass + '"><strong>正确答案：</strong>' + formatAnswer(q) + (q.e ? '<br><strong>解析：</strong>' + escHtml(q.e) : '') + '</div>';
-    }
-    html += '</div>';
-  }
-
-  document.getElementById('previewContent').innerHTML = html;
-}
-
-function toggleAnswer(qi, oi) {
-  if (!previewState) return;
-  var paper = loadPapers()[previewState.paperIdx];
-  var q = paper.d[qi];
-  var ans = previewState.answers[qi] || [];
-  if (q.s === 'single' || q.s === 'judge') ans = [oi];
-  else { var p = ans.indexOf(oi); if (p >= 0) ans.splice(p,1); else ans.push(oi); }
-  previewState.answers[qi] = ans;
-  renderPreview();
-  savePreviewState();
-}
-
-function submitQuestion(qi) {
-  if (!previewState) return;
-  var q = loadPapers()[previewState.paperIdx].d[qi];
-  var userAns = previewState.answers[qi] || [];
-  var correct = q.s === 'subjective' ? (userAns[0] && userAns[0].trim().length > 0) : (q.a.length === userAns.length && q.a.every(function(a){ return userAns.indexOf(a) >= 0; }));
-  previewState.submitted[qi] = { correct: correct };
-  renderPreview();
-  savePreviewState();
-}
-
-function resetPreview() {
-  if (!previewState) return;
-  previewState.answers = {};
-  previewState.submitted = {};
-  renderPreview();
-  savePreviewState();
-  savePreviewState();
-}
-
-// ==================== IMPORT / EXPORT ====================
-function handleImport(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var content = e.target.result;
-    var resultDiv = document.getElementById('importResult');
-    var imported = [];
-    if (file.name.endsWith('.json')) {
-      try {
-        var data = JSON.parse(content);
-        if (Array.isArray(data)) imported = data.filter(function(q){ return q.s && q.q && q.a; });
-        else { resultDiv.innerHTML = '<span style="color:var(--red)">JSON格式错误：需要题目数组</span>'; return; }
-      } catch(err) { resultDiv.innerHTML = '<span style="color:var(--red)">JSON解析失败: ' + err.message + '</span>'; return; }
-    } else if (file.name.endsWith('.html')) {
-      var match = content.match(/const\s+PAPERS\s*=\s*(\{[\s\S]*?\n\});/);
-      if (!match) { resultDiv.innerHTML = '<span style="color:var(--red)">未找到PAPERS数据</span>'; return; }
-      try {
-        var papersObj = eval('(' + match[1] + ')');
-        for (var key in papersObj) { if (papersObj[key].d) imported = imported.concat(papersObj[key].d); }
-      } catch(err) { resultDiv.innerHTML = '<span style="color:var(--red)">数据解析失败: ' + err.message + '</span>'; return; }
-    }
-    if (imported.length === 0) { resultDiv.innerHTML = '<span style="color:var(--muted)">未提取到题目</span>'; return; }
-    imported = imported.map(function(q){ return { s: q.s||'single', q: q.q||'', o: q.o||(q.s==='judge'?['正确','错误']:[]), a: q.a||[], e: q.e||'', tag: q.tag||'' }; });
-    var bank = loadBank();
-    var existing = {};
-    bank.forEach(function(q){ existing[q.q] = true; });
-    var newQs = imported.filter(function(q){ return !existing[q.q]; });
-    if (newQs.length === 0) { resultDiv.innerHTML = '<span style="color:var(--muted)">所有题目已存在，无新增</span>'; return; }
-    bank.push.apply(bank, newQs);
-    saveBank(bank);
-    resultDiv.innerHTML = '<span style="color:var(--green)">成功导入 ' + newQs.length + ' 道新题目（共' + imported.length + '道，' + (imported.length-newQs.length) + '道重复跳过）</span>';
-    document.getElementById('filterType').value = 'all';
-    document.getElementById('filterKeyword').value = '';
-    var ft = document.getElementById('filterTag'); if (ft) ft.value = '';
-    renderBank();
-    toast('导入 ' + newQs.length + ' 道题目');
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-function exportJSON() {
-  var bank = loadBank();
-  if (bank.length === 0) { toast('题库为空'); return; }
-  downloadBlob(new Blob([JSON.stringify(bank, null, 2)], {type:'application/json'}), '题库_' + dstr() + '.json');
-  toast('题库已导出');
-}
-
-function exportPapersHTML() {
-  var papers = loadPapers();
-  if (papers.length === 0) { toast('请先生成试卷'); return; }
-  var html = buildExportHTML(papers);
-  downloadBlob(new Blob([html], {type:'text/html;charset=utf-8'}), '试卷_' + dstr() + '.html');
-  toast('试卷HTML已导出');
-}
-
-function dstr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
-function pad(n) { return n < 10 ? '0'+n : ''+n; }
-
-function downloadBlob(blob, filename) {
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
-}
-
-function buildExportHTML(papers) {
-  var keys = [];
-  var obj = {};
-  for (var i = 0; i < papers.length; i++) {
-    var key = 'gk' + (i+1); keys.push(key);
-    obj[key] = { t: papers[i].t, s: papers[i].s, d: papers[i].d };
-  }
-  var lit = JSON.stringify(obj, null, 2).replace(/"([a-zA-Z_]\w*)":/g, '$1:').replace(/"/g, "'");
-
-  // Build the export JavaScript using single-quoted strings for HTML
-  var js = [];
-  js.push("var PAPERS = " + lit + ";");
-  js.push("var L = {s:'单选题',m:'多选题',j:'判断题',z:'主观题'};");
-  js.push("var LB = ['A','B','C','D','E','F','G','H'];");
-  js.push("var ST = {};");
-  js.push("function E(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}");
-  js.push("function F(q){if(q.s==='judge')return q.a[0]===0?'" + '正确' + "':'" + '错误' + "';return q.a.map(function(i){return LB[i];}).join('');}");
-  js.push("function I(){var ks=Object.keys(PAPERS);ks.forEach(function(k,i){ST[k]={a:{},s:{}};R(k,i);});");
-  js.push("function saveST(){try{var d={};Object.keys(ST).forEach(function(k){d[k]={a:ST[k].a,s:ST[k].s}});localStorage.setItem(\"gk_exp_state\",JSON.stringify(d));}catch(e){}}");
-  js.push("function loadST(){try{var d=JSON.parse(localStorage.getItem(\"gk_exp_state\"));if(d){Object.keys(d).forEach(function(k){ST[k]=d[k]});return true;}}catch(e){}return false;}");
-  js.push("document.getElementById('tabs').addEventListener('click',function(e){");
-  js.push("var t=e.target.closest('.tb');if(!t)return;");
-  js.push("document.querySelectorAll('#tabs .tb').forEach(function(x){x.classList.remove('active');});");
-  js.push("t.classList.add('active');");
-  js.push("document.querySelectorAll('.pn').forEach(function(x){x.classList.remove('active');});");
-  js.push("document.getElementById('p-'+t.dataset.p).classList.add('active');");
-  js.push("});}");
-  
-  // R = renderPaper - uses single quotes to avoid HTML attribute conflicts
-  js.push("function R(k,idx){");
-  js.push("var p=PAPERS[k];var st=ST[k];var n=p.d.length;");
-  js.push("var sb=Object.keys(st.s).length;var c=0;");
-  js.push("for(var x in st.s){if(st.s[x].o)c++;}");
-  js.push("var h='';");
-  js.push("h+='<div class=ph><h2>'+E(p.t)+'</h2><div class=mt>'+E(p.s)+' \u00b7 \u5171'+n+'\u9898</div></div>';");
-  js.push("h+='<div class=sb><div class=st>\u5df2\u7b54: <strong>'+sb+'/'+n+'</strong> &nbsp; \u6b63\u786e: <strong>'+c+'</strong> &nbsp; \u5f97\u5206: <strong>'+(sb>0?Math.round(c/sb*100):0)+'%</strong></div><div class=ac><button onclick=RST(\"'+k+'\") style=padding:5px 14px;border:1px solid var(--red);border-radius:5px;background:var(--card);color:var(--red);font-size:12px;cursor:pointer>\u91cd\u505a</button></div></div>';");
-  js.push("p.d.forEach(function(q,qi){");
-  js.push("var s=st.s[qi];var u=st.a[qi]||[];");
-  js.push("var cc=s?(s.o?'correct':'wrong'):'';");
-  js.push("var lb=q.s==='judge'?['" + '正确' + "','" + '错误' + "']:q.o.map(function(o,oi){return LB[oi]+'. '+o;});");
-  js.push("h+='<div class=\"cd '+(s?'submitted ':'')+cc+'\"><div class=qn><span>'+(qi+1)+'.</span><span class=\"qt '+q.s+'\">'+L[q.s[0]]+'</span>'+(s?(s.o?'<span style=color:var(--green);font-size:12px> \u2713</span>':'<span style=color:var(--red);font-size:12px> \u2717</span>'):'')+'</div><div class=qq>'+E(q.q)+'</div><div class=ops>';");
-  js.push("lb.forEach(function(l,oi){");
-  js.push("var cl='';");
-  js.push("if(s){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(u.indexOf(oi)>=0)cl='wrong-answer';}");
-  js.push("else if(u.indexOf(oi)>=0)cl='selected';");
-  js.push("h+='<div class=\"op '+cl+'\" data-qi='+qi+' data-oi='+oi+'><span class=opl>'+LB[oi]+'</span><span>'+E(l.replace(/^[A-H]\.\\s*/,''))+'</span></div>';");
-  js.push("});");
-  js.push("h+='</div>';");
-  js.push("if(q.s==='subjective'){h+='<textarea id='+k+'_'+qi+' style=width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px +(s?' disabled':'')+'>'+(u[0]||'')+'</textarea>';}");
-  js.push("if(!s)h+='<div style=margin-top:8px><button data-submit='+qi+' style=padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer>查看答案</button></div>';");
-  js.push("if(s){var ec=s.o?'correct-exp':'wrong-exp';h+='<div class=\"exp show '+ec+'\"><strong>\u6b63\u786e\u7b54\u6848\uff1a</strong>'+F(q)+(q.e?'<br><strong>\u89e3\u6790\uff1a</strong>'+E(q.e):'')+'</div>';}");
-  js.push("h+='</div>';");
-  js.push("});");
-  js.push("document.getElementById('p-'+idx).innerHTML=h;");
-  js.push("}");
-  
-  js.push("function C(k,qi,oi){var q=PAPERS[k].d[qi];var a=ST[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}ST[k].a[qi]=a;R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
-  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];if(q.s==='subjective'){var ta=document.getElementById('ta'+k+'_'+qi);if(ta){u=[ta.value];ST[k].a[qi]=u;}}var ok=q.s==='subjective'?(u[0]&&u[0].trim().length>0):(q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;}));ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
-  js.push("function RST(k){ST[k]={a:{},s:{}};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
-  js.push("document.addEventListener('click',function(e){");
-  js.push("var op=e.target.closest('.op');");
-  js.push("if(op&&op.dataset.qi!=null){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));}");
-  js.push("var btn=e.target.closest('button[data-submit]');");
-  js.push("if(btn){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];S(k,parseInt(btn.dataset.submit));}");
-  js.push("});");
-  
-  js.push("loadST();");js.push("I();");
-
-  // Build the full HTML
-  var parts = [];
-  parts.push('<!DOCTYPE html>');
-  parts.push('<html lang="zh-CN">');
-  parts.push('<head>');
-  parts.push('<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">');
-  parts.push('<title>' + escHtml(papers[0].t) + '</title>');
-  parts.push('<style>');
-  parts.push(':root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e0ded8;--accent:#2c5f8a;--al:#e8f0f7;--green:#2d7d46;--gb:#edf7f0;--red:#c0392b;--rb:#fef0ef}');
-  parts.push('*{box-sizing:border-box;margin:0;padding:0}');
-  parts.push('body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}');
-  parts.push('.c{max-width:860px;margin:0 auto;padding:24px 16px 60px}');
-  parts.push('h1{font-size:21px;text-align:center;margin:20px 0 6px}');
-  parts.push('.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}');
-  parts.push('.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}');
-  parts.push('.tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer}');
-  parts.push('.tb:hover{border-color:var(--accent)}.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}');
-  parts.push('.pn{display:none}.pn.active{display:block}');
-  parts.push('.sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}');
-  parts.push('.sb .st{display:flex;gap:16px;font-size:14px}.sb .st strong{color:var(--accent)}');
-  parts.push('.ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}');
-  parts.push('.ph h2{font-size:17px;margin-bottom:6px}.ph .mt{font-size:13px;color:var(--muted)}');
-  parts.push('.cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)}');
-  parts.push('.cd.submitted{}.cd.correct{border-color:var(--green);background:#fcfdf9}.cd.wrong{border-color:var(--red);background:#fefcfc}');
-  parts.push('.qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}');
-  parts.push('.qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}');
-  parts.push('.qt.single{color:#5b3ec4;background:#f3f0ff}.qt.multi{color:#b85c1e;background:#fff4ed}.qt.judge{color:#2d7d46;background:#edf7f0}');
-  parts.push('.qq{font-size:15px;margin:8px 0 12px;font-weight:500}');
-  parts.push('.ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}');
-  parts.push('.op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:14px}');
-  parts.push('.op:hover{border-color:var(--accent)}.op.selected{border-color:var(--accent);background:var(--al)}');
-  parts.push('.op.correct-answer{border-color:var(--green);background:var(--gb)}.op.wrong-answer{border-color:var(--red);background:var(--rb)}');
-  parts.push('.opl{font-weight:600;color:var(--muted);min-width:22px}');
-  parts.push('.exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}');
-  parts.push('.exp.show{display:block}.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}');
-  parts.push('</style></head><body><div class="c">');
-  parts.push('<h1>' + escHtml(papers[0].t) + '</h1>');
-  parts.push('<p class="sub">' + escHtml(papers[0].s) + ' \u00b7 \u5171' + papers.length + '\u5957</p>');
-  parts.push('<div class="tabs" id="tabs">');
-  for (var i = 0; i < papers.length; i++) {
-    parts.push('<div class="tb' + (i===0?' active':'') + '" data-p="' + i + '">' + escHtml(papers[i].t) + '</div>');
-  }
-  parts.push('</div>');
-  for (var i = 0; i < papers.length; i++) {
-    parts.push('<div class="pn' + (i===0?' active':'') + '" id="p-' + i + '"></div>');
-  }
-  parts.push('</div>');
-  parts.push('<script>' + js.join('') + '<\/script>');
-  parts.push('</body></html>');
-  
-  return parts.join('\n');
-}
-
-// ==================== INIT ====================
-function init() {
-  var savedTab = localStorage.getItem('gk_active_tab');
-  if (savedTab) {
-    var tabEl = document.querySelector('#mainTabs .tb[data-tab="' + savedTab + '"]');
-    if (tabEl) {
-      document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
-      tabEl.classList.add('active');
-      document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
-      document.getElementById('tab-' + savedTab).classList.add('active');
-    }
-  }
-  var ft2 = document.getElementById('filterTag'); if (ft2) ft2.value = '';
-  renderBank();
-  renderGenerate();
-  var bank = loadBank();
-  
-}
-
-function savePreviewState() {
-  if (!previewState) return;
-  try { localStorage.setItem('gk_preview_state', JSON.stringify(previewState)); } catch(e) {}
-}
-function loadPreviewState() {
-  try { var s = localStorage.getItem('gk_preview_state'); return s ? JSON.parse(s) : null; } catch(e) { return null; }
-}
-// Preview click delegation
-document.addEventListener('click', function(e) {
-  var previewEl = document.getElementById('previewContent');
-  if (!previewEl || !previewEl.contains(e.target)) return;
-  var op = e.target.closest('.op');
-  if (op) {
-    var card = op.closest('.cd');
-    if (!card || card.classList.contains('submitted')) return;
-    var oc = op.getAttribute('onclick') || '';
-    var m = oc.match(/toggleAnswer\((\d+),(\d+)\)/);
-    if (m) { toggleAnswer(parseInt(m[1]), parseInt(m[2])); }
-    return;
-  }
-  var btn = e.target.closest('button');
-  if (btn) {
-    var btnCard = btn.closest('.cd');
-    if (!btnCard || btnCard.classList.contains('submitted')) return;
-    var oc2 = btn.getAttribute('onclick') || '';
-    var m2 = oc2.match(/submitQuestion\((\d+)\)/);
-    if (m2) { submitQuestion(parseInt(m2[1])); }
-    return;
-  }
+// TABS
+document.getElementById('mainTabs').addEventListener('click',function(e){
+var tb=e.target.closest('.tb');if(!tb)return;
+switchTab(tb.dataset.tab);
+try{localStorage.setItem('gk_tab',tb.dataset.tab);}catch(e){}
 });
 
-// Restore saved preview state
-if (loadPapers().length > 0) {
-  var saved = loadPreviewState();
-  if (saved) { previewState = saved; switchTab('preview'); renderPreview(); previewState = saved; }
+function switchTab(name){
+document.querySelectorAll('#mainTabs .tb').forEach(function(t){t.classList.remove('active');});
+var el=document.querySelector('#mainTabs .tb[data-tab="'+name+'"]');
+if(el)el.classList.add('active');
+document.querySelectorAll('.pn').forEach(function(p){p.classList.remove('active');});
+document.getElementById('tab-'+name).classList.add('active');
+if(name==='bank')renderBank();
+if(name==='generate')renderGenerate();
+if(name==='preview')renderPreview();
+}
+
+function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);}catch(e){}}
+
+// BANK
+function populateTags(bank){
+var sel=document.getElementById('filterTag');if(!sel)return;
+sel.innerHTML='<option value="">全部标签</option>';
+var tags={};
+bank.forEach(function(q){if(q.tag)q.tag.split(/[,，]/).forEach(function(t){t=t.trim();if(t)tags[t]=true;});});
+Object.keys(tags).sort().forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;sel.appendChild(o);});
+}
+
+function renderBank(){
+var bank=L();
+var type=document.getElementById('filterType').value;
+var kw=document.getElementById('filterKeyword').value.toLowerCase();
+var tag=document.getElementById('filterTag').value;
+populateTags(bank);
+var f=bank;
+if(type!=='all')f=f.filter(function(q){return q.s===type;});
+if(kw)f=f.filter(function(q){return q.q.toLowerCase().indexOf(kw)>=0||(q.e||'').toLowerCase().indexOf(kw)>=0||(q.tag||'').toLowerCase().indexOf(kw)>=0;});
+if(tag)f=f.filter(function(q){if(!q.tag)return false;return q.tag.split(/[,，]/).map(function(t){return t.trim();}).indexOf(tag)>=0;});
+var s=bank.filter(function(q){return q.s==='single';}).length;
+var m=bank.filter(function(q){return q.s==='multi';}).length;
+var j=bank.filter(function(q){return q.s==='judge';}).length;
+var z=bank.filter(function(q){return q.s==='subjective';}).length;
+document.getElementById('bankStats').innerHTML='<div class="stat-item"><div class="num">'+bank.length+'</div><div class="lbl">题库总数</div></div><div class="stat-item"><div class="num">'+s+'</div><div class="lbl">单选题</div></div><div class="stat-item"><div class="num">'+m+'</div><div class="lbl">多选题</div></div><div class="stat-item"><div class="num">'+j+'</div><div class="lbl">判断题</div></div><div class="stat-item"><div class="num">'+z+'</div><div class="lbl">主观题</div></div>';
+var list=document.getElementById('qlist');
+if(f.length===0){list.innerHTML='<div class="empty">没有匹配的题目</div>';document.getElementById('qlistHeader').style.display='none';document.getElementById('btnBatchDelete').style.display='none';return;}
+var h='';
+for(var i=0;i<f.length;i++){
+var q=f[i],idx=bank.indexOf(q);
+var label=q.s==='judge'?'正确 / 错误':q.s==='subjective'?'主观题':(q.o||[]).join(' / ');
+var ans=q.s==='judge'?(q.a[0]===0?'正确':'错误'):q.s==='subjective'?(q.a[0]||'略'):(q.a||[]).map(function(i){return LB[i];}).join('');
+h+='<div class="qitem"><input type="checkbox" class="qcb" data-idx="'+idx+'" onchange="updateBatchUI()"><div class="qi"><span class="qt '+q.s+'">'+PT[q.s]+'</span><div class="qtxt">'+esc(q.q)+'</div><div class="qmeta">答案: '+ans+' | '+esc(label)+(q.tag?' | '+esc(q.tag):'')+'</div></div><div class="qact"><button class="btn small" onclick="openQuestionModal('+idx+')">编辑</button><button class="btn small danger" onclick="deleteQuestion('+idx+')">删除</button></div></div>';
+}
+list.innerHTML=h;
+document.getElementById('qlistHeader').style.display='none';
+document.getElementById('btnBatchDelete').style.display='none';
+document.getElementById('cbSelectAll').checked=false;
+}
+
+function updateBatchUI(){
+var cbs=document.querySelectorAll('.qcb:checked'),n=cbs.length;
+document.getElementById('qlistHeader').style.display=n>0?'block':'none';
+document.getElementById('btnBatchDelete').style.display=n>0?'inline-flex':'none';
+document.getElementById('selectedCount').textContent=n>0?'已选 '+n+' 题':'';
+}
+function toggleSelectAll(){var a=document.getElementById('cbSelectAll').checked;document.querySelectorAll('.qcb').forEach(function(cb){cb.checked=a;});updateBatchUI();}
+function batchDelete(){
+var idxs=[];document.querySelectorAll('.qcb:checked').forEach(function(cb){idxs.push(parseInt(cb.dataset.idx));});
+if(idxs.length===0){toast('请先选择题目');return;}
+if(!confirm('确定删除 '+idxs.length+' 道题目？'))return;
+var bank=L();idxs.sort(function(a,b){return b-a;});idxs.forEach(function(i){bank.splice(i,1);});S(bank);renderBank();toast('已删除 '+idxs.length+' 道');
+}
+function deleteQuestion(idx){if(!confirm('确定删除？'))return;var b=L();b.splice(idx,1);S(b);renderBank();toast('已删除');}
+
+// MODAL
+function openQuestionModal(idx){
+var bank=L();
+document.getElementById('editIndex').value=idx>=0?idx:-1;
+if(idx>=0&&idx<bank.length){
+var q=bank[idx];
+document.getElementById('modalTitle').textContent='编辑题目';
+document.getElementById('qType').value=q.s;
+document.getElementById('qText').value=q.q;
+document.getElementById('qOptions').value=(q.o||[]).join('\n');
+document.getElementById('qAnswer').value=(q.a||[]).join(',');
+document.getElementById('qExplain').value=q.e||'';
+document.getElementById('qTag').value=q.tag||'';
+}else{
+document.getElementById('modalTitle').textContent='添加题目';
+document.getElementById('qType').value='single';
+document.getElementById('qText').value='';
+document.getElementById('qOptions').value='';
+document.getElementById('qAnswer').value='';
+document.getElementById('qExplain').value='';
+document.getElementById('qTag').value='';
+}
+updateOptVis();
+document.getElementById('questionModal').classList.add('show');
+}
+function closeQuestionModal(){document.getElementById('questionModal').classList.remove('show');}
+document.getElementById('qType').addEventListener('change',updateOptVis);
+function updateOptVis(){
+var v=document.getElementById('qType').value;
+document.getElementById('optGroup').style.display=(v==='single'||v==='multi')?'block':'none';
+document.getElementById('judgeOptGroup').style.display=v==='judge'?'block':'none';
+document.getElementById('subjOptGroup').style.display=v==='subjective'?'block':'none';
+}
+function saveQuestion(){
+var idx=parseInt(document.getElementById('editIndex').value);
+var type=document.getElementById('qType').value;
+var text=document.getElementById('qText').value.trim();
+var explain=document.getElementById('qExplain').value.trim();
+var tag=document.getElementById('qTag').value.trim();
+var ansStr=document.getElementById('qAnswer').value.trim();
+if(!text){toast('请输入题目');return;}
+var options=[];
+if(type==='judge')options=['正确','错误'];
+else if(type==='subjective')options=[];
+else options=document.getElementById('qOptions').value.split('\n').map(function(s){return s.trim();}).filter(function(s){return s;});
+if((type==='single'||type==='multi')&&options.length<2){toast('至少2个选项');return;}
+if(!ansStr&&type!=='subjective'){toast('请输入答案');return;}
+var answers=(ansStr||'0').split(',').map(function(s){return parseInt(s.trim());}).filter(function(n){return!isNaN(n);});
+if(type!=='subjective'&&answers.length===0){toast('答案格式错误');return;}
+var q={s:type,q:text,o:options,a:answers,e:explain,tag:tag};
+var bank=L();
+if(idx>=0&&idx<bank.length)bank[idx]=q;else bank.push(q);
+S(bank);closeQuestionModal();renderBank();toast(idx>=0?'已更新':'已添加');
+}
+document.getElementById('questionModal').addEventListener('click',function(e){if(e.target===this)closeQuestionModal();});
+
+// GENERATE
+function getAllTopics(){var bank=L(),topics={};bank.forEach(function(q){if(q.tag)q.tag.split(/[,，]/).forEach(function(t){t=t.trim();if(t)topics[t]=true;});});return Object.keys(topics);}
+function renderGenerate(){
+var bank=L();
+var s=bank.filter(function(q){return q.s==='single';}).length;
+var m=bank.filter(function(q){return q.s==='multi';}).length;
+var j=bank.filter(function(q){return q.s==='judge';}).length;
+var z=bank.filter(function(q){return q.s==='subjective';}).length;
+document.getElementById('genStats').innerHTML='<div class="stat-item"><div class="num">'+bank.length+'</div><div class="lbl">题库总数</div></div><div class="stat-item"><div class="num">'+s+'</div><div class="lbl">单选题</div></div><div class="stat-item"><div class="num">'+m+'</div><div class="lbl">多选题</div></div><div class="stat-item"><div class="num">'+j+'</div><div class="lbl">判断题</div></div><div class="stat-item"><div class="num">'+z+'</div><div class="lbl">主观题</div></div>';
+var topics=getAllTopics(),tagsDiv=document.getElementById('topicTags');
+if(topics.length===0){tagsDiv.innerHTML='<span style="font-size:12px;color:var(--muted)">暂无知识点标签</span>';}
+else{var h='';topics.forEach(function(t){h+='<span class="tag" data-tag="'+esc(t)+'" onclick="this.classList.toggle(\'selected\')">'+esc(t)+'</span>';});tagsDiv.innerHTML=h+'<span style="font-size:11px;color:var(--muted);margin-left:4px">（点击筛选）</span>';}
+renderPaperList();
+}
+function getSelectedTopics(){var r=[];document.querySelectorAll('#topicTags .tag.selected').forEach(function(el){r.push(el.dataset.tag);});return r;}
+function shuffle(a){var arr=a.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
+function generatePapers(){
+var bank=L();
+var nS=parseInt(document.getElementById('cfgSingle').value)||0;
+var nM=parseInt(document.getElementById('cfgMulti').value)||0;
+var nJ=parseInt(document.getElementById('cfgJudge').value)||0;
+var nZ=parseInt(document.getElementById('cfgSubjective').value)||0;
+if(isNaN(nS))nS=0;if(isNaN(nM))nM=0;if(isNaN(nJ))nJ=0;if(isNaN(nZ))nZ=0;
+var nPapers=parseInt(document.getElementById('cfgCount').value)||1;if(isNaN(nPapers))nPapers=1;
+var name=document.getElementById('cfgName').value.trim()||'试卷';
+var subtitle=document.getElementById('cfgSubtitle').value.trim()||'试卷';
+var selTopics=getSelectedTopics(),pool=bank;
+if(selTopics.length>0){pool=bank.filter(function(q){if(!q.tag)return false;var tags=q.tag.split(/[,，]/).map(function(t){return t.trim();});return selTopics.some(function(st){return tags.indexOf(st)>=0;});});}
+var singles=pool.filter(function(q){return q.s==='single';});
+var multis=pool.filter(function(q){return q.s==='multi';});
+var judges=pool.filter(function(q){return q.s==='judge';});
+var subjectives=pool.filter(function(q){return q.s==='subjective';});
+if(nS>singles.length){toast('单选题不足！需要'+nS+'题，只有'+singles.length+'题');return;}
+if(nM>multis.length){toast('多选题不足！需要'+nM+'题，只有'+multis.length+'题');return;}
+if(nJ>judges.length){toast('判断题不足！需要'+nJ+'题，只有'+judges.length+'题');return;}
+if(nZ>subjectives.length){toast('主观题不足！需要'+nZ+'题，只有'+subjectives.length+'题');return;}
+if(nS+nM+nJ+nZ===0){toast('请至少选择一种题型');return;}
+var papers=[],uS={},uM={},uJ={},uZ={};
+for(var pi=0;pi<nPapers;pi++){
+function ga(arr,used){var a=[];arr.forEach(function(q,i){if(!used[i])a.push(q);});return a.length>=1?a:arr;}
+var aS=ga(singles,uS),aM=ga(multis,uM),aJ=ga(judges,uJ),aZ=ga(subjectives,uZ);
+var sS=shuffle(aS).slice(0,nS),sM=shuffle(aM).slice(0,nM),sJ=shuffle(aJ).slice(0,nJ),sZ=shuffle(aZ).slice(0,nZ);
+sS.forEach(function(q){uS[singles.indexOf(q)]=true;});
+sM.forEach(function(q){uM[multis.indexOf(q)]=true;});
+sJ.forEach(function(q){uJ[judges.indexOf(q)]=true;});
+sZ.forEach(function(q){uZ[subjectives.indexOf(q)]=true;});
+var others=shuffle(sM.concat(sJ).concat(sZ)),oi=0,si=0;
+var segSize=nS>0?Math.max(1,Math.ceil(nS/(others.length+1))):999,sCount=0;
+var qs=[];
+while(si<sS.length||oi<others.length){
+if(si<sS.length&&(sCount<segSize||oi>=others.length)){qs.push(sS[si++]);sCount++;}
+else if(oi<others.length){qs.push(others[oi++]);sCount=0;}
+}
+while(oi<others.length)qs.push(others[oi++]);
+papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
+}
+SP(papers);renderPaperList();toast('已生成 '+nPapers+' 套试卷');
+}
+function renderPaperList(){
+var papers=LP(),div=document.getElementById('paperPreview'),btn=document.getElementById('btnExportHTML');
+if(papers.length===0){div.innerHTML='<p style="font-size:13px;color:var(--muted);margin-top:12px">点击"随机组卷"生成试卷</p>';btn.disabled=true;return;}
+btn.disabled=false;
+var h='<h4 style="margin-bottom:8px">已生成试卷</h4>';
+papers.forEach(function(p,i){
+var sc=p.d.filter(function(q){return q.s==='single';}).length;
+var mc=p.d.filter(function(q){return q.s==='multi';}).length;
+var jc=p.d.filter(function(q){return q.s==='judge';}).length;
+var zc=p.d.filter(function(q){return q.s==='subjective';}).length;
+h+='<div class="pp-card" onclick="previewPaper('+i+')"><strong>'+esc(p.t)+'</strong><span style="font-size:13px;color:var(--muted);margin-left:8px">'+p.d.length+'题 (单选'+sc+' + 多选'+mc+' + 判断'+jc+' + 主观'+zc+')</span></div>';
+});
+div.innerHTML=h;
+}
+
+// PREVIEW
+var pvS=null;
+function previewPaper(idx){var papers=LP();if(idx<0||idx>=papers.length)return;pvS={pi:idx,ans:{},sub:{}};switchTab('preview');renderPreview();}
+function renderPreview(){
+if(!pvS)return;
+var papers=LP(),paper=papers[pvS.pi],st=pvS,total=paper.d.length;
+var done=Object.keys(st.sub).length,correct=0;
+for(var k in st.sub){if(st.sub[k].ok)correct++;}
+var html='';
+if(papers.length>1){html+='<div class="tabs" style="position:static;background:transparent;padding:0">';papers.forEach(function(p,i){html+='<div class="tb'+(i===pvS.pi?' active':'')+'" onclick="previewPaper('+i+')">'+esc(p.t)+'</div>';});html+='</div>';}
+html+='<div class="ph"><h2>'+esc(paper.t)+'</h2><div class="mt">'+esc(paper.s)+' · 共'+total+'题</div></div>';
+html+='<div class="sb"><div class="st">已答: <strong>'+done+'/'+total+'</strong> 正确: <strong>'+correct+'</strong> 得分: <strong>'+(done>0?Math.round(correct/done*100):0)+'%</strong></div><div class="ac"><button class="btn small danger" onclick="resetPV()">重做</button></div></div>';
+paper.d.forEach(function(q,qi){
+var sub=st.sub[qi],ua=st.ans[qi]||[],cc=sub?(sub.ok?'correct':'wrong'):'';
+var ol=q.s==='judge'?['正确','错误']:q.s==='subjective'?[]:q.o.map(function(o,oi){return LB[oi]+'. '+o;});
+html+='<div class="cd '+(sub?'submitted ':'')+cc+'">';
+html+='<div class="qn"><span>'+(qi+1)+'.</span><span class="qt '+q.s+'">'+PT[q.s]+'</span>'+(sub?(sub.ok?'<span style="color:var(--green);font-size:12px"> ✓ 正确</span>':'<span style="color:var(--red);font-size:12px"> ✗ 错误</span>'):'')+'</div>';
+html+='<div class="qq">'+esc(q.q)+'</div>';
+if(q.s==='subjective'){html+='<textarea id="pvTa-'+qi+'" style="width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px"'+(sub?' disabled':'')+'>'+esc(ua[0]||'')+'</textarea>';}
+else{html+='<div class="ops">';ol.forEach(function(l,oi){var cl='';if(sub){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(ua.indexOf(oi)>=0)cl='wrong-answer';}else if(ua.indexOf(oi)>=0)cl='selected';html+='<div class="op '+cl+'" data-qi="'+qi+'" data-oi="'+oi+'"><span class="opl">'+LB[oi]+'</span><span>'+esc(l.replace(/^[A-H]\.\s*/,''))+'</span></div>';});html+='</div>';}
+if(!sub){html+='<div style="margin-top:8px"><button class="btn accent small" data-submit="'+qi+'">查看答案</button></div>';}
+if(sub){var ec=sub.ok?'correct-exp':'wrong-exp';html+='<div class="exp show '+ec+'"><strong>正确答案：</strong>'+fmtAns(q)+(q.e?'<br><strong>解析：</strong>'+esc(q.e):'')+'</div>';}
+html+='</div>';
+});
+document.getElementById('previewContent').innerHTML=html;
+if(!document.getElementById('previewContent')._pv){
+document.getElementById('previewContent')._pv=true;
+document.getElementById('previewContent').addEventListener('click',function(e){
+if(!pvS)return;
+var op=e.target.closest('.op');
+if(op){var card=op.closest('.cd');if(card&&card.classList.contains('submitted'))return;pvAns(parseInt(op.dataset.qi),parseInt(op.dataset.oi));return;}
+var btn=e.target.closest('button[data-submit]');
+if(btn){var qi2=parseInt(btn.dataset.submit);if(LP()[pvS.pi].d[qi2].s==='subjective'){var ta=document.getElementById('pvTa-'+qi2);if(ta)pvS.ans[qi2]=[ta.value];}pvSubmit(qi2);}
+});
+}
+savePV();
+}
+function pvAns(qi,oi){var q=LP()[pvS.pi].d[qi],a=pvS.ans[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}pvS.ans[qi]=a;renderPreview();}
+function pvSubmit(qi){var q=LP()[pvS.pi].d[qi],ua=pvS.ans[qi]||[];var ok=q.s==='subjective'?(ua[0]&&ua[0].trim().length>0):(q.a.length===ua.length&&q.a.every(function(a){return ua.indexOf(a)>=0;}));pvS.sub[qi]={ok:ok};renderPreview();}
+function resetPV(){if(!pvS)return;pvS.ans={};pvS.sub={};renderPreview();}
+function fmtAns(q){if(q.s==='subjective')return q.a[0]||'略';if(q.s==='judge')return q.a[0]===0?'正确':'错误';return(q.a||[]).map(function(i){return LB[i];}).join('');}
+function savePV(){if(!pvS)return;try{localStorage.setItem('gk_pv',JSON.stringify(pvS));}catch(e){}}
+function loadPV(){try{var s=localStorage.getItem('gk_pv');if(s){pvS=JSON.parse(s);return true;}}catch(e){}return false;}
+
+// IMPORT/EXPORT
+function handleImport(event){
+var file=event.target.files[0];if(!file)return;
+var reader=new FileReader();
+reader.onload=function(e){
+var content=e.target.result,div=document.getElementById('importResult'),imported=[];
+if(file.name.endsWith('.json')){
+try{var data=JSON.parse(content);if(Array.isArray(data))imported=data.filter(function(q){return q.s&&q.q;});else{div.innerHTML='<span style="color:var(--red)">JSON格式错误</span>';return;}}
+catch(err){div.innerHTML='<span style="color:var(--red)">JSON解析失败: '+err.message+'</span>';return;}
+}else if(file.name.endsWith('.html')){
+var match=content.match(/const\s+PAPERS\s*=\s*(\{[\s\S]*?\n\});/);
+if(!match){div.innerHTML='<span style="color:var(--red)">未找到PAPERS数据</span>';return;}
+try{var papersObj=eval('('+match[1]+')');for(var key in papersObj){if(papersObj[key].d)imported=imported.concat(papersObj[key].d);}}
+catch(err){div.innerHTML='<span style="color:var(--red)">解析失败: '+err.message+'</span>';return;}
+}else{div.innerHTML='<span style="color:var(--red)">不支持的文件类型</span>';return;}
+if(imported.length===0){div.innerHTML='<span style="color:var(--muted)">未提取到题目</span>';return;}
+imported=imported.map(function(q){return{s:q.s||'single',q:q.q||'',o:q.o||(q.s==='judge'?['正确','错误']:[]),a:q.a||[],e:q.e||'',tag:q.tag||''};});
+var bank=L(),existing={};
+bank.forEach(function(q){existing[q.q]=true;});
+var newQs=imported.filter(function(q){return!existing[q.q];});
+if(newQs.length===0){div.innerHTML='<span style="color:var(--muted)">所有题目已存在，无新增</span>';return;}
+bank=bank.concat(newQs);S(bank);
+document.getElementById('filterType').value='all';
+document.getElementById('filterKeyword').value='';
+var ft=document.getElementById('filterTag');if(ft)ft.value='';
+div.innerHTML='<span style="color:var(--green)">成功导入 '+newQs.length+' 道新题目（共'+imported.length+'道，'+(imported.length-newQs.length)+'道重复跳过）</span>';
+renderBank();toast('导入 '+newQs.length+' 道题目');
+};
+reader.readAsText(file);event.target.value='';
+}
+function exportJSON(){var bank=L();if(bank.length===0){toast('题库为空');return;}var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([JSON.stringify(bank,null,2)],{type:'application/json'}),'题库_'+ds+'.json');toast('题库已导出');}
+function exportPapersHTML(){var papers=LP();if(papers.length===0){toast('请先生成试卷');return;}var html=buildExport(papers);var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([html],{type:'text/html;charset=utf-8'}),'试卷_'+ds+'.html');toast('试卷已导出');}
+function pad(n){return n<10?'0'+n:''+n;}
+function download(blob,name){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
+
+function buildExport(papers){
+var keys=[],obj={};
+papers.forEach(function(p,i){var k='gk'+(i+1);keys.push(k);obj[k]={t:p.t,s:p.s,d:p.d};});
+var lit=JSON.stringify(obj,null,2).replace(/"([a-zA-Z_]\\w*)":/g,'$1:').replace(/"/g,"'");
+var css=':root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e0ded8;--accent:#2c5f8a;--al:#e8f0f7;--green:#2d7d46;--gb:#edf7f0;--red:#c0392b;--rb:#fef0ef}*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}.c{max-width:860px;margin:0 auto;padding:24px 16px 60px}h1{font-size:21px;text-align:center;margin:20px 0 6px}.sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0}.tb{padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--card);font-size:13px;cursor:pointer;transition:all .15s}.tb:hover{border-color:var(--accent)}.tb.active{background:var(--accent);color:#fff;border-color:var(--accent)}.pn{display:none}.pn.active{display:block}.sb{position:sticky;top:52px;z-index:9;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)}.sb .st{display:flex;gap:16px;font-size:14px}.sb .st strong{color:var(--accent)}.ph{text-align:center;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}.ph h2{font-size:17px;margin-bottom:6px}.ph .mt{font-size:13px;color:var(--muted)}.cd{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:border-color .2s}.cd.submitted{pointer-events:none}.cd.correct{border-color:var(--green);background:#fcfdf9}.cd.wrong{border-color:var(--red);background:#fefcfc}.qn{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:4px;display:flex;align-items:center;gap:8px}.qt{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px}.qt.single{color:#5b3ec4;background:#f3f0ff}.qt.multi{color:#b85c1e;background:#fff4ed}.qt.judge{color:#2d7d46;background:#edf7f0}.qt.subjective{color:#8b4513;background:#fff8f0}.qq{font-size:15px;margin:8px 0 12px;font-weight:500}.ops{list-style:none;padding:0;display:flex;flex-direction:column;gap:6px}.op{display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;font-size:14px}.op:hover{border-color:var(--accent)}.op.selected{border-color:var(--accent);background:var(--al)}.op.correct-answer{border-color:var(--green);background:var(--gb)}.op.wrong-answer{border-color:var(--red);background:var(--rb)}.opl{font-weight:600;color:var(--muted);min-width:22px}.exp{margin-top:12px;padding:12px;border-radius:6px;background:#fafaf7;font-size:13px;display:none;border-left:3px solid var(--accent)}.exp.show{display:block}.exp.correct-exp{border-left-color:var(--green);background:var(--gb)}.exp.wrong-exp{border-left-color:var(--red);background:var(--rb)}';
+var tabsH='',panelsH='';
+papers.forEach(function(p,i){tabsH+='<div class="tb'+(i===0?' active':'')+'" data-p="'+i+'">'+esc(p.t)+'</div>';panelsH+='<div class="pn'+(i===0?' active':'')+'" id="p-'+i+'"></div>';});
+var x=[];
+x.push("var P="+lit+";");
+x.push("var L={s:'单选题',m:'多选题',j:'判断题',z:'主观题'};var B=['A','B','C','D','E','F','G','H'];var S={};");
+x.push("function E(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}");
+x.push("function F(q){if(q.s==='subjective')return q.a[0]||'略';if(q.s==='judge')return q.a[0]===0?'正确':'错误';return(q.a||[]).map(function(i){return B[i];}).join('');}");
+x.push("function I(){Object.keys(P).forEach(function(k,i){S[k]={a:{},s:{}};R(k,i);});document.getElementById('tabs').addEventListener('click',function(e){var t=e.target.closest('.tb');if(!t)return;document.querySelectorAll('#tabs .tb').forEach(function(x){x.classList.remove('active');});t.classList.add('active');document.querySelectorAll('.pn').forEach(function(x){x.classList.remove('active');});document.getElementById('p-'+t.dataset.p).classList.add('active');});}");
+x.push("function R(k,idx){var p=P[k],st=S[k],n=p.d.length,sb=Object.keys(st.s).length,c=0;for(var x in st.s){if(st.s[x].o)c++;}var h='';h+='<div class=ph><h2>'+E(p.t)+'</h2><div class=mt>'+E(p.s)+' · 共'+n+'题</div></div>';h+='<div class=sb><div class=st>已答: <strong>'+sb+'/'+n+'</strong> 正确: <strong>'+c+'</strong> 得分: <strong>'+(sb>0?Math.round(c/sb*100):0)+'%</strong></div><div class=ac><button onclick=RST(\"'+k+'\") style=\"padding:5px 14px;border:1px solid var(--red);border-radius:5px;background:var(--card);color:var(--red);font-size:12px;cursor:pointer\">重做</button></div></div>';p.d.forEach(function(q,qi){var s=st.s[qi],u=st.a[qi]||[],cc=s?(s.o?'correct':'wrong'):'';var lb=q.s==='judge'?['正确','错误']:q.s==='subjective'?[]:q.o.map(function(o,oi){return B[oi]+'. '+o;});h+='<div class=\"cd '+(s?'submitted ':'')+cc+'\"><div class=qn><span>'+(qi+1)+'.</span><span class=\"qt '+q.s+'\">'+L[q.s[0]]+'</span>'+(s?(s.o?'<span style=\"color:var(--green);font-size:12px\"> ✓</span>':'<span style=\"color:var(--red);font-size:12px\"> ✗</span>'):'')+'</div><div class=qq>'+E(q.q)+'</div>';if(q.s==='subjective'){h+='<textarea id=\"ta'+k+'_'+qi+'\" style=\"width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px\"'+(s?' disabled':'')+'>'+E(u[0]||'')+'</textarea>';}else{h+='<div class=ops>';lb.forEach(function(l,oi){var cl='';if(s){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(u.indexOf(oi)>=0)cl='wrong-answer';}else if(u.indexOf(oi)>=0)cl='selected';h+='<div class=\"op '+cl+'\" data-qi='+qi+' data-oi='+oi+'><span class=opl>'+B[oi]+'</span><span>'+E(l.replace(/^[A-H]\\.\\s*/,''))+'</span></div>';});h+='</div>';}if(!s)h+='<div style=\"margin-top:8px\"><button data-submit='+qi+' style=\"padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer\">查看答案</button></div>';if(s){var ec=s.o?'correct-exp':'wrong-exp';h+='<div class=\"exp show '+ec+'\"><strong>正确答案：</strong>'+F(q)+(q.e?'<br><strong>解析：</strong>'+E(q.e):'')+'</div>';}h+='</div>';});document.getElementById('p-'+idx).innerHTML=h;}");
+x.push("function C(k,qi,oi){var q=P[k].d[qi],a=S[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}S[k].a[qi]=a;R(k,Object.keys(P).indexOf(k));saveST();}");
+x.push("function SB(k,qi){var q=P[k].d[qi];if(q.s==='subjective'){var ta=document.getElementById('ta'+k+'_'+qi);if(ta)S[k].a[qi]=[ta.value];}var u=S[k].a[qi]||[];var ok=q.s==='subjective'?(u[0]&&u[0].trim().length>0):(q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;}));S[k].s[qi]={o:ok};R(k,Object.keys(P).indexOf(k));saveST();}");
+x.push("function RST(k){S[k]={a:{},s:{}};R(k,Object.keys(P).indexOf(k));saveST();}");
+x.push("function saveST(){try{var d={};Object.keys(S).forEach(function(k){d[k]={a:S[k].a,s:S[k].s};});localStorage.setItem('gk_xs',JSON.stringify(d));}catch(e){}}");
+x.push("function loadST(){try{var d=JSON.parse(localStorage.getItem('gk_xs'));if(d){Object.keys(d).forEach(function(k){S[k]=d[k];});return true;}}catch(e){}return false;}");
+x.push("document.addEventListener('click',function(e){var op=e.target.closest('.op');if(op&&op.dataset.qi!=null){var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));return;}var btn=e.target.closest('button[data-submit]');if(btn){var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];SB(k,parseInt(btn.dataset.submit));}});");
+x.push("loadST();I();");
+return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">\n<title>'+esc(papers[0].t)+'</title>\n<style>\n'+css+'\n</style>\n</head>\n<body>\n<div class="c">\n<h1>'+esc(papers[0].t)+'</h1>\n<p class="sub">'+esc(papers[0].s)+' · 共'+papers.length+'套</p>\n<div class="tabs" id="tabs">'+tabsH+'</div>\n'+panelsH+'\n</div>\n<script>\n'+x.join('\n')+'\n<\\/script>\n</body>\n</html>';
+}
+
+// INIT
+function init(){
+var ft=document.getElementById('filterTag');if(ft)ft.value='';
+restoreTab();renderBank();renderGenerate();
+if(LP().length>0){if(loadPV()){renderPreview();}}
 }
 init();
+
 </script>
 </body>
 </html>
