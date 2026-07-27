@@ -1,5 +1,5 @@
 """试卷导出服务 - 接收 papers JSON，返回独立交互 HTML"""
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, make_response
 import json, io
 
 app = Flask(__name__)
@@ -8,13 +8,11 @@ CSS = ':root{--bg:#f5f4f0;--card:#fff;--text:#2c2c2c;--muted:#6b6b6b;--border:#e
 LABELS = {'single': '单选题', 'multi': '多选题', 'judge': '判断题', 'subjective': '主观题'}
 LB = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
-@app.route('/export', methods=['POST', 'OPTIONS'])
+@app.route('/export', methods=['POST', 'GET'])
 def do_export():
-    if request.method == 'OPTIONS':
-        resp = app.make_default_options_response()
-        resp.headers['Access-Control-Allow-Origin'] = '*'
-        resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-        return resp
+
+    if request.method == 'GET':
+        return 'OK'
     papers = request.json
     if not papers:
         return 'No papers', 400
@@ -63,6 +61,17 @@ I();'''
     resp = send_file(buf, mimetype='text/html;charset=utf-8', as_attachment=True, download_name='试卷.html')
     resp.headers['Access-Control-Allow-Origin'] = '*'
     return resp
+
+@app.after_request
+def add_cors(resp):
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    resp.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    resp.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+    return resp
+
+@app.route('/export', methods=['OPTIONS'])
+def handle_options():
+    return make_response('', 204)
 
 if __name__ == '__main__':
     print('Export server: http://localhost:5001/export')
