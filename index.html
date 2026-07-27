@@ -324,27 +324,27 @@ if(nM*nPapers>multis.length){toast('多选题不足(不重复)！');return;}
 if(nJ*nPapers>judges.length){toast('判断题不足(不重复)！');return;}
 if(nZ*nPapers>subjectives.length){toast('主观题不足(不重复)！');return;}
 }
-var papers=[];
-var uS={},uM={},uJ={},uZ={};
+var papers=[],uS={},uM={},uJ={},uZ={};
 for(var pi=0;pi<nPapers;pi++){
 var aS=[],aM=[],aJ=[],aZ=[];
 for(var i=0;i<singles.length;i++){if(!uS[i])aS.push(singles[i]);}
 for(var i=0;i<multis.length;i++){if(!uM[i])aM.push(multis[i]);}
 for(var i=0;i<judges.length;i++){if(!uJ[i])aJ.push(judges[i]);}
 for(var i=0;i<subjectives.length;i++){if(!uZ[i])aZ.push(subjectives[i]);}
-if(aS.length<nS)aS=singles;
-if(aM.length<nM)aM=multis;
-if(aJ.length<nJ)aJ=judges;
-if(aZ.length<nZ)aZ=subjectives;
+if(aS.length<nS)aS=singles.slice();
+if(aM.length<nM)aM=multis.slice();
+if(aJ.length<nJ)aJ=judges.slice();
+if(aZ.length<nZ)aZ=subjectives.slice();
 var sS=shuffle(aS).slice(0,nS);
 var sM=shuffle(aM).slice(0,nM);
 var sJ=shuffle(aJ).slice(0,nJ);
 var sZ=shuffle(aZ).slice(0,nZ);
-for(var i=0;i<sS.length;i++)uS[singles.indexOf(sS[i])]=true;
-for(var i=0;i<sM.length;i++)uM[multis.indexOf(sM[i])]=true;
-for(var i=0;i<sJ.length;i++)uJ[judges.indexOf(sJ[i])]=true;
-for(var i=0;i<sZ.length;i++)uZ[subjectives.indexOf(sZ[i])]=true;
-var qs=shuffle(sS.concat(sM).concat(sJ).concat(sZ));
+for(var i=0;i<sS.length;i++){var idx=singles.indexOf(sS[i]);if(idx>=0)uS[idx]=true;}
+for(var i=0;i<sM.length;i++){var idx=multis.indexOf(sM[i]);if(idx>=0)uM[idx]=true;}
+for(var i=0;i<sJ.length;i++){var idx=judges.indexOf(sJ[i]);if(idx>=0)uJ[idx]=true;}
+for(var i=0;i<sZ.length;i++){var idx=subjectives.indexOf(sZ[i]);if(idx>=0)uZ[idx]=true;}
+var qs=sS.concat(sM).concat(sJ).concat(sZ);
+qs=shuffle(qs);
 papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
 }
 SP(papers);renderPaperList();toast('已生成 '+nPapers+' 套试卷');
