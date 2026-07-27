@@ -1,33 +1,40 @@
 # 试卷生成器
 
-试卷生成 · 智能题库 · Python 版
+试卷生成 · 智能题库
 
-## 快速开始
+## 使用
 
-双击 `run.bat` 一键启动，或：
-
-```bash
-pip install flask
-python app.py
-# 打开 http://localhost:5000
-```
+1. 双击 `index.html` 打开主界面
+2. 导入题库 JSON → 组卷 → 预览
+3. 导出前需先启动导出服务：
+   ```bash
+   python export_server.py
+   ```
+   按钮旁有实时状态指示：🟢 已启动 / 🔴 未启动
 
 ## 功能
 
-- 题库管理 — 单选/多选/判断/主观题，批量删除
-- 智能组卷 — 自定义题型分布、套数、标签筛选、不重复开关
-- 预览测试 — 交互答题、实时评分
-- 导入导出 — JSON 题库导入，独立试卷 HTML 导出
-- 数据持久化 — `questions.json` 自动保存
+- 题库管理（单选/多选/判断/主观，批量删除，标签筛选）
+- 智能组卷（自定义题型分布、套数、不重复开关）
+- 预览测试（交互答题、实时评分、题型筛选、折叠标签）
+- 导入导出（JSON 题库导入，Python 服务端生成试卷 HTML）
 
 ## 文件
 
 | 文件 | 说明 |
 |------|------|
-| `app.py` | Flask 主程序 |
-| `run.bat` | Windows 一键启动 |
-| `requirements.txt` | 依赖 (flask) |
+| `index.html` | 主程序 |
+| `export_server.py` | 导出服务（需 Python Flask） |
 | `题库导入模板.json` | 导入格式参考 |
+
+## 依赖
+
+- 浏览器（Edge/Chrome）
+- Python 3.10+ + Flask（仅导出功能需要）
+
+```bash
+pip install flask
+```
 
 ## License
 
