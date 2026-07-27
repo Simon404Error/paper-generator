@@ -157,9 +157,9 @@ textarea{resize:vertical;min-height:60px}
     <div class="cfg-grid">
       <div class="cfg-item"><label>试卷名称前缀</label><input type="text" id="cfgName" value="试卷"></div>
       <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" value="5" min="1" max="20"></div>
-      <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="35" min="0" max="100"></div>
-      <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="10" min="0" max="50"></div>
-      <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="5" min="0" max="30"></div>
+      <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="1" min="0" max="100"></div>
+      <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="1" min="0" max="50"></div>
+      <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="1" min="0" max="30"></div>
       <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="冲刺卷"></div>
     </div>
     <div style="margin-top:12px">
@@ -486,9 +486,9 @@ function shuffle(arr) {
 
 function generatePapers() {
   var bank = loadBank();
-  var nSingle = parseInt(document.getElementById('cfgSingle').value) || 35;
-  var nMulti = parseInt(document.getElementById('cfgMulti').value) || 10;
-  var nJudge = parseInt(document.getElementById('cfgJudge').value) || 5;
+  var nSingle = parseInt(document.getElementById('cfgSingle').value); if (isNaN(nSingle)) nSingle = 1;
+  var nMulti = parseInt(document.getElementById('cfgMulti').value); if (isNaN(nMulti)) nMulti = 1;
+  var nJudge = parseInt(document.getElementById('cfgJudge').value); if (isNaN(nJudge)) nJudge = 1;
   var nPapers = parseInt(document.getElementById('cfgCount').value) || 5;
   var name = document.getElementById('cfgName').value.trim() || '试卷';
   var subtitle = document.getElementById('cfgSubtitle').value.trim() || '冲刺卷';
@@ -507,9 +507,9 @@ function generatePapers() {
   var multis = pool.filter(function(q){ return q.s === 'multi'; });
   var judges = pool.filter(function(q){ return q.s === 'judge'; });
 
-  if (singles.length < nSingle) { toast('单选题不足！需要' + nSingle + '题，题库中只有' + singles.length + '题'); return; }
-  if (multis.length < nMulti) { toast('多选题不足！需要' + nMulti + '题，题库中只有' + multis.length + '题'); return; }
-  if (judges.length < nJudge) { toast('判断题不足！需要' + nJudge + '题，题库中只有' + judges.length + '题'); return; }
+  if (nSingle > 0 && singles.length < nSingle) { toast('单选题不足！需要' + nSingle + '题，题库中只有' + singles.length + '题'); return; }
+  if (nMulti > 0 && multis.length < nMulti) { toast('多选题不足！需要' + nMulti + '题，题库中只有' + multis.length + '题'); return; }
+  if (nJudge > 0 && judges.length < nJudge) { toast('判断题不足！需要' + nJudge + '题，题库中只有' + judges.length + '题'); return; }
 
   var papers = [];
   var usedS = {}, usedM = {}, usedJ = {};
