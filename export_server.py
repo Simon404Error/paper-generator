@@ -46,7 +46,7 @@ I();setTimeout(function(){{updateAS(0);}},100);'''
 </head>
 <body>
 <div class="c">
-<div class="as-float" id="answerSheet"><div class="as-title">答题卡</div><div class="as-grid" id="asGrid"></div></div>
+<div class="as-float" id="answerSheet"><div style="display:flex;justify-content:space-between;align-items:center"><div class="as-title">答题卡</div><button class="btn small" onclick="var g=document.getElementById('asGrid');g.style.display=g.style.display==='none'?'grid':'none';this.textContent=this.textContent==='+'?'-':'+'" style="padding:0 6px;font-size:11px;line-height:1">-</button></div><div class="as-grid" id="asGrid"></div></div>
 <h1>{title}</h1>
 <p class="sub">{subtitle} · 共{count}套</p>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button class="btn small" onclick="var t=document.getElementById('pvTabs');t.style.display=t.style.display==='none'?'flex':'none';this.textContent=this.textContent==='+ 展开'?'- 收起':'+ 展开'" style="flex-shrink:0">- 收起</button><div class="tabs" id="pvTabs" style="position:static;background:transparent;padding:0;flex-wrap:wrap;overflow:hidden">{tabs}</div></div>
