@@ -165,7 +165,7 @@ document.querySelectorAll('.pn').forEach(function(p){p.classList.remove('active'
 document.getElementById('tab-'+name).classList.add('active');
 if(name==='bank')renderBank();
 if(name==='generate')renderGenerate();
-if(name==='preview')renderPreview();
+if(name==='preview'){var pp=LP();if(pp.length>0&&!pvState)previewPaper(0);else renderPreview();}
 }
 
 function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);var nd=document.getElementById('cfgNoDup');if(nd&&localStorage.getItem('gk_nodup'))nd.checked=true;}catch(e){}}
@@ -350,7 +350,7 @@ if(document.getElementById('cfgRandom').checked){qs=shuffle(qs);}
 papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
 }
 SP(papers);var vp=LP();if(!vp||vp.length===0||!vp[0].d||vp[0].d.length===0){toast('\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5');return;}
-renderPaperList();toast('已生成 '+nPapers+' 套试卷');
+renderPaperList();previewPaper(0);toast('已生成 '+nPapers+' 套试卷');
 }
 
 function renderPaperList(){
