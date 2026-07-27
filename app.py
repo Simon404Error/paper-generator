@@ -599,4 +599,4 @@ renderGenerate();
 if __name__ == '__main__':
     print('Paper Generator - Python Edition')
     print('Open http://localhost:5000')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import webbrowser, threading; threading.Timer(1.0, lambda: webbrowser.open('http://localhost:5000')).start(); app.run(host='0.0.0.0', port=5000, debug=False)
