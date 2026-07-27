@@ -347,7 +347,8 @@ var qs=sS.concat(sM).concat(sJ).concat(sZ);
 qs=shuffle(qs);
 papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
 }
-SP(papers);renderPaperList();toast('已生成 '+nPapers+' 套试卷');
+SP(papers);var vp=LP();if(!vp||vp.length===0||!vp[0].d||vp[0].d.length===0){toast('\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5');return;}
+renderPaperList();toast('已生成 '+nPapers+' 套试卷');
 }
 
 function renderPaperList(){
@@ -444,7 +445,9 @@ renderBank();toast('导入 '+newQs.length+' 道题目');
 reader.readAsText(file);event.target.value='';
 }
 function exportJSON(){var bank=L();if(bank.length===0){toast('题库为空');return;}var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([JSON.stringify(bank,null,2)],{type:'application/json'}),'题库_'+ds+'.json');toast('题库已导出');}
-function exportPapersHTML(){var papers=LP();if(papers.length===0){toast('请先生成试卷');return;}var html=buildExport(papers);var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([html],{type:'text/html;charset=utf-8'}),'试卷_'+ds+'.html');toast('试卷已导出');}
+function exportPapersHTML(){var papers=LP();if(!papers||papers.length===0){toast('\u8bf7\u5148\u751f\u6210\u8bd5\u5377');return;}
+if(!papers[0].d||papers[0].d.length===0){toast('\u8bd5\u5377\u65e0\u5185\u5bb9\uff0c\u8bf7\u91cd\u65b0\u751f\u6210');return;}
+var _oldCheck=papers.length;if(papers.length===0){toast('请先生成试卷');return;}var html=buildExport(papers);var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([html],{type:'text/html;charset=utf-8'}),'试卷_'+ds+'.html');toast('试卷已导出');}
 function pad(n){return n<10?'0'+n:''+n;}
 function download(blob,name){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
 
