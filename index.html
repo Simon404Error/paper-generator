@@ -447,7 +447,7 @@ x.push("function saveST(){try{var d={};Object.keys(S).forEach(function(k){d[k]={
 x.push("function loadST(){try{var d=JSON.parse(localStorage.getItem('gk_xs'));if(d){Object.keys(d).forEach(function(k){S[k]=d[k];});return true;}}catch(e){}return false;}");
 x.push("document.addEventListener('click',function(e){var op=e.target.closest('.op');if(op&&op.dataset.qi!=null){var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));return;}var btn=e.target.closest('button[data-submit]');if(btn){var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];SB(k,parseInt(btn.dataset.submit));}});");
 x.push("loadST();I();");
-return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">\n<title>'+esc(papers[0].t)+'</title>\n<style>\n'+css+'\n</style>\n</head>\n<body>\n<div class="c">\n<h1>'+esc(papers[0].t)+'</h1>\n<p class="sub">'+esc(papers[0].s)+' · 共'+papers.length+'套</p>\n<div class="tabs" id="tabs">'+tabsH+'</div>\n'+panelsH+'\n</div>\n<script>\n'+x.join('\n')+'\n<\\/scr'+'ipt>\n</body>\n</html>';
+return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">\n<title>'+esc(papers[0].t)+'</title>\n<style>\n'+css+'\n</style>\n</head>\n<body>\n<div class="c">\n<h1>'+esc(papers[0].t)+'</h1>\n<p class="sub">'+esc(papers[0].s)+' · 共'+papers.length+'套</p>\n<div class="tabs" id="tabs">'+tabsH+'</div>\n'+panelsH+'\n</div>\n<script>\n'+x.join('\n')+'\n<'+'/script>\n</body>\n</html>';
 }
 
 // INIT
