@@ -597,6 +597,6 @@ renderGenerate();
 </html>'''
 
 if __name__ == '__main__':
-    print('试卷生成器 Python版')
-    print('访问 http://localhost:5000')
+    print('Paper Generator - Python Edition')
+    print('Open http://localhost:5000')
     app.run(host='0.0.0.0', port=5000, debug=True)

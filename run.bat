@@ -1,40 +1,34 @@
 @echo off
-chcp 65001 >nul
-title 试卷生成器
+chcp 65001 >nul 2>&1
+title Paper Generator
 
 echo.
-echo   ╔══════════════════════════╗
-echo   ║   试 卷 生 成 器       ║
-echo   ║   智能题库 · Python版  ║
-echo   ╚══════════════════════════╝
+echo   ============================
+echo   Paper Generator v1.0
+echo   ============================
 echo.
 
-:: Check Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [错误] 未找到 Python，请先安装 Python 3.10+
-    echo 下载地址: https://www.python.org/downloads/
+    echo [ERROR] Python not found. Install Python 3.10+ first.
+    echo https://www.python.org/downloads/
     pause
     exit /b 1
 )
 
-:: Install Flask if needed
 python -c "import flask" >nul 2>&1
 if errorlevel 1 (
-    echo [安装] 正在安装 Flask...
+    echo [SETUP] Installing Flask...
     pip install flask -q
     if errorlevel 1 (
-        echo [错误] Flask 安装失败，请手动执行: pip install flask
+        echo [ERROR] Flask install failed. Run: pip install flask
         pause
         exit /b 1
     )
 )
 
-:: Start server
-echo [启动] 正在启动服务器...
-echo [地址] http://localhost:5000
-echo.
-echo 按 Ctrl+C 停止服务器
+echo [START] http://localhost:5000
+echo Press Ctrl+C to stop
 echo.
 
 start "" http://localhost:5000
