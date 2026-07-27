@@ -105,7 +105,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resi
       <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" value="0" min="0" max="30"></div>
       <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="试卷"></div>
     </div>
-    <div style="margin-top:12px;margin-bottom:8px"><label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;white-space:nowrap;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px"><input type="checkbox" id="cfgNoDup" onchange="localStorage.setItem('gk_nodup',this.checked?'1':'')"> 每套试卷题目不重复</label></div>
+    <div style="margin-top:12px;margin-bottom:8px"><label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;white-space:nowrap;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px"><input type="checkbox" id="cfgNoDup" onchange="localStorage.setItem('gk_nodup',this.checked?'1':'')"> 每套试卷题目不重复</label>
+    <label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px;white-space:nowrap"><input type="checkbox" id="cfgRandom" checked> 随机排版</label></div>
     <div style="margin-top:12px"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label><div class="tags" id="topicTags"></div></div>
     <div class="stats" id="genStats" style="margin-top:12px"></div>
     <div style="margin-top:12px"><button class="btn accent" onclick="generatePapers()">&#x1F3B2; 随机组卷</button></div>
@@ -345,7 +346,7 @@ for(var i=0;i<sM.length;i++){var idx=multis.indexOf(sM[i]);if(idx>=0)uM[idx]=tru
 for(var i=0;i<sJ.length;i++){var idx=judges.indexOf(sJ[i]);if(idx>=0)uJ[idx]=true;}
 for(var i=0;i<sZ.length;i++){var idx=subjectives.indexOf(sZ[i]);if(idx>=0)uZ[idx]=true;}
 var qs=sS.concat(sM).concat(sJ).concat(sZ);
-qs=shuffle(qs);
+if(document.getElementById('cfgRandom').checked){qs=shuffle(qs);}
 papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
 }
 SP(papers);var vp=LP();if(!vp||vp.length===0||!vp[0].d||vp[0].d.length===0){toast('\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5');return;}
