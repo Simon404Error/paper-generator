@@ -94,22 +94,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resi
 </div>
 
 <div class="pn" id="tab-generate">
-  <div class="card">
+  <div class="card" autocomplete="off">
     <h3 style="margin-bottom:12px">组卷配置</h3>
     <div class="cfg-grid">
-      <div class="cfg-item"><label>试卷名称前缀</label><input type="text" id="cfgName" value="试卷"></div>
-      <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" value="1" min="1" max="20"></div>
-      <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="1" min="0" max="100"></div>
-      <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="1" min="0" max="50"></div>
-      <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="1" min="0" max="30"></div>
-      <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" value="0" min="0" max="30"></div>
-      <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="试卷"></div>
+      <div class="cfg-item"><label>试卷名称前缀</label><input type="text" id="cfgName" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="""></div>
+      <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="1" min="1" max="20"></div>
+      <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="1" min="0" max="100"></div>
+      <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="0"" min="0" max="50"></div>
+      <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="0"" min="0" max="30"></div>
+      <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="0" min="0" max="30"></div>
+      <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" autocomplete="off" onchange="localStorage.setItem('gk_cfg_'+this.id, this.value)" value="""></div>
     </div>
-    <div style="margin-top:12px;margin-bottom:8px"><label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;white-space:nowrap;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px"><input type="checkbox" id="cfgNoDup" onchange="localStorage.setItem('gk_nodup',this.checked?'1':'')"> 每套试卷题目不重复</label>
-    <label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px;white-space:nowrap"><input type="checkbox" id="cfgRandom" checked> 随机排版</label></div>
+    <div style="margin-top:12px;margin-bottom:8px"><label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;white-space:nowrap;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px"><input type="checkbox" id="cfgNoDup" onchange="localStorage.setItem('gk_cfg_'+this.id, this.checked?'1':'')" onchange="localStorage.setItem('gk_nodup',this.checked?'1':'')"> 每套试卷题目不重复</label>
+    <label style="font-size:15px;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;background:var(--al);padding:6px 12px;border-radius:6px;white-space:nowrap"><input type="checkbox" id="cfgRandom" onchange="localStorage.setItem('gk_cfg_'+this.id, this.checked?'1':'')" checked> 随机排版</label></div>
     <div style="margin-top:12px"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label><div class="tags" id="topicTags"></div></div>
     <div class="stats" id="genStats" style="margin-top:12px"></div>
-    <div style="margin-top:12px"><button class="btn accent" onclick="generatePapers()">&#x1F3B2; 随机组卷</button></div>
+    <div style="margin-top:12px;display:flex;gap:8px"><button class="btn accent" onclick="generatePapers()">&#x1F3B2; 随机组卷</button><button class="btn" onclick="resetConfig()">恢复默认</button></div>
   </div>
   <div id="paperPreview"></div>
 </div>
@@ -169,7 +169,7 @@ if(name==='generate')renderGenerate();
 if(name==='preview'){if(!pvS){var pp=LP();if(pp.length>0)previewPaper(0);}else renderPreview();}
 }
 
-function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);var nd=document.getElementById('cfgNoDup');if(nd&&localStorage.getItem('gk_nodup'))nd.checked=true;}catch(e){}}
+function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);var nd=document.getElementById('cfgNoDup');}catch(e){}}
 
 // BANK
 function populateTags(bank){
@@ -299,6 +299,15 @@ renderPaperList();
 }
 function getSelectedTopics(){var r=[];document.querySelectorAll('#topicTags .tag.selected').forEach(function(el){r.push(el.dataset.tag);});return r;}
 function shuffle(a){var arr=a.slice();for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=arr[i];arr[i]=arr[j];arr[j]=t;}return arr;}
+function resetConfig(){
+var defs={cfgName:'',cfgSubtitle:'',cfgSingle:'1',cfgMulti:'0',cfgJudge:'0',cfgSubjective:'0',cfgCount:'1',cfgNoDup:'0',cfgRandom:'0'};
+Object.keys(defs).forEach(function(k){
+var el=document.getElementById(k);if(!el)return;
+if(el.type==='checkbox')el.checked=false;
+else el.value=defs[k];
+localStorage.removeItem('gk_cfg_'+k);
+});
+}
 function generatePapers(){
 var bank=L();
 var nS=parseInt(document.getElementById('cfgSingle').value)||0;
@@ -307,8 +316,8 @@ var nJ=parseInt(document.getElementById('cfgJudge').value)||0;
 var nZ=parseInt(document.getElementById('cfgSubjective').value)||0;
 if(isNaN(nS))nS=0;if(isNaN(nM))nM=0;if(isNaN(nJ))nJ=0;if(isNaN(nZ))nZ=0;
 var nPapers=parseInt(document.getElementById('cfgCount').value)||1;if(isNaN(nPapers))nPapers=1;
-var name=document.getElementById('cfgName').value.trim()||'试卷';
-var subtitle=document.getElementById('cfgSubtitle').value.trim()||'试卷';
+var name=document.getElementById('cfgName').value.trim()||'';
+var subtitle=document.getElementById('cfgSubtitle').value.trim()||'';
 var selTopics=getSelectedTopics(),pool=bank;
 if(selTopics.length>0){pool=bank.filter(function(q){if(!q.tag)return false;var tags=q.tag.split(/[,，]/).map(function(t){return t.trim();});return selTopics.some(function(st){return tags.indexOf(st)>=0;});});}
 var singles=pool.filter(function(q){return q.s==='single';});
@@ -501,6 +510,17 @@ return '<!DOCTYPE html>\n<html lang="zh-CN">\n<head>\n<meta charset="UTF-8"><met
 
 // INIT
 function init(){
+// Restore generate config
+var cfgFields=['cfgName','cfgSubtitle','cfgSingle','cfgMulti','cfgJudge','cfgSubjective','cfgCount','cfgNoDup','cfgRandom'];
+cfgFields.forEach(function(id){
+var el=document.getElementById(id);if(!el)return;
+var v=localStorage.getItem('gk_cfg_'+id);
+if(v!==null){
+if(el.type==='checkbox')el.checked=v==='1';
+else el.value=v;
+}else if(el.type==='checkbox'){el.checked=false;}
+});
+
 var ft=document.getElementById('filterTag');if(ft)ft.value='';
 restoreTab();function checkExportServer(){
 var s=document.getElementById('exportStatus');
