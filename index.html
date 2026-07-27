@@ -312,40 +312,44 @@ var singles=pool.filter(function(q){return q.s==='single';});
 var multis=pool.filter(function(q){return q.s==='multi';});
 var judges=pool.filter(function(q){return q.s==='judge';});
 var subjectives=pool.filter(function(q){return q.s==='subjective';});
-if(nS>singles.length){toast('单选题不足！需要'+nS+'题，只有'+singles.length+'题');return;}
-if(nM>multis.length){toast('多选题不足！需要'+nM+'题，只有'+multis.length+'题');return;}
-if(nJ>judges.length){toast('判断题不足！需要'+nJ+'题，只有'+judges.length+'题');return;}
-if(nZ>subjectives.length){toast('主观题不足！需要'+nZ+'题，只有'+subjectives.length+'题');return;}
+if(nS>singles.length){toast('单选题不足！');return;}
+if(nM>multis.length){toast('多选题不足！');return;}
+if(nJ>judges.length){toast('判断题不足！');return;}
+if(nZ>subjectives.length){toast('主观题不足！');return;}
 if(nS+nM+nJ+nZ===0){toast('请至少选择一种题型');return;}
 var noDup=document.getElementById('cfgNoDup').checked;
-  if(noDup){
-    if(nS*nPapers>singles.length){toast('单选题不足！需要'+nS*nPapers+'道不重复题，只有'+singles.length+'题');return;}
-    if(nM*nPapers>multis.length){toast('多选题不足！需要'+nM*nPapers+'道不重复题，只有'+multis.length+'题');return;}
-    if(nJ*nPapers>judges.length){toast('判断题不足！需要'+nJ*nPapers+'道不重复题，只有'+judges.length+'题');return;}
-    if(nZ*nPapers>subjectives.length){toast('主观题不足！需要'+nZ*nPapers+'道不重复题，只有'+subjectives.length+'题');return;}
-  }
-  var papers=[],uS={},uM={},uJ={},uZ={};
-function ga(arr,used){var a=[];arr.forEach(function(q,i){if(!used[i])a.push(q);});return a.length>=1?a:arr;}
-for(var pi=0;pi<nPapers;pi++){
-var aS=ga(singles,uS),aM=ga(multis,uM),aJ=ga(judges,uJ),aZ=ga(subjectives,uZ);
-var sS=shuffle(aS).slice(0,nS),sM=shuffle(aM).slice(0,nM),sJ=shuffle(aJ).slice(0,nJ),sZ=shuffle(aZ).slice(0,nZ);
-sS.forEach(function(q){uS[singles.indexOf(q)]=true;});
-sM.forEach(function(q){uM[multis.indexOf(q)]=true;});
-sJ.forEach(function(q){uJ[judges.indexOf(q)]=true;});
-sZ.forEach(function(q){uZ[subjectives.indexOf(q)]=true;});
-var others=shuffle(sM.concat(sJ).concat(sZ)),oi=0,si=0;
-var segSize=nS>0?Math.max(1,Math.ceil(nS/(others.length+1))):999,sCount=0;
-var qs=[];
-console.log('Paper '+pi+': singles='+sS.length+' others='+others.length+' segSize='+segSize);
-while(si<sS.length||oi<others.length){
-if(si<sS.length&&(sCount<segSize||oi>=others.length)){qs.push(sS[si++]);sCount++;}
-else if(oi<others.length){qs.push(others[oi++]);sCount=0;}
+if(noDup){
+if(nS*nPapers>singles.length){toast('单选题不足(不重复)！');return;}
+if(nM*nPapers>multis.length){toast('多选题不足(不重复)！');return;}
+if(nJ*nPapers>judges.length){toast('判断题不足(不重复)！');return;}
+if(nZ*nPapers>subjectives.length){toast('主观题不足(不重复)！');return;}
 }
-while(oi<others.length)qs.push(others[oi++]);
+var papers=[];
+var uS={},uM={},uJ={},uZ={};
+for(var pi=0;pi<nPapers;pi++){
+var aS=[],aM=[],aJ=[],aZ=[];
+for(var i=0;i<singles.length;i++){if(!uS[i])aS.push(singles[i]);}
+for(var i=0;i<multis.length;i++){if(!uM[i])aM.push(multis[i]);}
+for(var i=0;i<judges.length;i++){if(!uJ[i])aJ.push(judges[i]);}
+for(var i=0;i<subjectives.length;i++){if(!uZ[i])aZ.push(subjectives[i]);}
+if(aS.length<nS)aS=singles;
+if(aM.length<nM)aM=multis;
+if(aJ.length<nJ)aJ=judges;
+if(aZ.length<nZ)aZ=subjectives;
+var sS=shuffle(aS).slice(0,nS);
+var sM=shuffle(aM).slice(0,nM);
+var sJ=shuffle(aJ).slice(0,nJ);
+var sZ=shuffle(aZ).slice(0,nZ);
+for(var i=0;i<sS.length;i++)uS[singles.indexOf(sS[i])]=true;
+for(var i=0;i<sM.length;i++)uM[multis.indexOf(sM[i])]=true;
+for(var i=0;i<sJ.length;i++)uJ[judges.indexOf(sJ[i])]=true;
+for(var i=0;i<sZ.length;i++)uZ[subjectives.indexOf(sZ[i])]=true;
+var qs=shuffle(sS.concat(sM).concat(sJ).concat(sZ));
 papers.push({id:'p'+(pi+1),t:name+' ('+(pi+1)+')',s:subtitle,d:qs});
 }
 SP(papers);renderPaperList();toast('已生成 '+nPapers+' 套试卷');
 }
+
 function renderPaperList(){
 var papers=LP(),div=document.getElementById('paperPreview'),btn=document.getElementById('btnExportHTML');
 if(papers.length===0){div.innerHTML='<p style="font-size:13px;color:var(--muted);margin-top:12px">点击"随机组卷"生成试卷</p>';return;}
