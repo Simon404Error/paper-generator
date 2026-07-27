@@ -31,7 +31,7 @@ function C(k,qi,oi){{var q=P[k].d[qi],a=S[k].a[qi]||[];if(q.s==='single'||q.s===
 function SB(k,qi){{var q=P[k].d[qi];var ok=q.s==='subjective'?true:(q.a.length===(S[k].a[qi]||[]).length&&q.a.every(function(a){{return(S[k].a[qi]||[]).indexOf(a)>=0;}}));S[k].s[qi]={{o:ok}};R(k,Object.keys(P).indexOf(k));}}
 function RST(k){{S[k]={{a:{{}},s:{{}}}};R(k,Object.keys(P).indexOf(k));}}
 document.addEventListener('click',function(e){{var op=e.target.closest('.op');if(op&&op.dataset.qi!=null){{var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));return;}}var btn=e.target.closest('button[data-submit]');if(btn){{var k=Object.keys(P)[parseInt(document.querySelector('.tb.active').dataset.p)];SB(k,parseInt(btn.dataset.submit));}}}});
-I();'''
+I();var ag=document.getElementById('asGrid');if(ag){{var k=Object.keys(P)[0];var p=P[k];for(var i=0;i<p.d.length;i++){{var c='as-num';var s=S[k].s[i];if(s)c+=s.o?' correct':' wrong';(function(i,c){{var d=document.createElement('div');d.className=c;d.textContent=i+1;d.onclick=function(){{document.querySelectorAll('.cd')[i].scrollIntoView({{behavior:'smooth',block:'center'}});}};ag.appendChild(d);}})(i,c);}}}}'''
     
     title = papers[0]['t']
     subtitle = papers[0]['s']
