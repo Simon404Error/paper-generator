@@ -157,11 +157,11 @@ textarea{resize:vertical;min-height:60px}
     <h3 style="margin-bottom:12px">组卷配置</h3>
     <div class="cfg-grid">
       <div class="cfg-item"><label>试卷名称前缀</label><input type="text" id="cfgName" value="试卷"></div>
-      <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" value="5" min="1" max="20"></div>
+      <div class="cfg-item"><label>生成套数</label><input type="number" id="cfgCount" value="1" min="1" max="20"></div>
       <div class="cfg-item"><label>单选题数</label><input type="number" id="cfgSingle" value="1" min="0" max="100"></div>
       <div class="cfg-item"><label>多选题数</label><input type="number" id="cfgMulti" value="1" min="0" max="50"></div>
       <div class="cfg-item"><label>判断题数</label><input type="number" id="cfgJudge" value="1" min="0" max="30"></div>
-      <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="冲刺卷"></div>
+      <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="试卷"></div>
     </div>
     <div style="margin-top:12px">
       <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label>
@@ -259,7 +259,8 @@ document.getElementById('mainTabs').addEventListener('click', function(e) {
   if (tb.dataset.tab === 'bank') renderBank();
   if (tb.dataset.tab === 'generate') renderGenerate();
   if (tb.dataset.tab === 'preview') renderPreview();
-});
+
+  try { localStorage.setItem('gk_active_tab', tb.dataset.tab); } catch(e) {}});
 
 // ==================== BANK TAB ====================
 function renderBank() {
@@ -511,9 +512,9 @@ function generatePapers() {
   var nSingle = parseInt(document.getElementById('cfgSingle').value); if (isNaN(nSingle)) nSingle = 1;
   var nMulti = parseInt(document.getElementById('cfgMulti').value); if (isNaN(nMulti)) nMulti = 1;
   var nJudge = parseInt(document.getElementById('cfgJudge').value); if (isNaN(nJudge)) nJudge = 1;
-  var nPapers = parseInt(document.getElementById('cfgCount').value) || 5;
+  var nPapers = parseInt(document.getElementById('cfgCount').value); if (isNaN(nPapers)) nPapers = 1;
   var name = document.getElementById('cfgName').value.trim() || '试卷';
-  var subtitle = document.getElementById('cfgSubtitle').value.trim() || '冲刺卷';
+  var subtitle = document.getElementById('cfgSubtitle').value.trim() || '试卷';
   var selectedTopics = getSelectedTopics();
 
   var pool = bank;
@@ -573,9 +574,10 @@ function renderPaperList() {
     var sc = p.d.filter(function(q){ return q.s === 'single'; }).length;
     var mc = p.d.filter(function(q){ return q.s === 'multi'; }).length;
     var jc = p.d.filter(function(q){ return q.s === 'judge'; }).length;
+    var zc = p.d.filter(function(q){ return q.s === 'subjective'; }).length;
     html += '<div class="pp-card" onclick="previewPaper(' + i + ')"><strong>' + escHtml(p.t) +
       '</strong> <span style="font-size:13px;color:var(--muted);margin-left:8px">' +
-      p.d.length + '题 (单选' + sc + ' + 多选' + mc + ' + 判断' + jc + ')</span></div>';
+      p.d.length + '题 (单选' + sc + ' + 多选' + mc + ' + 判断' + jc + ' + 主观' + zc + ')</span></div>';
   }
   div.innerHTML = html;
 }
@@ -758,7 +760,7 @@ function buildExportHTML(papers) {
   // Build the export JavaScript using single-quoted strings for HTML
   var js = [];
   js.push("var PAPERS = " + lit + ";");
-  js.push("var L = {s:'" + TYPE_LABELS.single + "',m:'" + TYPE_LABELS.multi + "',j:'" + TYPE_LABELS.judge + "'};");
+  js.push("var L = {s:'单选题',m:'多选题',j:'判断题',z:'主观题'};");
   js.push("var LB = ['A','B','C','D','E','F','G','H'];");
   js.push("var ST = {};");
   js.push("function E(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}");
@@ -868,6 +870,16 @@ function buildExportHTML(papers) {
 
 // ==================== INIT ====================
 function init() {
+  var savedTab = localStorage.getItem('gk_active_tab');
+  if (savedTab) {
+    var tabEl = document.querySelector('#mainTabs .tb[data-tab="' + savedTab + '"]');
+    if (tabEl) {
+      document.querySelectorAll('#mainTabs .tb').forEach(function(t){ t.classList.remove('active'); });
+      tabEl.classList.add('active');
+      document.querySelectorAll('.pn').forEach(function(p){ p.classList.remove('active'); });
+      document.getElementById('tab-' + savedTab).classList.add('active');
+    }
+  }
   renderBank();
   renderGenerate();
   var bank = loadBank();
