@@ -284,7 +284,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
 .stat-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;text-align:center;min-width:80px}
 .stat-item .num{font-size:24px;font-weight:700;color:var(--accent)}.stat-item .lbl{font-size:12px;color:var(--muted)}
 .qlist{max-height:600px;overflow-y:auto}
-.qitem{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.qitem{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);flex-wrap:nowrap}.qitem .qi{flex:1;min-width:0}.qitem .qact{flex-shrink:0}
 .qitem:last-child{border-bottom:none}.qitem .qi{flex:1}.qitem .qi .qtxt{font-weight:500;word-break:break-all}
 .qitem .qi .qmeta{font-size:12px;color:var(--muted);margin-top:4px}.qitem .qact{display:flex;gap:4px;flex-shrink:0}
 .cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -357,6 +357,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
   <div class="card">
     <h3 style="margin-bottom:12px">导出</h3>
     <button class="btn accent" onclick="doExport()">&#x1F4C4; 导出试卷 HTML</button>
+    <button class="btn accent" onclick="doExportJSON()">&#x1F4E6; 导出题库 JSON</button>
   </div>
 </div>
 
@@ -591,6 +592,13 @@ toast('试卷已导出');
 
 // Init
 renderBank();
+function doExportJSON(){
+fetch('/api/bank').then(function(r){return r.json();}).then(function(data){
+var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='questions.json';a.click();
+toast('题库已导出');
+});
+}
 renderGenerate();
 </script>
 </body>
