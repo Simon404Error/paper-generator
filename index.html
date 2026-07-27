@@ -136,6 +136,7 @@ textarea{resize:vertical;min-height:60px}
       <option value="judge">判断题</option>
     </select>
     <input type="text" id="filterKeyword" placeholder="搜索题目关键词..." oninput="renderBank()">
+    <select id="filterTag" onchange="renderBank()" style="max-width:160px"><option value="">全部标签</option></select>
     <button class="btn accent" onclick="openQuestionModal()">＋ 添加题目</button>
     <button class="btn danger" id="btnBatchDelete" style="display:none" onclick="batchDelete()">🗑 批量删除</button>
   </div>
@@ -168,7 +169,7 @@ textarea{resize:vertical;min-height:60px}
     </div>
     <div style="margin-top:12px">
       <button class="btn accent" onclick="generatePapers()">🎲 随机组卷</button>
-      <span style="font-size:12px;color:var(--muted);margin-left:8px" id="genInfo"></span>
+      <div class="stats" id="genStats" style="margin-top:12px"></div>
     </div>
   </div>
   <div id="paperPreview"></div>
@@ -263,6 +264,20 @@ document.getElementById('mainTabs').addEventListener('click', function(e) {
 // ==================== BANK TAB ====================
 function renderBank() {
   var bank = loadBank();
+  var tagSel = document.getElementById('filterTag');
+  if (tagSel && tagSel.options.length <= 1) {
+    var allTags = {};
+    bank.forEach(function(q){
+      if (q.tag) q.tag.split(/[,，]/).forEach(function(t){ t = t.trim(); if (t) allTags[t] = true; });
+    });
+    var tagKeys = Object.keys(allTags).sort();
+    for (var i = 0; i < tagKeys.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = tagKeys[i];
+      opt.textContent = tagKeys[i];
+      tagSel.appendChild(opt);
+    }
+  }
   var type = document.getElementById('filterType').value;
   var kw = document.getElementById('filterKeyword').value.toLowerCase();
   var filtered = bank;
@@ -271,6 +286,12 @@ function renderBank() {
     return q.q.toLowerCase().indexOf(kw) >= 0 ||
       (q.e||'').toLowerCase().indexOf(kw) >= 0 ||
       (q.tag||'').toLowerCase().indexOf(kw) >= 0;
+  });
+  var tag = document.getElementById('filterTag').value;
+  if (tag) filtered = filtered.filter(function(q){
+    if (!q.tag) return false;
+    var tags = q.tag.split(/[,，]/).map(function(t){ return t.trim(); });
+    return tags.indexOf(tag) >= 0;
   });
 
   // Stats
@@ -452,10 +473,11 @@ function getAllTopics() {
 
 function renderGenerate() {
   var bank = loadBank();
-  document.getElementById('genInfo').textContent =
-    '题库共 ' + bank.length + ' 题（单选' + bank.filter(function(q){ return q.s === 'single'; }).length +
-    ' 多选' + bank.filter(function(q){ return q.s === 'multi'; }).length +
-    ' 判断' + bank.filter(function(q){ return q.s === 'judge'; }).length + '）';
+  document.getElementById('genStats').innerHTML =
+    '<div class="stat-item"><div class="num">' + bank.length + '</div><div class="lbl">' + '题库总数' + '</div></div>' +
+    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'single'; }).length + '</div><div class="lbl">' + '单选题' + '</div></div>' +
+    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'multi'; }).length + '</div><div class="lbl">' + '多选题' + '</div></div>' +
+    '<div class="stat-item"><div class="num">' + bank.filter(function(q){ return q.s === 'judge'; }).length + '</div><div class="lbl">' + '判断题' + '</div></div>';
 
   var topics = getAllTopics();
   var tagsDiv = document.getElementById('topicTags');
