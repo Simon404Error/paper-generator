@@ -2,6 +2,14 @@
 
 试卷生成 · 智能题库
 
+## 依赖
+
+- 浏览器（Edge/Chrome）
+- Python 3.10+ + Flask（仅导出功能需要）
+
+```bash
+pip install flask
+```
 ## 使用
 
 开箱即用：双击 `index.html` 打开主界面
@@ -26,15 +34,6 @@
 | `index.html` | 主程序 |
 | `export_server.py` | 导出服务（需 Python Flask） |
 | `题库导入模板.json` | 导入格式参考 |
-
-## 依赖
-
-- 浏览器（Edge/Chrome）
-- Python 3.10+ + Flask（仅导出功能需要）
-
-```bash
-pip install flask
-```
 
 ## License
 
