@@ -300,6 +300,7 @@ function renderBank() {
   var s = bank.filter(function(q){ return q.s === 'single'; }).length;
   var m = bank.filter(function(q){ return q.s === 'multi'; }).length;
   var j = bank.filter(function(q){ return q.s === 'judge'; }).length;
+    var zc = p.d.filter(function(q){ return q.s === 'subjective'; }).length;
   stats.innerHTML =
     '<div class="stat-item"><div class="num">' + bank.length + '</div><div class="lbl">总题数</div></div>' +
     '<div class="stat-item"><div class="num">' + s + '</div><div class="lbl">单选题</div></div>' +
@@ -338,7 +339,7 @@ function renderBank() {
 }
 
 function formatAnswer(q) {
-  if (q.s === 'judge') return q.a[0] === 0 ? '正确' : '错误';
+  if (q.s === 'subjective') return q.a[0] || '略'; if (q.s === 'judge') return q.a[0] === 0 ? '正确' : '错误';
   return (q.a||[]).map(function(i){ return OPT_LABELS[i]; }).join('');
 }
 
@@ -512,6 +513,7 @@ function generatePapers() {
   var nSingle = parseInt(document.getElementById('cfgSingle').value); if (isNaN(nSingle)) nSingle = 1;
   var nMulti = parseInt(document.getElementById('cfgMulti').value); if (isNaN(nMulti)) nMulti = 1;
   var nJudge = parseInt(document.getElementById('cfgJudge').value); if (isNaN(nJudge)) nJudge = 1;
+  var nSubjective = parseInt(document.getElementById('cfgSubjective').value); if (isNaN(nSubjective)) nSubjective = 0;
   var nPapers = parseInt(document.getElementById('cfgCount').value); if (isNaN(nPapers)) nPapers = 1;
   var name = document.getElementById('cfgName').value.trim() || '试卷';
   var subtitle = document.getElementById('cfgSubtitle').value.trim() || '试卷';
@@ -529,27 +531,33 @@ function generatePapers() {
   var singles = pool.filter(function(q){ return q.s === 'single'; });
   var multis = pool.filter(function(q){ return q.s === 'multi'; });
   var judges = pool.filter(function(q){ return q.s === 'judge'; });
+  var subjectives = pool.filter(function(q){ return q.s === 'subjective'; });
 
   if (nSingle > 0 && singles.length < nSingle) { toast('单选题不足！需要' + nSingle + '题，题库中只有' + singles.length + '题'); return; }
   if (nMulti > 0 && multis.length < nMulti) { toast('多选题不足！需要' + nMulti + '题，题库中只有' + multis.length + '题'); return; }
+  if (nSubjective > 0 && subjectives.length < nSubjective) { toast('主观题不足！' + nSubjective + '题，题库中只有' + subjectives.length + '题'); return; }
   if (nJudge > 0 && judges.length < nJudge) { toast('判断题不足！需要' + nJudge + '题，题库中只有' + judges.length + '题'); return; }
 
   var papers = [];
-  var usedS = {}, usedM = {}, usedJ = {};
+  var usedS = {}, usedM = {}, usedJ = {}, usedZ = {};
   for (var pi = 0; pi < nPapers; pi++) {
     var availS = [], availM = [], availJ = [];
     for (var i = 0; i < singles.length; i++) { if (!usedS[i]) availS.push(singles[i]); }
     for (var i = 0; i < multis.length; i++) { if (!usedM[i]) availM.push(multis[i]); }
     for (var i = 0; i < judges.length; i++) { if (!usedJ[i]) availJ.push(judges[i]); }
+    var availZ = []; for (var i = 0; i < subjectives.length; i++) { if (!usedZ[i]) availZ.push(subjectives[i]); }
     var sPool = availS.length >= nSingle ? availS : singles;
     var mPool = availM.length >= nMulti ? availM : multis;
     var jPool = availJ.length >= nJudge ? availJ : judges;
+    var zPool = availZ.length >= nSubjective ? availZ : subjectives;
     var selS = shuffle(sPool).slice(0, nSingle);
     var selM = shuffle(mPool).slice(0, nMulti);
     var selJ = shuffle(jPool).slice(0, nJudge);
+    var selZ = shuffle(zPool).slice(0, nSubjective);
     for (var i = 0; i < selS.length; i++) usedS[singles.indexOf(selS[i])] = true;
     for (var i = 0; i < selM.length; i++) usedM[multis.indexOf(selM[i])] = true;
     for (var i = 0; i < selJ.length; i++) usedJ[judges.indexOf(selJ[i])] = true;
+    for (var i = 0; i < selZ.length; i++) usedZ[subjectives.indexOf(selZ[i])] = true;
     var questions = shuffle(selS).concat(shuffle(selM)).concat(shuffle(selJ));
     papers.push({ id: 'paper' + (pi+1), t: name + ' (' + (pi+1) + ')', s: subtitle, d: questions });
   }
@@ -628,7 +636,7 @@ function renderPreview() {
     var sub = st.submitted[qi];
     var userAns = st.answers[qi] || [];
     var cardClass = sub ? (sub.correct ? 'correct' : 'wrong') : '';
-    var optLabels = q.s === 'judge' ? ['正确', '错误'] : q.o.map(function(o,oi){ return OPT_LABELS[oi] + '. ' + o; });
+    var optLabels = q.s === 'judge' ? ['正确', '错误'] : q.s === 'subjective' ? [] : q.o.map(function(o,oi){ return OPT_LABELS[oi] + '. ' + o; });
 
     html += '<div class="cd ' + (sub ? 'submitted ' : '') + cardClass + '"><div class="qn"><span>' + (qi+1) + '.</span><span class="qt ' + q.s + '">' + TYPE_LABELS[q.s] + '</span>' + (sub ? (sub.correct ? '<span style="color:var(--green);font-size:12px"> ✓ 正确</span>' : '<span style="color:var(--red);font-size:12px"> ✗ 错误</span>') : '') + '</div>';
     html += '<div class="qq">' + escHtml(q.q) + '</div><div class="ops">';
@@ -669,7 +677,7 @@ function submitQuestion(qi) {
   if (!previewState) return;
   var q = loadPapers()[previewState.paperIdx].d[qi];
   var userAns = previewState.answers[qi] || [];
-  var correct = q.a.length === userAns.length && q.a.every(function(a){ return userAns.indexOf(a) >= 0; });
+  var correct = q.s === 'subjective' ? (userAns[0] && userAns[0].trim().length > 0) : (q.a.length === userAns.length && q.a.every(function(a){ return userAns.indexOf(a) >= 0; }));
   previewState.submitted[qi] = { correct: correct };
   renderPreview();
   savePreviewState();
@@ -796,6 +804,7 @@ function buildExportHTML(papers) {
   js.push("h+='<div class=\"op '+cl+'\" data-qi='+qi+' data-oi='+oi+'><span class=opl>'+LB[oi]+'</span><span>'+E(l.replace(/^[A-H]\.\\s*/,''))+'</span></div>';");
   js.push("});");
   js.push("h+='</div>';");
+  js.push("if(q.s==='subjective'){h+='<textarea id='+k+'_'+qi+' style=width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px placeholder='请输入你的答案'+(s?' disabled':'')+'>'+(u[0]||'')+'</textarea>';}");
   js.push("if(!s)h+='<div style=margin-top:8px><button data-submit='+qi+' style=padding:5px 14px;border:1px solid var(--accent);border-radius:5px;background:var(--accent);color:#fff;font-size:12px;cursor:pointer>查看答案</button></div>';");
   js.push("if(s){var ec=s.o?'correct-exp':'wrong-exp';h+='<div class=\"exp show '+ec+'\"><strong>\u6b63\u786e\u7b54\u6848\uff1a</strong>'+F(q)+(q.e?'<br><strong>\u89e3\u6790\uff1a</strong>'+E(q.e):'')+'</div>';}");
   js.push("h+='</div>';");
@@ -804,7 +813,7 @@ function buildExportHTML(papers) {
   js.push("}");
   
   js.push("function C(k,qi,oi){var q=PAPERS[k].d[qi];var a=ST[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}ST[k].a[qi]=a;R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
-  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];var ok=q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;});ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
+  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];if(q.s==='subjective'){var ta=document.getElementById('ta'+k+'_'+qi);if(ta){u=[ta.value];ST[k].a[qi]=u;}}var ok=q.s==='subjective'?(u[0]&&u[0].trim().length>0):(q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;}));ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
   js.push("function RST(k){ST[k]={a:{},s:{}};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
   js.push("document.addEventListener('click',function(e){");
   js.push("var op=e.target.closest('.op');");
