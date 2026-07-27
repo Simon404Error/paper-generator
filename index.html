@@ -638,6 +638,7 @@ function toggleAnswer(qi, oi) {
   else { var p = ans.indexOf(oi); if (p >= 0) ans.splice(p,1); else ans.push(oi); }
   previewState.answers[qi] = ans;
   renderPreview();
+  savePreviewState();
 }
 
 function submitQuestion(qi) {
@@ -647,6 +648,7 @@ function submitQuestion(qi) {
   var correct = q.a.length === userAns.length && q.a.every(function(a){ return userAns.indexOf(a) >= 0; });
   previewState.submitted[qi] = { correct: correct };
   renderPreview();
+  savePreviewState();
 }
 
 function resetPreview() {
@@ -654,6 +656,8 @@ function resetPreview() {
   previewState.answers = {};
   previewState.submitted = {};
   renderPreview();
+  savePreviewState();
+  savePreviewState();
 }
 
 // ==================== IMPORT / EXPORT ====================
@@ -738,6 +742,8 @@ function buildExportHTML(papers) {
   js.push("function E(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}");
   js.push("function F(q){if(q.s==='judge')return q.a[0]===0?'" + '正确' + "':'" + '错误' + "';return q.a.map(function(i){return LB[i];}).join('');}");
   js.push("function I(){var ks=Object.keys(PAPERS);ks.forEach(function(k,i){ST[k]={a:{},s:{}};R(k,i);});");
+  js.push("function saveST(){try{var d={};Object.keys(ST).forEach(function(k){d[k]={a:ST[k].a,s:ST[k].s}});localStorage.setItem(\"gk_exp_state\",JSON.stringify(d));}catch(e){}}");
+  js.push("function loadST(){try{var d=JSON.parse(localStorage.getItem(\"gk_exp_state\"));if(d){Object.keys(d).forEach(function(k){ST[k]=d[k]});return true;}}catch(e){}return false;}");
   js.push("document.getElementById('tabs').addEventListener('click',function(e){");
   js.push("var t=e.target.closest('.tb');if(!t)return;");
   js.push("document.querySelectorAll('#tabs .tb').forEach(function(x){x.classList.remove('active');});");
@@ -773,16 +779,17 @@ function buildExportHTML(papers) {
   js.push("document.getElementById('p-'+idx).innerHTML=h;");
   js.push("}");
   
-  js.push("function C(k,qi,oi){var q=PAPERS[k].d[qi];var a=ST[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}ST[k].a[qi]=a;R(k,Object.keys(PAPERS).indexOf(k));}");
-  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];var ok=q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;});ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));}");
-  js.push("function RST(k){ST[k]={a:{},s:{}};R(k,Object.keys(PAPERS).indexOf(k));}");
+  js.push("function C(k,qi,oi){var q=PAPERS[k].d[qi];var a=ST[k].a[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}ST[k].a[qi]=a;R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
+  js.push("function S(k,qi){var q=PAPERS[k].d[qi];var u=ST[k].a[qi]||[];var ok=q.a.length===u.length&&q.a.every(function(a){return u.indexOf(a)>=0;});ST[k].s[qi]={o:ok};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
+  js.push("function RST(k){ST[k]={a:{},s:{}};R(k,Object.keys(PAPERS).indexOf(k));saveST();}");
   js.push("document.addEventListener('click',function(e){");
   js.push("var op=e.target.closest('.op');");
   js.push("if(op&&op.dataset.qi!=null){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];C(k,parseInt(op.dataset.qi),parseInt(op.dataset.oi));}");
   js.push("var btn=e.target.closest('button[data-submit]');");
   js.push("if(btn){var k=Object.keys(PAPERS)[parseInt(document.querySelector('.tb.active').dataset.p)];S(k,parseInt(btn.dataset.submit));}");
   js.push("});");
-  js.push("I();");
+  
+  js.push("loadST();");js.push("I();");
 
   // Build the full HTML
   var parts = [];
@@ -845,6 +852,13 @@ function init() {
   
 }
 
+function savePreviewState() {
+  if (!previewState) return;
+  try { localStorage.setItem('gk_preview_state', JSON.stringify(previewState)); } catch(e) {}
+}
+function loadPreviewState() {
+  try { var s = localStorage.getItem('gk_preview_state'); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+}
 // Preview click delegation
 document.addEventListener('click', function(e) {
   var previewEl = document.getElementById('previewContent');
@@ -868,6 +882,12 @@ document.addEventListener('click', function(e) {
     return;
   }
 });
+
+// Restore saved preview state
+if (loadPapers().length > 0) {
+  var saved = loadPreviewState();
+  if (saved) { previewState = saved; switchTab('preview'); renderPreview(); previewState = saved; }
+}
 init();
 </script>
 </body>
