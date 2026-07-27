@@ -4,9 +4,9 @@
 
 ## 使用
 
-1. 双击 `index.html` 打开主界面
-2. 导入题库 JSON → 组卷 → 预览
-3. 导出前需先启动导出服务：
+双击 `index.html` 打开主界面
+
+导出前需先启动导出服务：
    ```bash
    python export_server.py
    ```
