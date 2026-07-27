@@ -336,6 +336,7 @@ sZ.forEach(function(q){uZ[subjectives.indexOf(q)]=true;});
 var others=shuffle(sM.concat(sJ).concat(sZ)),oi=0,si=0;
 var segSize=nS>0?Math.max(1,Math.ceil(nS/(others.length+1))):999,sCount=0;
 var qs=[];
+console.log('Paper '+pi+': singles='+sS.length+' others='+others.length+' segSize='+segSize);
 while(si<sS.length||oi<others.length){
 if(si<sS.length&&(sCount<segSize||oi>=others.length)){qs.push(sS[si++]);sCount++;}
 else if(oi<others.length){qs.push(others[oi++]);sCount=0;}
