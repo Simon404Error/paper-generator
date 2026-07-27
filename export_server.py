@@ -48,7 +48,7 @@ I();'''
 <div class="c">
 <h1>{title}</h1>
 <p class="sub">{subtitle} · 共{count}套</p>
-<div class="tabs" id="tabs">{tabs}</div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button class="btn small" onclick="var t=document.getElementById('pvTabs');t.style.display=t.style.display==='none'?'flex':'none';this.textContent=this.textContent==='▶ 展开试卷'?'▼ 收起试卷':'▶ 展开试卷'" style="flex-shrink:0">▼ 收起试卷</button><div class="tabs" id="pvTabs" style="position:static;background:transparent;padding:0;flex-wrap:wrap;overflow:hidden">{tabs}</div></div>
 {panels}
 </div>
 <script>
