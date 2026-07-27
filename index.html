@@ -195,8 +195,8 @@ var h='';
 for(var i=0;i<f.length;i++){
 var q=f[i],idx=bank.indexOf(q);
 var label=q.s==='judge'?'正确 / 错误':q.s==='subjective'?'主观题':(q.o||[]).join(' / ');
-var ans=q.s==='judge'?(q.a[0]===0?'正确':'错误'):q.s==='subjective'?(q.a[0]||'略'):(q.a||[]).map(function(i){return LB[i];}).join('');
-h+='<div class="qitem"><input type="checkbox" class="qcb" data-idx="'+idx+'" onchange="updateBatchUI()"><div class="qi"><span class="qt '+q.s+'">'+PT[q.s]+'</span><div class="qtxt">'+esc(q.q)+'</div><div class="qmeta">答案: '+ans+' | '+esc(label)+(q.tag?' | '+esc(q.tag):'')+'</div></div><div class="qact"><button class="btn small" onclick="openQuestionModal('+idx+')">编辑</button><button class="btn small danger" onclick="deleteQuestion('+idx+')">删除</button></div></div>';
+var ans=q.s==='judge'?(q.a[0]===0?'正确':'错误'):q.s==='subjective'?(q.a[0]||'略'):(q.a||[]).length>0?(q.a||[]).map(function(i){return LB[i];}).join(''):'无';
+h+='<div class="qitem"><input type="checkbox" class="qcb" data-idx="'+idx+'" onchange="updateBatchUI()"><div class="qi"><span class="qt '+q.s+'">'+(PT[q.s]||q.s)+'</span><div class="qtxt">'+esc(q.q)+'</div><div class="qmeta">答案: '+ans+' | '+esc(label)+(q.tag?' | '+esc(q.tag):'')+'</div></div><div class="qact"><button class="btn small" onclick="openQuestionModal('+idx+')">编辑</button><button class="btn small danger" onclick="deleteQuestion('+idx+')">删除</button></div></div>';
 }
 list.innerHTML=h;
 document.getElementById('qlistHeader').style.display='none';
@@ -373,7 +373,7 @@ paper.d.forEach(function(q,qi){
 var sub=st.sub[qi],ua=st.ans[qi]||[],cc=sub?(sub.ok?'correct':'wrong'):'';
 var ol=q.s==='judge'?['正确','错误']:q.s==='subjective'?[]:q.o.map(function(o,oi){return LB[oi]+'. '+o;});
 html+='<div class="cd '+(sub?'submitted ':'')+cc+'">';
-html+='<div class="qn"><span>'+(qi+1)+'.</span><span class="qt '+q.s+'">'+PT[q.s]+'</span>'+(sub?(sub.ok?'<span style="color:var(--green);font-size:12px"> ✓ 正确</span>':'<span style="color:var(--red);font-size:12px"> ✗ 错误</span>'):'')+'</div>';
+html+='<div class="qn"><span>'+(qi+1)+'.</span><span class="qt '+q.s+'">'+(PT[q.s]||q.s)+'</span>'+(sub?(sub.ok?'<span style="color:var(--green);font-size:12px"> ✓ 正确</span>':'<span style="color:var(--red);font-size:12px"> ✗ 错误</span>'):'')+'</div>';
 html+='<div class="qq">'+esc(q.q)+'</div>';
 if(q.s==='subjective'){html+='<div style="margin-top:8px;padding:8px 12px;background:#fafaf7;border-radius:6px;font-size:14px;color:var(--muted)">点击“查看答案”显示参考答案</div>';}
 else{html+='<div class="ops">';ol.forEach(function(l,oi){var cl='';if(sub){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(ua.indexOf(oi)>=0)cl='wrong-answer';}else if(ua.indexOf(oi)>=0)cl='selected';html+='<div class="op '+cl+'" data-qi="'+qi+'" data-oi="'+oi+'"><span class="opl">'+LB[oi]+'</span><span>'+esc(l.replace(/^[A-H]\.\s*/,''))+'</span></div>';});html+='</div>';}
