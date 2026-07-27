@@ -102,7 +102,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resi
       <div class="cfg-item"><label>主观题数</label><input type="number" id="cfgSubjective" value="0" min="0" max="30"></div>
       <div class="cfg-item"><label>试卷副标题</label><input type="text" id="cfgSubtitle" value="试卷"></div>
     </div>
-    <div style="margin-top:12px"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label><div class="tags" id="topicTags"></div></div>
+    <div style="margin-top:12px"><label style="font-size:13px;color:var(--muted);display:block;margin-bottom:4px">选题范围（留空则全选）</label><div class="tags" id="topicTags"></div></div><div style="margin-top:8px"><label style="font-size:13px;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="cfgNoDup" onchange="localStorage.setItem('gk_nodup',this.checked?'1':'')"> 不同试卷间题目不重复（题库不足时阻止生成）</label></div>
     <div class="stats" id="genStats" style="margin-top:12px"></div>
     <div style="margin-top:12px"><button class="btn accent" onclick="generatePapers()">&#x1F3B2; 随机组卷</button></div>
   </div>
@@ -162,7 +162,7 @@ if(name==='generate')renderGenerate();
 if(name==='preview')renderPreview();
 }
 
-function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);}catch(e){}}
+function restoreTab(){try{var t=localStorage.getItem('gk_tab');if(t)switchTab(t);var nd=document.getElementById('cfgNoDup');if(nd&&localStorage.getItem('gk_nodup'))nd.checked=true;}catch(e){}}
 
 // BANK
 function populateTags(bank){
@@ -311,7 +311,14 @@ if(nM>multis.length){toast('多选题不足！需要'+nM+'题，只有'+multis.l
 if(nJ>judges.length){toast('判断题不足！需要'+nJ+'题，只有'+judges.length+'题');return;}
 if(nZ>subjectives.length){toast('主观题不足！需要'+nZ+'题，只有'+subjectives.length+'题');return;}
 if(nS+nM+nJ+nZ===0){toast('请至少选择一种题型');return;}
-var papers=[],uS={},uM={},uJ={},uZ={};
+var noDup=document.getElementById('cfgNoDup').checked;
+  if(noDup){
+    if(nS*nPapers>singles.length){toast('单选题不足！需要'+nS*nPapers+'道不重复题，只有'+singles.length+'题');return;}
+    if(nM*nPapers>multis.length){toast('多选题不足！需要'+nM*nPapers+'道不重复题，只有'+multis.length+'题');return;}
+    if(nJ*nPapers>judges.length){toast('判断题不足！需要'+nJ*nPapers+'道不重复题，只有'+judges.length+'题');return;}
+    if(nZ*nPapers>subjectives.length){toast('主观题不足！需要'+nZ*nPapers+'道不重复题，只有'+subjectives.length+'题');return;}
+  }
+  var papers=[],uS={},uM={},uJ={},uZ={};
 for(var pi=0;pi<nPapers;pi++){
 function ga(arr,used){var a=[];arr.forEach(function(q,i){if(!used[i])a.push(q);});return a.length>=1?a:arr;}
 var aS=ga(singles,uS),aM=ga(multis,uM),aJ=ga(judges,uJ),aZ=ga(subjectives,uZ);
