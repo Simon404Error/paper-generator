@@ -124,8 +124,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent)}textarea{resi
 <div class="form-group" id="optGroup"><label>选项（每行一个）</label><textarea id="qOptions" rows="4" placeholder="A. 选项一&#10;B. 选项二&#10;C. 选项三&#10;D. 选项四"></textarea></div>
 <div class="form-group" id="judgeOptGroup" style="display:none"><label>判断题选项固定为：正确 / 错误</label></div>
 <div class="form-group" id="subjOptGroup" style="display:none"><label>主观题无选项，请填写参考答案</label></div>
-<div class="form-group"><label>正确答案（A=0, B=1... 多选题逗号分隔）</label><input type="text" id="qAnswer" placeholder="0 或 0,1,2"></div>
-<div class="form-group"><label>答案解析（可选）</label><textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea></div>
+<div class="form-group"><label>正确答案</label><input type="text" id="qAnswer" placeholder="0 或 0,1,2"></div>
+<div class="form-group"><label>答案解析</label><textarea id="qExplain" rows="2" placeholder="答案解析..."></textarea></div>
 <div class="form-group"><label>知识点标签（可选，逗号分隔）</label><input type="text" id="qTag" placeholder="例如：政治,经济,法律"></div>
 <div class="form-actions"><button class="btn" onclick="closeQuestionModal()">取消</button><button class="btn accent" onclick="saveQuestion()">保存</button></div>
 </div></div>
@@ -243,6 +243,7 @@ document.getElementById('qTag').value='';
 }
 updateOptVis();
 document.getElementById('questionModal').classList.add('show');
+if(document.getElementById('qType').value==='subjective')document.getElementById('qAnswer').parentNode.style.display='none';
 }
 function closeQuestionModal(){document.getElementById('questionModal').classList.remove('show');}
 document.getElementById('qType').addEventListener('change',updateOptVis);
@@ -251,6 +252,7 @@ var v=document.getElementById('qType').value;
 document.getElementById('optGroup').style.display=(v==='single'||v==='multi')?'block':'none';
 document.getElementById('judgeOptGroup').style.display=v==='judge'?'block':'none';
 document.getElementById('subjOptGroup').style.display=v==='subjective'?'block':'none';
+document.getElementById('qAnswer').parentNode.style.display=v==='subjective'?'none':'block';
 }
 function saveQuestion(){
 var idx=parseInt(document.getElementById('editIndex').value);
@@ -373,7 +375,7 @@ var ol=q.s==='judge'?['正确','错误']:q.s==='subjective'?[]:q.o.map(function(
 html+='<div class="cd '+(sub?'submitted ':'')+cc+'">';
 html+='<div class="qn"><span>'+(qi+1)+'.</span><span class="qt '+q.s+'">'+PT[q.s]+'</span>'+(sub?(sub.ok?'<span style="color:var(--green);font-size:12px"> ✓ 正确</span>':'<span style="color:var(--red);font-size:12px"> ✗ 错误</span>'):'')+'</div>';
 html+='<div class="qq">'+esc(q.q)+'</div>';
-if(q.s==='subjective'){html+='<textarea id="pvTa-'+qi+'" style="width:100%;min-height:80px;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:14px"'+(sub?' disabled':'')+'>'+esc(ua[0]||'')+'</textarea>';}
+if(q.s==='subjective'){html+='<div style="margin-top:8px;padding:8px 12px;background:#fafaf7;border-radius:6px;font-size:14px;color:var(--muted)">点击“查看答案”显示参考答案</div>';}
 else{html+='<div class="ops">';ol.forEach(function(l,oi){var cl='';if(sub){if(q.a.indexOf(oi)>=0)cl='correct-answer';else if(ua.indexOf(oi)>=0)cl='wrong-answer';}else if(ua.indexOf(oi)>=0)cl='selected';html+='<div class="op '+cl+'" data-qi="'+qi+'" data-oi="'+oi+'"><span class="opl">'+LB[oi]+'</span><span>'+esc(l.replace(/^[A-H]\.\s*/,''))+'</span></div>';});html+='</div>';}
 if(!sub){html+='<div style="margin-top:8px"><button class="btn accent small" data-submit="'+qi+'">查看答案</button></div>';}
 if(sub){var ec=sub.ok?'correct-exp':'wrong-exp';html+='<div class="exp show '+ec+'"><strong>正确答案：</strong>'+fmtAns(q)+(q.e?'<br><strong>解析：</strong>'+esc(q.e):'')+'</div>';}
@@ -387,13 +389,13 @@ if(!pvS)return;
 var op=e.target.closest('.op');
 if(op){var card=op.closest('.cd');if(card&&card.classList.contains('submitted'))return;pvAns(parseInt(op.dataset.qi),parseInt(op.dataset.oi));return;}
 var btn=e.target.closest('button[data-submit]');
-if(btn){var qi2=parseInt(btn.dataset.submit);if(LP()[pvS.pi].d[qi2].s==='subjective'){var ta=document.getElementById('pvTa-'+qi2);if(ta)pvS.ans[qi2]=[ta.value];}pvSubmit(qi2);}
+if(btn){var qi2=parseInt(btn.dataset.submit);pvSubmit(qi2);}
 });
 }
 savePV();
 }
 function pvAns(qi,oi){var q=LP()[pvS.pi].d[qi],a=pvS.ans[qi]||[];if(q.s==='single'||q.s==='judge')a=[oi];else{var p=a.indexOf(oi);if(p>=0)a.splice(p,1);else a.push(oi);}pvS.ans[qi]=a;renderPreview();}
-function pvSubmit(qi){var q=LP()[pvS.pi].d[qi],ua=pvS.ans[qi]||[];var ok=q.s==='subjective'?(ua[0]&&ua[0].trim().length>0):(q.a.length===ua.length&&q.a.every(function(a){return ua.indexOf(a)>=0;}));pvS.sub[qi]={ok:ok};renderPreview();}
+function pvSubmit(qi){var q=LP()[pvS.pi].d[qi],ua=pvS.ans[qi]||[];var ok=q.s==='subjective'?true:(q.a.length===ua.length&&q.a.every(function(a){return ua.indexOf(a)>=0;}));pvS.sub[qi]={ok:ok};renderPreview();}
 function resetPV(){if(!pvS)return;pvS.ans={};pvS.sub={};renderPreview();}
 function fmtAns(q){if(q.s==='subjective')return q.a[0]||'略';if(q.s==='judge')return q.a[0]===0?'正确':'错误';return(q.a||[]).map(function(i){return LB[i];}).join('');}
 function savePV(){if(!pvS)return;try{localStorage.setItem('gk_pv',JSON.stringify(pvS));}catch(e){}}
