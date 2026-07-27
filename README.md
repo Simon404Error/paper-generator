@@ -1,18 +1,12 @@
-# 智能题库
+# 试卷生成器
 
-## 依赖
+试卷生成 · 智能题库
 
-- 浏览器（Edge/Chrome）
-- Python 3.10+ + Flask（仅导出功能需要）
-
-```bash
-pip install flask
-```
 ## 使用
 
-开箱即用：双击 `index.html` 打开主界面
-
-导出试卷前，需先启动导出服务：
+1. 双击 `index.html` 打开主界面
+2. 导入题库 JSON → 组卷 → 自动跳转预览
+3. 导出前需先启动导出服务：
    ```bash
    python export_server.py
    ```
@@ -22,8 +16,9 @@ pip install flask
 
 - 题库管理（单选/多选/判断/主观，批量删除，标签筛选）
 - 智能组卷（自定义题型分布、套数、不重复开关、有序/随机排版）
-- 预览测试（交互答题、实时评分、题型筛选、折叠标签）
+- 预览测试（交互答题、实时评分、题型筛选、折叠标签、悬浮答题卡）
 - 导入导出（JSON 题库导入，Python 服务端生成试卷 HTML）
+- 导出试卷支持自动保存作答记录、答题卡跟随
 
 ## 文件
 
@@ -32,6 +27,15 @@ pip install flask
 | `index.html` | 主程序 |
 | `export_server.py` | 导出服务（需 Python Flask） |
 | `题库导入模板.json` | 导入格式参考 |
+
+## 依赖
+
+- 浏览器（Edge/Chrome）
+- Python 3.10+ + Flask（仅导出功能需要）
+
+```bash
+pip install flask
+```
 
 ## License
 
