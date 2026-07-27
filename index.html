@@ -445,9 +445,27 @@ renderBank();toast('导入 '+newQs.length+' 道题目');
 reader.readAsText(file);event.target.value='';
 }
 function exportJSON(){var bank=L();if(bank.length===0){toast('题库为空');return;}var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([JSON.stringify(bank,null,2)],{type:'application/json'}),'题库_'+ds+'.json');toast('题库已导出');}
-function exportPapersHTML(){var papers=LP();if(!papers||papers.length===0){toast('\u8bf7\u5148\u751f\u6210\u8bd5\u5377');return;}
-if(!papers[0].d||papers[0].d.length===0){toast('\u8bd5\u5377\u65e0\u5185\u5bb9\uff0c\u8bf7\u91cd\u65b0\u751f\u6210');return;}
-var _oldCheck=papers.length;if(papers.length===0){toast('请先生成试卷');return;}var html=buildExport(papers);var d=new Date(),ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());download(new Blob([html],{type:'text/html;charset=utf-8'}),'试卷_'+ds+'.html');toast('试卷已导出');}
+function exportPapersHTML(){
+var papers=LP();
+if(!papers||papers.length===0){toast('请先生成试卷');return;}
+if(!papers[0].d||papers[0].d.length===0){toast('试卷无内容，请重新生成');return;}
+toast('正在导出...');
+var xhr=new XMLHttpRequest();
+xhr.open("POST","http://localhost:5001/export",true);
+xhr.responseType="blob";
+xhr.setRequestHeader("Content-Type","application/json");
+xhr.onload=function(){
+if(xhr.status===200){
+var a=document.createElement("a");a.href=URL.createObjectURL(xhr.response);a.download="试卷.html";a.click();
+toast('试卷已导出');
+}else{
+toast('导出失败，请确认 export_server.py 已启动');
+}
+};
+xhr.onerror=function(){toast("导出失败，请确认 export_server.py 已启动");};
+xhr.send(JSON.stringify(papers));
+}
+
 function pad(n){return n<10?'0'+n:''+n;}
 function download(blob,name){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url);}
 
